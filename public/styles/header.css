@@ -1,0 +1,25 @@
+
+header#header-navBar{
+    width: 100%;
+    grid-column: 1/span 2;
+    padding-right: 10%;
+}
+
+header#header-navBar ul{
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin: 0;
+}
+
+header#header-navBar ul > li{
+    display: flex;
+    padding: 10px 0 10px 0;
+}
+
+header#header-navBar a{
+    text-decoration: none;
+    color:black;
+    font-weight: bold;
+}
