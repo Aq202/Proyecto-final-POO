@@ -17,15 +17,17 @@ export class NotificationItem {
         this.title ||= "Nueva notificación"
         this.text ||= "Nueva notificación."
         this.image ??= "images/icons/logo.jpg"
+
+        this.initComponent();
     }
 
 
-    init() {
+    initComponent() {
 
 
-        this.$element = document.createElement("DIV");
-        this.$element.classList.add("cont-noti");
-        this.$element.innerHTML = `<img src="${this.image}">
+        this.component = document.createElement("DIV");
+        this.component.classList.add("cont-noti");
+        this.component.innerHTML = `<img src="${this.image}">
                                 <div class="texto">
                                     <div class="tit-noti">${this.title}</div>
                                     ${this.text}
@@ -33,19 +35,19 @@ export class NotificationItem {
                                 `;
 
         if (this.viewed === true) {
-            this.$element.classList.add("viewed")
+            this.component.classList.add("viewed")
         }
 
         //agregando evento para redirigir a url
         if (this.url != undefined && this.url != null)
-            this.$element.addEventListener("click", e => {
+            this.component.addEventListener("click", e => {
                 alert("Redirigiendo a: " + this.url);
             });
 
         this.addContextMenu()
 
 
-        return this.$element;
+        return this.component;
     }
 
 
@@ -153,7 +155,7 @@ export class NotificationItem {
         $contextMenuContainer.appendChild($contextMenu);
 
 
-        this.$element.appendChild($contextMenuContainer)
+        this.component.appendChild($contextMenuContainer)
     }
 
 

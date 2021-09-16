@@ -1,21 +1,22 @@
 import { NotificationTray } from "./NotificationTray.js";
 
-export class NavBar{
+export class NavBar {
 
-    constructor({id, name, profileImage}){
+    constructor({ id, name, profileImage }) {
 
         this._userId = id;
         this._userName = name;
-        this._userImageUrl = profileImage;        
+        this._userImageUrl = profileImage;
 
     }
 
-    init(){
+    init() {
 
-        const $nav = document.createElement("nav");
+        this.element = document.createElement("nav");
+        const $nav = this.element;
 
         $nav.setAttribute("id", "navBar");
-        
+
         $nav.innerHTML = `
         <div class="navigationIcons">
             <button id="menuOption" class="navigationIcons"></button>
@@ -50,13 +51,61 @@ export class NavBar{
         `
 
         //agregar paneles de notificaciones
-        const $notificationTray = new NotificationTray().init();
         const $notificationSection = $nav.querySelector("#notification-section")
-        if($notificationSection) $notificationSection.appendChild($notificationTray);
+        const notificationTray = new NotificationTray();
+        if ($notificationSection) $notificationSection.appendChild(notificationTray.component);
+
+
+        //add events
+        this.notificationsOptionEvent(notificationTray);
 
 
 
+        this.addEvents()
 
         return $nav;
+    }
+
+    notificationsOptionEvent(notificationTray) {
+
+        const $notificationsOption = this.element.querySelector("#notificationsOption");
+        if (!$notificationsOption) return;
+
+        $notificationsOption.addEventListener("click", e => {
+            $(notificationTray.component).stop();
+            $(notificationTray.component).slideToggle(700);
+
+            notificationTray.initializeContent();
+        })
+
+
+
+    }
+
+    addEvents() {
+
+        const $profileImage = this.element.querySelector("#userImage")
+
+        $profileImage.addEventListener("click", e => {
+
+            const obj = {
+                user: prompt("Usuario:"),
+                password: prompt("contraseña")
+            }
+            fetch("/login", {
+                method: "POST",
+                body: JSON.stringify(obj),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(r => r.json())
+                .then(result => {
+
+                    if (!result.token) return;
+
+                    localStorage.setItem("token", result.token)
+                    localStorage.setItem("userData", JSON.stringify(obj))
+                }).catch(err => console.error("Error en login:: ", err))
+        })
     }
 }
