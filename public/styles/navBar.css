@@ -11,11 +11,12 @@
     position: sticky;
     top: 0;
     background-color: var(--text-color);
-    grid-column: 1/span 2;
+    grid-column: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px 10px 20px;
+    z-index: 999;
 }
 
 /*   ICONOS   */

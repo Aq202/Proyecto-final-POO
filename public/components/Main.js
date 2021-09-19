@@ -1,25 +1,31 @@
-import { Header } from "./Header.js";
+
+import { HeaderNavBar } from "./HeaderNavBar.js";
 import { NavBar } from "./NavBar.js";
+import { PageRouter } from "./PageRouter.js";
+
 
 
 export class Main{
 
     constructor(){
 
-        const $main = document.getElementById("main")
+        const $root = document.querySelector("#root")
 
-        if(!$main)return;
+        if(!$root)return;
         
         const userData = this.login();
 
-        const header = new Header();
+        const header = new HeaderNavBar();
         const navBar = new NavBar(userData);
+        const pageWrapper = new PageRouter()
         
-
-        $main.appendChild(header.init());
-        $main.appendChild(navBar.init());
+        $root.appendChild(header.init())
+        $root.appendChild(navBar.init());
+        $root.appendChild(pageWrapper.element)
         
-
+        
+        const loadedEvent = new CustomEvent("appLoaded");
+        document.dispatchEvent(loadedEvent);
 
         
     }

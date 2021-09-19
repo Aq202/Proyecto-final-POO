@@ -1,6 +1,6 @@
 
 
-export class Header{
+export class HeaderNavBar{
 
     init(){
         const $header = document.createElement("header");

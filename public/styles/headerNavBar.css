@@ -1,11 +1,11 @@
 
-header#header-navBar{
+#header-navBar{
     width: 100%;
-    grid-column: 1/span 2;
+    grid-column: 1;
     padding-right: 10%;
 }
 
-header#header-navBar ul{
+#header-navBar ul{
     list-style: none;
     display: flex;
     justify-content: flex-end;
@@ -13,12 +13,12 @@ header#header-navBar ul{
     margin: 0;
 }
 
-header#header-navBar ul > li{
+#header-navBar ul > li{
     display: flex;
     padding: 10px 0 10px 0;
 }
 
-header#header-navBar a{
+#header-navBar a{
     text-decoration: none;
     color:black;
     font-weight: bold;

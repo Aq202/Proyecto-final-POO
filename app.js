@@ -64,7 +64,7 @@ app.post("/fakeNotifications", (req, res)=>{
     //id, title, text, image, url, date, viewed
     const notif = []
 
-    for(let i = 1; i <= 10; i++){
+    for(let i = 1; i <= req.body.max; i++){
         notif.push({
             id: "sadflkasñfkasfk",
             title: "Titulo "+i,
@@ -86,5 +86,5 @@ app.post("/fakeNotifications", (req, res)=>{
 
 
 httpServer.listen(2002, ()=>{
-    console.log("Servidor corriendo en puerto 3000.");
+    console.log("Servidor corriendo en puerto 2002.");
 })

@@ -11,13 +11,18 @@ export class NotificationTray {
     constructor() {
 
         this.initialized = false;
-        this.lock = false;
+        this.loadingLock = false;
         this.lastNotification = null;
         this.pendingNotifications = [];
 
+        this.observer = new IntersectionObserver(this.loadOldNotifications.bind(this), {
+            threshold: 0.9
+        })
+
+
 
         const userData = JSON.parse(localStorage.getItem("userData"));
-        new NotificationSocketClient(userData.user);
+        if(userData) new NotificationSocketClient(userData.user);
 
         this.initComponent();
     }
@@ -29,9 +34,7 @@ export class NotificationTray {
 
         this.component.innerHTML = `
             <div id="notification-list" class="scrollbar-blue">
-                <div>
-                   
-                </div>
+                
             </div>
             <div id="options-noti">
                 <div id="noti-leidas">Marcar como leidas</div>
@@ -52,7 +55,7 @@ export class NotificationTray {
 
 
     addEmergentNotification(notificationData) {
-        console.log("faltantes de cargar ", this.pendingNotifications)
+
         if (this.initialized === false) {
             this.pendingNotifications.push(notificationData);
 
@@ -60,7 +63,7 @@ export class NotificationTray {
             console.log(notificationData)
             const notificationItem = new NotificationItem(notificationData).component;
 
-            const $panel = this.component.querySelector("#notification-list > div");
+            const $panel = this.component.querySelector("#notification-list");
 
             if (!$panel || !notificationData.id) return;
             $panel.insertAdjacentElement("afterbegin", notificationItem);
@@ -71,8 +74,8 @@ export class NotificationTray {
 
     async initializeContent() {
 
-        if (this.initialized !== true && this.lock !== true) {
-            this.lock = true;
+        if (this.initialized !== true && this.loadingLock !== true) {
+
 
             try {
 
@@ -80,18 +83,18 @@ export class NotificationTray {
 
 
             } catch (ex) {
-                console.log(ex)
+                console.error("InitializeContent method:: ", ex)
                 if (this.pendingNotifications.length === 0) {
                     this.addEmptyMessage();
                 }
             } finally {
                 this.initialized = true;
-                this.lock = false;
+                this.loadingLock = false;
                 this.removeLoadingSpinner();
 
                 //cargar notificaciones pendientes
                 for (let pendingNotificationData of this.pendingNotifications) {
-                   
+
                     this.addEmergentNotification(pendingNotificationData);
                 }
 
@@ -101,6 +104,9 @@ export class NotificationTray {
 
     loadNotifications(max) {
         return new Promise((resolve, reject) => {
+
+            this.loadingLock = true;
+
             let url = "/fakeNotifications";
             let data = {
                 lastNotification: this.lastNotification,
@@ -119,7 +125,7 @@ export class NotificationTray {
 
                     if (result.notifications == undefined || result.notifications.length === 0) reject();
 
-                    const $panel = this.component.querySelector("#notification-list > div");
+                    const $panel = this.component.querySelector("#notification-list");
                     if (!$panel) reject();
 
                     const fragment = document.createDocumentFragment();
@@ -127,17 +133,50 @@ export class NotificationTray {
                     for (let notification of result.notifications) {
 
                         if (!notification.id) continue;
+
                         const notificationItem = new NotificationItem(notification);
+
                         fragment.appendChild(notificationItem.component);
                         NotificationTray.loadedNotifications.set(notification.id, notificationItem);
                     }
 
                     $panel.appendChild(fragment);
 
+                    //agregando observer al último elemento
+                    if ($panel.lastChild.matches(".cont-noti")) {
+
+                        this.observer.observe($panel.lastChild);
+
+                    }
+
                     resolve();
 
                 }).catch(error => reject(error));
         });
+    }
+
+    loadOldNotifications(entry) {
+
+        if (entry[0].isIntersecting) {
+
+            setTimeout(async () => {
+
+                this.observer.unobserve(entry[0].target);
+                this.addLoadingSpinner();
+
+                try {
+                    await this.loadNotifications(0);
+                } catch (ex) {
+                    console.error("LoadOldNotificationS:: ", ex)
+                } finally {
+                    this.removeLoadingSpinner();
+                }
+
+
+
+            }, 500)
+        }
+
     }
 
     addLoadingSpinner() {
@@ -149,7 +188,7 @@ export class NotificationTray {
         $spinner.classList.add("loading-spinner");
         $spinner.innerHTML = `<div class="spinner-border text-secondary" role="status"></div>`;
 
-        const $notificationList = this.component.querySelector("#notification-list > div");
+        const $notificationList = this.component.querySelector("#notification-list");
         if ($notificationList) $notificationList.appendChild($spinner);
 
     }
@@ -160,7 +199,7 @@ export class NotificationTray {
     }
 
     addEmptyMessage() {
-
+        console.log("agregando mensaje vacio")
         //eliminando mensajes anteriores
         let panel = document.querySelector(".empty-panel-message");
         if (panel) panel.remove();
@@ -170,7 +209,7 @@ export class NotificationTray {
         $elem.classList.add("empty-panel-message");
         $elem.innerText = "Sin notificaciones nuevas";
 
-        const $panel = this.component.querySelector("#lista-noti > div");
+        const $panel = this.component.querySelector("#notification-list");
         if ($panel) $panel.insertAdjacentElement("afterbegin", $elem);
     }
 

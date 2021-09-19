@@ -1,0 +1,120 @@
+#banner{
+    max-width: 100vw;
+    width: 100%;
+    height: 70vh;
+    position: relative;
+    left: 0;
+    top: 0;
+    display: flex;
+
+    
+}
+
+#banner > ul{
+    list-style: none;
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    padding: 0;
+    display: flex;
+    z-index: 0;
+}
+
+
+#banner > ul > li{
+    width: 100vw;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
+
+
+#banner > ul > li::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.22);
+    pointer-events: none;
+
+}
+
+#banner .banTitle{
+    font-size: 6vw;
+    color: white;
+    font-weight: bold;
+    z-index: 2;
+    margin: 0;
+    line-height: 0.8;
+    margin-bottom: 15vh;
+    opacity: 0;
+    text-align: center;
+    
+}
+
+#banner .banSubtitle{
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    white-space: nowrap;
+    animation:blink .5s step-end infinite alternate;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid;
+    font-family: monospace;
+    font-size: 2em;
+    opacity: 0;
+    min-width: 1ch;
+    min-height: 40px;
+}
+      
+  @keyframes blink {
+    50% {
+      border-color: transparent
+    }
+  }
+
+#banner .banButtons{
+    z-index: 2;
+    display: flex;
+    gap: 20px;
+}
+
+#banner .banButtons a{
+    text-decoration: none;
+    opacity: 0;
+}
+
+#banner .banButtons button{
+    outline: none;
+    padding: 5px 40px 5px 40px;
+    border-style: solid;
+    border-radius: 3px;
+    border-width: 3px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#banner .banButtons button.btn1{
+    outline: none;
+    background-color: white;
+    color: black;
+    border-color: white;
+}
+
+#banner .banButtons button.btn2{
+    outline: none;
+    background-color: rgb(36, 36, 36);
+    color: rgb(255, 255, 255);
+    border-color: white;
+}
+
