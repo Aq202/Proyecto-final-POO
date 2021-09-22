@@ -2,7 +2,6 @@
 #header-navBar{
     width: 100%;
     grid-column: 1;
-    padding-right: 10%;
 }
 
 #header-navBar ul{
@@ -11,6 +10,8 @@
     justify-content: flex-end;
     gap: 20px;
     margin: 0;
+    box-sizing: border-box;
+    margin-right: 10%;
 }
 
 #header-navBar ul > li{
@@ -22,4 +23,12 @@
     text-decoration: none;
     color:black;
     font-weight: bold;
+}
+
+@media only screen and (max-width:450px){
+    #header-navBar ul{
+        justify-content: center;
+        margin-right: 0;
+    }
+
 }

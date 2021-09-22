@@ -6,9 +6,9 @@ export class Banner {
 
 
         this.data = [
-            { image: "images/banners/banner1.jpg", title: "Bienvenidos a Apprentice" },
-            { image: "images/banners/banner2.jpg", title: "El lugar perfecto para aprender" },
-            { image: "images/banners/banner3.jpg", title: "Comparte tus conocimientos" }
+            { image: "images/banners/banner1.jpg", title: "Nombre del proyecto" },
+            { image: "images/banners/banner2.jpg", title: "Nombre del proyecto" },
+            { image: "images/banners/banner3.jpg", title: "Nombre del proyecto" }
         ]
 
         this.bannerScreens = [];
@@ -53,12 +53,8 @@ export class Banner {
                 <h3 class = "banSubtitle">Conviertete en el cambio.</h3>
                 <h1 class = "banTitle">${title}</h1>
                 <div class = "banButtons">
-                    <a href="/">
-                        <button class="btn1"> Donar </button>
-                    </a>
-                    <a href="/">
-                        <button class="btn2"> Explorar </button>
-                    </a>
+                    <a href="/" class="btn1">Donar</a>
+                    <a href="/" class="btn2">Explorar</a>
                 </div>
             `
 
@@ -100,7 +96,7 @@ export class Banner {
         elementsAnimation.call(() => {
 
             this.typeAnimation = new Typed($subtitle, {
-                strings: ["Conviertete en el cambio.", "Conviertete en hulk.", "Conviertete en la mujer maravilla xd.",],
+                strings: ["Conviertete en el cambio.", "Ayuda a otras personas.", "Reutiliza y sé amigable con el planeta.",],
                 typeSpeed: 40,
                 backSpeed: 40,
                 showCursor: false,

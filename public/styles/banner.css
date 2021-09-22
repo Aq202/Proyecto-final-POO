@@ -6,7 +6,7 @@
     left: 0;
     top: 0;
     display: flex;
-
+    font-size: 6vw;    
     
 }
 
@@ -31,10 +31,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 50px;
+    padding: 0 25px 0 25px;
 }
-
-
 
 #banner > ul > li::after{
     content: "";
@@ -49,16 +47,15 @@
 }
 
 #banner .banTitle{
-    font-size: 6vw;
     color: white;
     font-weight: bold;
     z-index: 2;
     margin: 0;
-    line-height: 0.8;
-    margin-bottom: 15vh;
+    /* line-height: 0.8; */
+    margin-bottom: 6vh;
     opacity: 0;
     text-align: center;
-    
+    font-size: 1em;    
 }
 
 #banner .banSubtitle{
@@ -67,14 +64,12 @@
     margin: 0;
     white-space: nowrap;
     animation:blink .5s step-end infinite alternate;
-    white-space: nowrap;
     overflow: hidden;
     border-right: 3px solid;
     font-family: monospace;
-    font-size: 2em;
     opacity: 0;
-    min-width: 1ch;
-    min-height: 40px;
+    font-size: 0.4em;
+    min-height: 30px;
 }
       
   @keyframes blink {
@@ -89,32 +84,108 @@
     gap: 20px;
 }
 
-#banner .banButtons a{
-    text-decoration: none;
-    opacity: 0;
-}
 
-#banner .banButtons button{
-    outline: none;
+
+#banner .banButtons a{
+    text-align: center;
     padding: 5px 40px 5px 40px;
     border-style: solid;
     border-radius: 3px;
     border-width: 3px;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 0.2em;
+    text-decoration: none;
+    opacity: 0;
 }
 
-#banner .banButtons button.btn1{
+#banner .banButtons a.btn1{
     outline: none;
     background-color: white;
     color: black;
     border-color: white;
 }
 
-#banner .banButtons button.btn2{
+#banner .banButtons a.btn2{
     outline: none;
     background-color: rgb(36, 36, 36);
     color: rgb(255, 255, 255);
     border-color: white;
 }
 
+
+@media only screen and (max-width:1200px){
+
+    #banner{
+        font-size: 6.5vw;
+    }
+}
+
+@media only screen and (max-width:1000px){
+
+    #banner{
+        font-size: 7vw;
+    }
+
+    #banner .banButtons a{
+        font-size: 0.23em;
+    }
+    
+}
+
+@media only screen and (max-width:800px){
+
+    #banner{
+        font-size: 9vw;
+    }
+    #banner .banTitle{
+        margin-bottom: 8vh;
+    }
+
+    #banner .banButtons{
+        flex-direction: column;
+        gap:10px;
+    }
+
+    
+}
+
+@media only screen and (max-width:600px){
+
+    #banner{
+        font-size: 11vw;
+    }
+    #banner .banSubtitle{
+        animation: none;
+        white-space: normal;
+        border: none;
+        text-align: center;
+    }
+
+    #banner .banButtons a{
+        font-size: 0.26em;
+    }
+
+}
+
+@media only screen and (max-width:500px){
+
+    #banner{
+        font-size: 12vw;
+    }
+
+    
+}
+
+@media only screen and (max-width:450px){
+
+    #banner{
+        font-size: 14vw;
+    }
+}
+
+@media only screen and (max-width:350px){
+
+    #banner{
+        font-size: 15vw;
+    }
+}

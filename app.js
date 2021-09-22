@@ -85,6 +85,6 @@ app.post("/fakeNotifications", (req, res)=>{
 
 
 
-httpServer.listen(2002, ()=>{
-    console.log("Servidor corriendo en puerto 2002.");
+httpServer.listen(2002, (serv)=>{
+    console.log("Servidor corriendo en puerto 2002");
 })

@@ -47,6 +47,11 @@
     background-image: url("../images/icons/menu.svg");
 }
 
+#navBar #searchOption{
+    background-image: url("../images/icons/search2.svg");
+    display: none;
+}
+
 #navBar #notificationsOption{
     background-image: url("../images/icons/notification.svg");
 }
@@ -83,12 +88,10 @@
 
 
 #navBar #search{
-   width: 500px;
+    max-width: 500px;
+    width: 50%;
     height: 95%;
-    /* visibility: hidden; */
     position: relative;
-    /* display: none; */
-    z-index: 250;
 }
 #navBar #search #search-input-containor{
     width: 100%;
@@ -99,6 +102,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     
 }
 #navBar #search #input-search{
@@ -123,6 +127,20 @@
     border: none;
     outline: none;
     cursor: pointer;
+}
+
+#navBar #search #x-search{
+    width: 10px;
+    height: 10px;
+    background-image: url("../images/icons/x-icon.svg");
+    background-size: cover;
+    background-attachment: contain;
+    background-repeat: no-repeat;  
+    background-color: unset; 
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: none;
 }
 
 /*sugerencias de busqueda*/
@@ -158,4 +176,73 @@
 #navBar .suggestion-option{
     background-color: rgb(0, 83, 104);
     color: rgb(223, 223, 223);
+}
+
+
+@media only screen and (max-width:600px){
+
+    /*Barra de búsqueda abierta*/
+    #navBar.searching{
+        justify-content: center;
+    }
+    #navBar.searching .navigationIcons {
+        display: none;
+    }
+
+    #navBar.searching #search{
+        width: 90%;
+    }
+
+    #navBar #search #input-search{
+        width: calc(100% - 50px);
+    }
+
+    #navBar #search #x-search{
+        display: block;
+    }
+
+   
+
+    /*Barra de búsqueda cerrada*/
+    #navBar:not(.searching) #search{
+        display: none;
+    }
+
+    #navBar:not(.searching) #searchOption{
+        display: block;
+    }
+
+    /*Otros estilos*/
+
+    #header-navBar ul{
+        justify-content: center;
+    }
+
+}
+
+@media only screen and (max-width:550px){
+
+
+    #notification-section{
+        position: initial !important;
+    }
+
+    #notification-section #noti-panel {
+        right: 0 !important;
+        left: 0;
+        margin: auto;
+        top: var(--navBar-height) !important;
+    }
+
+    #notification-list{
+        max-height: calc(80vh - var(--navBar-height)) !important;
+    }
+}
+
+@media only screen and (max-width:450px){
+
+    #notification-section #noti-panel {
+        width: 100% !important;
+    }
+
 }

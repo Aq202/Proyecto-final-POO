@@ -1,3 +1,4 @@
+import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { NotificationTray } from "./NotificationTray.js";
 
 export class NavBar {
@@ -17,13 +18,15 @@ export class NavBar {
 
         $nav.setAttribute("id", "navBar");
 
+        //$nav.classList.add("searching")
+
         $nav.innerHTML = `
         <div class="navigationIcons">
             <button id="menuOption" class="navigationIcons"></button>
         </div>
         <div id='search'>
             <div id='search-input-containor'>
-                
+                <button id="x-search"></button>
                 <input type='text' id='input-search' placeholder='Buscar...'>
                 <button id="lupa-search"></button>
             </div>
@@ -33,14 +36,19 @@ export class NavBar {
 
         <div id="navigationIconsContainer">
 
-            <div id="notification-section" class="navigationIcons">
-                <button id="notificationsOption"></button>
+
+            <div class="navigationIcons">
+                <button id="searchOption"></button>
             </div>
+            
             <div class="navigationIcons">
                 <button id="donationsOption"></button>
             </div>
             <div class="navigationIcons">
                 <button id="chatOption"></button>
+            </div>
+            <div id="notification-section" class="navigationIcons">
+                <button id="notificationsOption"></button>
             </div>
             <div class="navigationIcons">
                 <img src="${this._userImageUrl}" alt="${this._userName}" }" id="userImage">
@@ -56,8 +64,11 @@ export class NavBar {
         if ($notificationSection) $notificationSection.appendChild(notificationTray.component);
 
 
+
         //add events
         this.notificationsOptionEvent(notificationTray);
+        this.addDynamicHiddingNotifications(notificationTray);
+        this.searchOptionEvent();
 
 
 
@@ -73,14 +84,42 @@ export class NavBar {
 
         $notificationsOption.addEventListener("click", e => {
             $(notificationTray.component).stop();
-            $(notificationTray.component).slideToggle(700);
+            $(notificationTray.component).slideToggle(500);
 
             notificationTray.initializeContent();
         })
+    }
 
+    addDynamicHiddingNotifications(notificationTray) {
 
+        document.addEventListener("click", e => {
+            const $element = e.target;
+
+            //si no se hizo click en las notificaciones
+            if ($element.closest("#notification-section") === null) {
+
+                $(notificationTray.component).stop();
+                $(notificationTray.component).hide();
+            }
+
+        })
+    }
+
+    searchOptionEvent() {
+
+        const $elements = this.element.querySelectorAll("#searchOption, #x-search");
+
+        if (!$elements) return;
+
+        $elements.forEach(elem => {
+            elem.addEventListener("click", e => {
+                this.element.classList.toggle("searching")
+            })
+        })
 
     }
+
+
 
     addEvents() {
 

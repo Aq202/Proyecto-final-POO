@@ -12,9 +12,18 @@ export class PageRouter{
     initComponent(){
 
         this.element = document.createElement("div")
-        this.id = "pageRouter"
+        this.element.id = "pageRouter"
 
         this.element.appendChild(new Banner().element)
+
+        let hola = document.createElement("div")
+        hola.style.height = "1000px";
+        hola.style.width = "50px";
+        hola.style.backgroundColor = "red";
+
+        //this.element.style.overflow = "auto"
+
+        this.element.appendChild(hola)
 
 
     }
