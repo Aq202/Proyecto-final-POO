@@ -24,7 +24,7 @@ export class Main{
         $root.appendChild(pageWrapper.element)
         
         
-        const loadedEvent = new CustomEvent("appLoaded");
+        const loadedEvent = new CustomEvent(" ");
         document.dispatchEvent(loadedEvent);
 
         

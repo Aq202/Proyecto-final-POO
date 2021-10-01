@@ -22,7 +22,7 @@ export class NotificationTray {
 
 
         const userData = JSON.parse(localStorage.getItem("userData"));
-        if(userData) new NotificationSocketClient(userData.user);
+        if(userData)  new NotificationSocketClient(userData.user);
 
         this.initComponent();
     }

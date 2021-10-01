@@ -3,8 +3,6 @@ export class Banner {
 
     constructor() {
 
-
-
         this.data = [
             { image: "images/banners/banner1.jpg", title: "Nombre del proyecto" },
             { image: "images/banners/banner2.jpg", title: "Nombre del proyecto" },
@@ -13,10 +11,6 @@ export class Banner {
 
         this.bannerScreens = [];
         this.initComponent()
-
-
-
-        console.log("cargado")
         this.startAnimationTimeLine()
 
 

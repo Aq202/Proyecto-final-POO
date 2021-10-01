@@ -1,4 +1,4 @@
-
+ 
 export class NotificationSocketClient {
 
     constructor(userId) {
