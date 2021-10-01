@@ -1,13 +1,28 @@
 'use strict'
 
+const mongoose = require('mongoose');
+const port = 16800;
+const serverApp = require('./server/app');
 const express = require('express');
 const http = require("http");
 const socketServer = require("./server/socketServer");
 const jwt = require("jsonwebtoken");
-const key = require("./server/key")
+const key = require("./server/services/key")
 
 const app = express();
 const httpServer = http.createServer(app);
+
+mongoose.Promise = global.Promise;
+// Conexión a base de datos en la nube
+mongoose.connect('mongodb+srv://epdPOO:proyectofinal@cluster0.kxclx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, })
+    .then(()=>{
+        console.log('Conexión correcta a la base de datos.');
+        serverApp.listen(port, ()=>{
+            console.log('Servidor de express corriendo en el puerto: ', port)
+        });
+    }).catch(err=>{
+        console.log('Error de conexión.', err);
+    });
 
 app.use(express.json())
 app.use(express.static('./public'))
@@ -85,6 +100,6 @@ app.post("/fakeNotifications", (req, res)=>{
 
 
 
-httpServer.listen(2002, (serv)=>{
-    console.log("Servidor corriendo en puerto 2002");
+httpServer.listen(2004, (serv)=>{
+    console.log("Servidor corriendo en puerto 2004");
 })

@@ -4,14 +4,23 @@
   "description": "Proyecto final POO, segundo semestre",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "author": "Diego Morales, Erick Guerra, Pablo Zamora",
   "license": "ISC",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.29.1",
+    "mongoose": "^6.0.8",
     "socket.io": "^4.2.0",
     "socket.io-client": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
   }
 }

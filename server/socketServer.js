@@ -1,6 +1,6 @@
 
 const jwt = require("jsonwebtoken")
-const key = require("./key")
+const key = require("./services/key")
 
 
 module.exports = class SocketServer {
