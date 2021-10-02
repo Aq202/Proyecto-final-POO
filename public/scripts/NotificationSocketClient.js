@@ -10,7 +10,7 @@ export class NotificationSocketClient {
     }
 
     initSocket() {
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("sessionToken")
         if (!token) return;
 
         this.socketIo = io({

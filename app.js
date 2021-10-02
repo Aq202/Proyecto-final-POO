@@ -1,17 +1,48 @@
 'use strict'
 
+const mongoose = require('mongoose');
+const port = 2004;
 const express = require('express');
 const http = require("http");
 const socketServer = require("./server/socketServer");
 const jwt = require("jsonwebtoken");
-const key = require("./server/key")
+const key = require("./server/services/key")
+
+const userRoutes = require('./server/routes/user.route')
+
+
+
+
 
 const app = express();
 const httpServer = http.createServer(app);
 
+mongoose.Promise = global.Promise;
+// Conexión a base de datos en la nube
+mongoose.connect('mongodb+srv://epdPOO:proyectofinal@cluster0.kxclx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, })
+    .then(()=>{
+        console.log('Conexión correcta a la base de datos.');
+        httpServer.listen(port, (serv)=>{
+            console.log("Servidor corriendo en puerto "+port);
+        })
+    }).catch(err=>{
+        console.log('Error de conexión.', err);
+    });
+
 app.use(express.json())
 app.use(express.static('./public'))
 app.use(express.urlencoded({extended:true}))
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+app.use('/user', userRoutes);
+
 
 const socket = new socketServer(httpServer)
 
@@ -85,6 +116,3 @@ app.post("/fakeNotifications", (req, res)=>{
 
 
 
-httpServer.listen(2002, (serv)=>{
-    console.log("Servidor corriendo en puerto 2002");
-})

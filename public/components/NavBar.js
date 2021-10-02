@@ -1,4 +1,5 @@
 import { DOMFunctions } from "../helpers/DOMFunctions.js";
+import { User } from "../scripts/User.js";
 import { NotificationTray } from "./NotificationTray.js";
 
 export class NavBar {
@@ -125,26 +126,35 @@ export class NavBar {
 
         const $profileImage = this.element.querySelector("#userImage")
 
-        $profileImage.addEventListener("click", e => {
+        $profileImage.addEventListener("click", async e => {
 
-            const obj = {
-                user: prompt("Usuario:"),
-                password: prompt("contraseña")
-            }
-            fetch("/login", {
-                method: "POST",
-                body: JSON.stringify(obj),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(r => r.json())
-                .then(result => {
+            let result = await User.getUser({
+                user:prompt("Usuario:"),
+                password:prompt("Contraseña")
+            })
 
-                    if (!result.token) return;
-
-                    localStorage.setItem("token", result.token)
-                    localStorage.setItem("userData", JSON.stringify(obj))
-                }).catch(err => console.error("Error en login:: ", err))
+            console.log(result)
         })
+
+
+        this.element.querySelector("#chatOption").addEventListener("click", async e =>{
+
+
+            let result = await User.createNewUser({
+                dpi:45125426,
+                username:prompt("Ingresa tu usuario: "),
+                age:18,
+                email:"diego@gmail.com",
+                password:prompt("Contraseña: "),
+                name:"Diego",
+                lastname:"Morales",
+                direction:"Villa Nueva",
+                sex:"M",
+                birtday:new Date()
+            })
+
+
+        })
+
     }
 }
