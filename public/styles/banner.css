@@ -2,12 +2,14 @@
     max-width: 100vw;
     width: 100%;
     height: 70vh;
+    min-height: 450px;
     position: relative;
     left: 0;
     top: 0;
     display: flex;
     font-size: 6vw;    
-    
+    grid-column: span 2;
+    grid-row: 1;
 }
 
 #banner > ul{
@@ -27,6 +29,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -112,6 +115,14 @@
     border-color: white;
 }
 
+
+#banner .separatorWave{
+    width: 100vw;
+    height: 70px;
+    position: absolute;
+    bottom: 0;
+    user-select: none;
+}
 
 @media only screen and (max-width:1200px){
 

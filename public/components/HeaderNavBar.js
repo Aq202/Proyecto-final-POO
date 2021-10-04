@@ -2,10 +2,15 @@
 
 export class HeaderNavBar{
 
-    init(){
-        const $header = document.createElement("header");
-        $header.setAttribute("id", "header-navBar")
-        $header.innerHTML = `
+    constructor(){
+        this.initComponent()
+    }
+
+    initComponent(){
+
+        this.component = document.createElement("header");
+        this.component.setAttribute("id", "header-navBar")
+        this.component.innerHTML = `
         <ul>
             <li class="headerOption"><a href="">Productos</a></li>
             <li class="headerOption"><a href="">Tienda</a></li>
@@ -14,6 +19,6 @@ export class HeaderNavBar{
         </ul>
         `
 
-        return $header;
+        return this.component;
     }
 }

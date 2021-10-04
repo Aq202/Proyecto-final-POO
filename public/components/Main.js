@@ -17,11 +17,11 @@ export class Main{
 
         const header = new HeaderNavBar();
         const navBar = new NavBar(userData);
-        const pageWrapper = new PageRouter()
+        const pageRouter = new PageRouter()
         
-        $root.appendChild(header.init())
-        $root.appendChild(navBar.init());
-        $root.appendChild(pageWrapper.element)
+        $root.appendChild(header.component)
+        $root.appendChild(navBar.component);
+        $root.appendChild(pageRouter.component)
         
         
         const loadedEvent = new CustomEvent(" ");

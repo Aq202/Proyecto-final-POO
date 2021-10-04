@@ -10,12 +10,13 @@ export class NavBar {
         this._userName = name;
         this._userImageUrl = profileImage;
 
+        this.initComponent();
     }
 
-    init() {
+    initComponent() {
 
-        this.element = document.createElement("nav");
-        const $nav = this.element;
+        this.component = document.createElement("nav");
+        const $nav = this.component;
 
         $nav.setAttribute("id", "navBar");
 
@@ -80,7 +81,7 @@ export class NavBar {
 
     notificationsOptionEvent(notificationTray) {
 
-        const $notificationsOption = this.element.querySelector("#notificationsOption");
+        const $notificationsOption = this.component.querySelector("#notificationsOption");
         if (!$notificationsOption) return;
 
         $notificationsOption.addEventListener("click", e => {
@@ -108,13 +109,13 @@ export class NavBar {
 
     searchOptionEvent() {
 
-        const $elements = this.element.querySelectorAll("#searchOption, #x-search");
+        const $elements = this.component.querySelectorAll("#searchOption, #x-search");
 
         if (!$elements) return;
 
         $elements.forEach(elem => {
             elem.addEventListener("click", e => {
-                this.element.classList.toggle("searching")
+                this.component.classList.toggle("searching")
             })
         })
 
@@ -124,7 +125,7 @@ export class NavBar {
 
     addEvents() {
 
-        const $profileImage = this.element.querySelector("#userImage")
+        const $profileImage = this.component.querySelector("#userImage")
 
         $profileImage.addEventListener("click", async e => {
 
@@ -137,7 +138,7 @@ export class NavBar {
         })
 
 
-        this.element.querySelector("#chatOption").addEventListener("click", async e =>{
+        this.component.querySelector("#chatOption").addEventListener("click", async e =>{
 
 
             let result = await User.createNewUser({

@@ -1,4 +1,5 @@
-import { Banner } from "./banner.js"
+import { HomePage } from "./HomePage.js";
+
 
 export class PageRouter{
 
@@ -11,20 +12,27 @@ export class PageRouter{
 
     initComponent(){
 
-        this.element = document.createElement("div")
-        this.element.id = "pageRouter"
+        this.component = document.createElement("div")
+        this.component.id = "pageRouter"
+   
+        this.renderView();
 
-        this.element.appendChild(new Banner().element)
+        //cuando se modifica el hash
+        window.addEventListener("hashchange", this.renderView.bind(this));
 
-        let hola = document.createElement("div")
-        hola.style.height = "1000px";
-        hola.style.width = "50px";
-        hola.style.backgroundColor = "red";
+    }
 
-        //this.element.style.overflow = "auto"
+    renderView(){
 
-        this.element.appendChild(hola)
+        const hash = location.hash;
+        
+        //vaciar router container
+        this.component.innerHTML = "";
 
-
+        if(hash === "" || hash.includes("/home")){ //home
+            this.component.appendChild(new HomePage().component)
+        }else{
+            location.hash = "";
+        }
     }
 }
