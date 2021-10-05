@@ -1,0 +1,81 @@
+#loginPage{
+    margin: 0;
+    padding: 0;
+    background: url(../images/backgrounds/login_bg.jpg) no-repeat center top;
+    background-size: cover;
+    font-family: helvetica;
+    height: 100vh;
+}
+
+.loginContainer{
+    width: 320px;
+    height: 420px;
+    background-color:#282c34;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    position:absolute;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
+}
+
+.loginContainer .logo{
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: -50px;
+    left: 35%;
+}
+
+.loginContainer h1{
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    font-size: 25px;
+
+}
+
+.loginContainer label{
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    display:block;
+}
+
+.loginContainer input{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.loginContainer input[type="text"],
+.loginContainer input[type="password"]{
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.loginContainer input[type="submit"]{
+    border: none;
+    outline: none;
+    height: 40px;
+    background-color: cadetblue;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 20px;
+}
+
+.loginContainer a{
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: darkgrey;
+}
+
+.loginContainer a:hover{
+    color: #fff;
+}

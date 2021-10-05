@@ -1,4 +1,5 @@
 import { HomePage } from "./HomePage.js";
+import { LoginPage } from "./LoginPage.js";
 
 
 export class PageRouter{
@@ -31,7 +32,11 @@ export class PageRouter{
 
         if(hash === "" || hash.includes("/home")){ //home
             this.component.appendChild(new HomePage().component)
-        }else{
+        }
+        else if (hash.includes("/login")){
+            this.component.appendChild(new LoginPage().component)
+        }
+        else{
             location.hash = "";
         }
     }
