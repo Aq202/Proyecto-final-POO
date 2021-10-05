@@ -4,6 +4,10 @@
     grid-column: 1;
 }
 
+#root.completeWindow #header-navBar{
+    display: none;
+}
+
 #header-navBar ul{
     list-style: none;
     display: flex;

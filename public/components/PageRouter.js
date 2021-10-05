@@ -30,14 +30,33 @@ export class PageRouter{
         //vaciar router container
         this.component.innerHTML = "";
 
+        this.removeCompleteWindow();
+
         if(hash === "" || hash.includes("/home")){ //home
             this.component.appendChild(new HomePage().component)
         }
         else if (hash.includes("/login")){
             this.component.appendChild(new LoginPage().component)
+            this.setCompleteWindow();
         }
         else{
             location.hash = "";
+        }
+    }
+
+    setCompleteWindow(){
+        const $rootDiv = document.getElementById("root");
+
+        if($rootDiv){
+            $rootDiv.classList.add("completeWindow")
+        }
+    }
+
+    removeCompleteWindow(){
+        const $rootDiv = document.getElementById("root");
+
+        if($rootDiv){
+            $rootDiv.classList.remove("completeWindow")
         }
     }
 }

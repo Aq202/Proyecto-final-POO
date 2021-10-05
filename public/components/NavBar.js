@@ -23,8 +23,8 @@ export class NavBar {
         //$nav.classList.add("searching")
 
         $nav.innerHTML = `
-        <div class="navigationIcons">
-            <button id="menuOption" class="navigationIcons"></button>
+        <div class="navigationIcons menuIcon">
+            <button id="menuOption"></button>
         </div>
         <div id='search'>
             <div id='search-input-containor'>
@@ -55,6 +55,9 @@ export class NavBar {
             <div class="navigationIcons">
                 <img src="${this._userImageUrl}" alt="${this._userName}" }" id="userImage">
             </div>
+
+            <button class="sessionButton" id="signInButton">Regístrate</button>
+            <button class="sessionButton" id="logInButton">Ingresar</button>
             
         </div>
               
@@ -69,6 +72,7 @@ export class NavBar {
 
         //add events
         this.notificationsOptionEvent(notificationTray);
+        this.sessionButtonEvents();
         this.addDynamicHiddingNotifications(notificationTray);
         this.searchOptionEvent();
 
@@ -119,6 +123,19 @@ export class NavBar {
             })
         })
 
+    }
+
+
+    sessionButtonEvents(){
+
+        const $logInButton = this.component.querySelector("#logInButton")
+        console.log($logInButton)
+        if(!$logInButton) return;
+
+        $logInButton.addEventListener("click",e =>{
+                
+            location.hash = "/login";
+        })
     }
 
 

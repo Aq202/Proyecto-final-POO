@@ -19,6 +19,17 @@
     z-index: 999;
 }
 
+#root.completeWindow #navBar{
+    display: none;
+}
+
+#navBar:not(.loggedIn) .navigationIcons:not(.menuIcon){
+    display: none;
+}
+#navBar:not(.loggedIn) .sessionButton{
+    display: block;
+}
+
 /*   ICONOS   */
 
 #navBar #navigationIconsContainer{
@@ -83,6 +94,33 @@
     transform: translateY(-1px);
 }
 
+/*------Botones de iniciar sesion/ registrarse----------*/
+#navBar .sessionButton{
+    outline: none;
+    height: 100%;
+    padding: 0 10px 0 10px;
+    border: 3px;
+    border-style: solid;
+    border-radius: 3px;
+    font-weight: bold;
+    transition: all .2s ease-in-out;
+    display: none;
+}
+
+#navBar .sessionButton:hover{
+    transform: translateY(-3px);
+}
+
+#signInButton{
+    background-color: rgba(0, 0, 0, 0);
+    border-color: white;
+    color: white;
+}
+
+#logInButton{
+    background-color: white;
+    border-color: white !important;
+}
 
 /*------BARRA DE BUSQUEDA-----*/
 
