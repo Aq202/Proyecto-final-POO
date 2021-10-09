@@ -1,0 +1,99 @@
+*{
+    --gray-text-color:rgb(106, 106, 106);
+}
+
+#filterSection{
+    grid-row: 3;
+    grid-column: 1;
+    width: 100%;
+    height: calc(100vh - var(--navBar-height) - 25px);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 25px;
+    position: sticky;
+    top: calc(var(--navBar-height) + 25px);
+    margin-left: 25px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    padding: 10px 0 10px 0;
+}
+
+.filterItem{
+    background-color:white ;
+    box-shadow: 0 0px 5px 1px rgb(0 0 0 / 5%);
+    padding: 0 15px 15px 20px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    border-radius: 5px;
+    width: calc(100% - 10px);
+    margin: 0 auto 0 auto;
+
+}
+
+.filterHeader{
+    border-bottom: 2px solid rgb(182, 181, 181);
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0 15px 0 15px;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+}
+
+.filterHeader .arrowIcon{
+    width: 20px;
+    height: 20px;
+    background-image: url(../images/icons/downArrow.svg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all ease .3s;
+
+}
+
+.filterHeader:hover .arrowIcon{
+    transform: translateY(-1px);
+}
+
+.filterRow{
+    width: 100%;
+}
+
+.filterBody{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin: 20px 15px 0 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+#ubicationFilter select{
+    padding: 5px 7px 5px 7px;
+    font-size: 17px;
+    outline: none;
+    border: 1px #e2e9ef solid;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color: var(--gray-text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    width: 98%;
+}
+
+#ubicationFilter .filterBody span{
+    font-weight: bold;
+    color: #202020;
+}
+
+.filterItem.upArrow .arrowIcon{
+    transform: rotate(-180deg);
+}
+
