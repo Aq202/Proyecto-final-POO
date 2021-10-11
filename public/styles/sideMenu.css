@@ -31,21 +31,64 @@ nav{
 }
 
 .side-nav{
+    --side-nav-width:250px;
     font-family: helvetica;
-    height: 100%;
-    width: 0;
-    position: fixed;
+    height: calc(100vh - var(--navBar-height));
+    width: var(--side-nav-width);
+    position: absolute;
     z-index: 1;
-    top: 0;
-    left: 0;
+    top: var(--navBar-height);
+    left: calc(0px - var(--side-nav-width));
     background-color: #334756;
     overflow-x: hidden;
-    padding-top: 60px;
-    transition: 0.5s;
+    transition: .5s ease-out;
+    padding: 50px 0 0 0;
+    
 }
 
+.side-nav.opened{
+    left: 0;
+}
+
+.side-nav .btn-close{
+    font-size: 36px;
+    color:white;
+    user-select: none;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+
+.side-nav .btn-close:hover{
+    font-weight: bold;
+}
+
+.side-nav .side-menu-header{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    
+}
+
+.side-nav ul{
+    box-sizing: border-box;
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.side-nav li{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 20px 0 20px;
+}
+
+
 .side-nav a{
-    padding: 10px 10px 30px;
+    width: 100%;
     text-decoration: none;
     font-size: 22px;
     color: white;
@@ -55,14 +98,4 @@ nav{
 
 .side-nav a:hover{
     font-weight: bold;
-
 }
-
-.side-nav .btn-close{
-    position: absolute;
-    top: 0;
-    right: 22px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-
