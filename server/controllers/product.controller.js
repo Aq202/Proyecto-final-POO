@@ -9,11 +9,6 @@ function addProduct(req, res) {
     var userId = req.params.idU;
     var product = new Product();
     var params = req.body;
-    /*name: String,
-    available: Boolean,
-    publishDate: Date,
-    owner: String,
-    cathegory: String,*/
 
     if (params.name && params.available && params.cathegory) {
         product.name = params.name;
@@ -76,6 +71,36 @@ function nextList(req,res){
         }).limit(params.listed, quantity);
     }else{
         listProducts(req,res);
+    }
+}
+
+function filteredSearch(req,res){
+    let params = req.body;
+    let quantity = params.quantity ? params.quatity : 10;
+    let product = new Product();
+    /*let department = params.department != null ? params.department : '';
+    let municipality = '';
+    let search = '';
+    let*/
+    if(params.department){
+        if(params.municipality){
+            product.find({$and: [{ department: params.department }, { municipality: params.municipality }] }, (err, found)=>{
+                if (err) {
+                    res.status(500).send({ error: 'Error interno del servidor', err });
+                } else if (found) {
+                    res.send({ 'Productos disponibles': found });
+                }
+            }).limit(0,quantity);
+        }else{
+            product.find({department : params.department}, (err, found)=>{
+                if (err) {
+                    res.status(500).send({ error: 'Error interno del servidor', err });
+                } else if (found) {
+                    res.send({ 'Productos disponibles': found });
+                    matches++;
+                }
+            }).limit(0,quantity);
+        }
     }
 }
 

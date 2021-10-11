@@ -9,6 +9,9 @@ const productSchema = Schema({
     publishDate: Date,
     owner: String,
     cathegory: String,
+    department: String,
+    municipality: String,
+    urlImagen:String,
     interested: [{ type: Schema.Types.ObjectId, ref: 'user' }]
 });
 
