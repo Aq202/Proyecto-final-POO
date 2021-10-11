@@ -8,6 +8,7 @@ const productSchema = Schema({
     type: String,
     publishDate: Date,
     owner: String,
+    cathegory: String,
     interested: [{ type: Schema.Types.ObjectId, ref: 'user' }]
 });
 

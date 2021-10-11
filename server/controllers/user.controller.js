@@ -37,12 +37,10 @@ function signIn(req,res){
                                 res.status(500).send({ error: 'Error interno del servidor.', err });
                             else if(saved){
                             res.send({
-                                'User signed': '',
-                                'ID': saved._id,
+                                'User signed': saved._id,
                                 'DPI': saved.dpi,
                                 'Username': saved.username,
                                 'Email': saved.email,
-                                'Password': saved.password,
                                 'Name': saved.name,
                                 'Lastname': saved.lastname,
                                 'Age': saved.age,
@@ -79,12 +77,10 @@ function login(req,res){
                         else if(matched){
                             if(params.gettoken = true){
                                 res.send({
-                                    'Logged User': '',
-                                    'ID': found._id,
+                                    'Logged User': found._id,
                                     'DPI': found.dpi,
                                     'Username': found.username,
                                     'Email': found.email,
-                                    'Password': found.password,
                                     'Name': found.name,
                                     'Lastname': found.lastname,
                                     'Age': found.age,
