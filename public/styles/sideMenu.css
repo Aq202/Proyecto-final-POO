@@ -1,0 +1,15 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+nav{
+    display: flex;
+    /*justify-content: space-around;*/
+    align-items: left;
+    min-height: 8vh;
+    background-color: #334756;
+    font-family: helvetica;
+}
+
