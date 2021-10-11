@@ -1,4 +1,4 @@
-*{
+/*{
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
@@ -6,10 +6,63 @@
 
 nav{
     display: flex;
-    /*justify-content: space-around;*/
+    justify-content: space-around;
     align-items: left;
     min-height: 8vh;
     background-color: #334756;
     font-family: helvetica;
+}*/
+
+.navbar{
+    background-color: #334756;
+    font-family: helvetica;
+    overflow: hidden;
+    height: 63px;
+}
+
+.navbar a{
+    float: left;
+    display: block;
+    color: #334756;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.side-nav{
+    font-family: helvetica;
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #334756;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s;
+}
+
+.side-nav a{
+    padding: 10px 10px 30px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.side-nav a:hover{
+    font-weight: bold;
+
+}
+
+.side-nav .btn-close{
+    position: absolute;
+    top: 0;
+    right: 22px;
+    font-size: 36px;
+    margin-left: 50px;
 }
 
