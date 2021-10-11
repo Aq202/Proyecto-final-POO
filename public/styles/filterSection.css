@@ -9,14 +9,14 @@
     height: calc(100vh - var(--navBar-height) - 25px);
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
     gap: 25px;
     position: sticky;
     top: calc(var(--navBar-height) + 25px);
     margin-left: 25px;
     margin-bottom: 25px;
     overflow: hidden;
-    padding: 10px 0 10px 0;
+    padding: 10px 0 30px 0;
 }
 
 .filterItem{
@@ -69,7 +69,7 @@
     display: flex;
     flex-direction: column;
     gap: 7px;
-    margin: 20px 15px 0 0;
+    margin: 10px 15px 0 0;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -97,3 +97,35 @@
     transform: rotate(-180deg);
 }
 
+#categoriesFilter label{
+    text-transform: capitalize;
+    display: inline;
+    cursor: pointer !important;
+}
+
+#searchFilter{
+    min-height: 50px;
+    max-height: 150px;
+    display: none;
+}
+
+#searchFilter p{
+    margin: 0 !important;
+    padding-left: 5px;
+}
+
+#searchFilter .xIcon{
+    width: 10px;
+    height: 10px;
+    opacity: 0.6;
+    background-image: url(../images/icons/x-icon.svg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all ease .3s;
+    cursor: pointer;
+}
+
+#searchFilter .filterHeader{
+    cursor: auto;
+}
