@@ -1,0 +1,16 @@
+#productRegistrationPage{
+    width: 100%;
+    height: auto;
+    min-height: 60vh;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: 1;
+}
+
+#productRegistrationPage #formSection{
+    background-color: red;
+}
+
+#productRegistrationPage #previewSection{
+    
+}
