@@ -100,7 +100,7 @@ export class NavBar {
 
         const $hamburguerMenu = this.component.querySelector("#menuOption");
         const $sideMenu = this.component.querySelector("#side-menu");
-        if(!$hamburguerMenu || $sideMenu) return;
+        if(!$hamburguerMenu || !$sideMenu) return;
 
         $hamburguerMenu.addEventListener("click", ()=> $sideMenu.classList.toggle("opened"));
     }

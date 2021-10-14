@@ -17,16 +17,25 @@ export class SideMenu{
         $sideMenu.innerHTML = `
 
         <ul>
+
+            <li class="">
+                <h2 id="title" > 
+                    Menú
+                </h2>
+            </li>
                    
             <li class="">
+                <img src="../images/icons/home.svg" alt = "home">
                 <a href="#">Inicio</a>
             </li>
        
             <li class="">
+                <img src="../images/icons/profileLogo.svg" alt = "profile">
                 <a href="#">Mi perfil</a>
             </li>
         
             <li class="">
+                <img src="../images/icons/settingsLogo.svg" alt = "settings">
                 <a href="#">Configuración</a>
             </li>
         </ul>   

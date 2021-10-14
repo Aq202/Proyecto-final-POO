@@ -31,7 +31,7 @@ nav{
 }
 
 .side-nav{
-    --side-nav-width:250px;
+    --side-nav-width:290px;
     font-family: helvetica;
     height: calc(100vh - var(--navBar-height));
     width: var(--side-nav-width);
@@ -43,11 +43,12 @@ nav{
     overflow-x: hidden;
     transition: .5s ease-out;
     padding: 50px 0 0 0;
+    opacity: 0.9;
     
 }
 
 .side-nav.opened{
-    left: 0;
+    left: 10px;
 }
 
 .side-nav .btn-close{
@@ -84,6 +85,7 @@ nav{
     width: 100%;
     box-sizing: border-box;
     padding: 0 20px 0 20px;
+    line-height: 50px;
 }
 
 
@@ -94,6 +96,18 @@ nav{
     color: white;
     display: block;
     transition: 0.3s;
+}
+
+#title {
+    text-align: center;
+    color: white;
+}
+
+.side-nav li img{
+    max-width: 50px;
+    height: 50px;
+    float: left;
+    vertical-align: middle;
 }
 
 .side-nav a:hover{
