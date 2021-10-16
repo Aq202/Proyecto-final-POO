@@ -178,6 +178,8 @@ export class ImageViewer {
         this.currentIndex = 0;
         this.numberOfImages = 0;
 
+        this.moveCarrousel();
+
     }
 
 }

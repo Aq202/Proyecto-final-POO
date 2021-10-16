@@ -1,11 +1,12 @@
 
 .imageViewer{
-    margin: auto;
-    width: 500px;
-    height:  400px;
-    background-color: rgb(242,242,242);
+    /* width: 500px;
+    height:  400px; */
+    background-color: white;
     border-radius: 20px;
     position: relative;
+    margin: 0 25px 0 25px;
+    box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
 }
 
 .imageViewer .viewerContainer{
@@ -43,14 +44,14 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    
+
 }
 
 
 .imageViewer img{
     max-width: 90%;
     max-height: 90%;
-    
+
 }
 
 .viewerControls{
@@ -88,7 +89,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border:5px white solid; 
+    border:5px white solid;
     cursor: pointer;
     box-sizing: content-box;
 }
@@ -99,7 +100,7 @@
 .arrowContainer.right .arrowButton{
     transform: rotate(-180deg);
     margin-right: -100%;
-    
+
 }
 
 .arrowContainer .arrowButton:hover{

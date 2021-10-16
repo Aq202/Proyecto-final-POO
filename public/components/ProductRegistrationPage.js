@@ -1,3 +1,4 @@
+import { ImagePicker } from "./ImagePicker.js";
 import { ImageViewer } from "./ImageViewer.js";
 
 export class ProductRegistrationPage{
@@ -18,34 +19,83 @@ export class ProductRegistrationPage{
         $page.innerHTML = `
             <div id="formSection">
 
+                <h1>Nueva Donación</h1>
+            
+                <img src="../images/others/charity.svg" alt="Neva donación">
+                <form>
+                    <div class="inputContainer">
+                        <input type="text" id="product-name">
+                        <label for="product-name">Título</label>
+                    </div>
+                    <div class="inputContainer">
+                        <textarea id="product-description" class="scrollbar-gray"></textarea>
+                        <label for="product-description">Descripción</label>
+                    </div>
+                    <div class="inputContainer">
+                        <select id="product-category">
+                            <option value="">Telefonos</option>
+                        </select>
+                        <label for="product-category">Categoría</label>
+                    </div>
+                    <div class="inputContainer">
+                        <select id="product-department">
+                            <option value="">Telefonos</option>
+                        </select>
+                        <label for="product-department">Departamento</label>
+                    </div>
+                    <div class="inputContainer">
+                        <select id="product-municipality">
+                            <option value="">Telefonos</option>
+                        </select>
+                        <label for="product-municipality">Municipío</label>
+                    </div>
+            
+                    <div class="filePicker"></div>
+
+                    <input type="submit" id="send-donation-button" value="Realizar Donación" disabled>
+                    <p class="errorMessage">Debes de llenar todas las casillas</p>
+                    
+                </form>
             </div>
             
             <div id="previewSection">
-
-            <input type="file" class="file" multiple/>
                 
             </div>
         `;
 
 
-        const previewSection = $page.querySelector("#previewSection");
+        const $previewSection = $page.querySelector("#previewSection");
+        const $formSection = $page.querySelector("#formSection .filePicker");
 
-        const imageViewer = new ImageViewer()
+        const imagePicker = new ImagePicker();
+        const imageViewer = new ImageViewer();
 
-        imageViewer.addImage("https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-13/Pink/Apple-iPhone-13-Pink-thumbnail.png")
-        imageViewer.addImage("https://img.global.news.samsung.com/mx/wp-content/uploads/2019/01/Notebook-9-Pro-3.jpg")
-        imageViewer.addImage("https://photos.encuentra24.com/t_or_fh_s/f_auto/v1/gt/19/69/80/75/19698075_c7269d");
+        //evento al cambiar los archivos seleccionados
+        imagePicker.component.addEventListener("changeFile", e => {
+            const files = e.detail;
+            if(!files) return; 
 
-        previewSection.appendChild(imageViewer.component)
+            //actualizar imagenes
+            imageViewer.clear();
+            imageViewer.addFileImage(...files);
+
+            //colocar imagen por defecto
+            if(files.length === 0) imageViewer.addImage("../images/others/donate.png");
+        })
+
+        //añadir imagen por defecto
+        imageViewer.addImage("../images/others/donate.png")
+
+        $formSection.appendChild(imagePicker.component)
+        $previewSection.appendChild(imageViewer.component)
+
+    
+
+        
 
         const $inputFile = $page.querySelector(".file");
 
-        $inputFile.addEventListener("change", evt =>{
-            const files = evt.target.files;
-
-            imageViewer.clear();
-            imageViewer.addFileImage(...files);
-        })
+        
 
         
     }
