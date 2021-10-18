@@ -10,10 +10,10 @@ const userSchema = Schema({
     name: String,
     lastname: String,
     age: Number,
-    direction: String,
-    urlImagen:String,
+    address: String,
+    urlImage:String,
     sex: String,
-    birth: String,
+    birth: Date,
     adquisitions: [{ type: Schema.Types.ObjectId, ref: 'buy' }],
     donations: [{ type: Schema.Types.ObjectId, ref: 'product' }]
 });

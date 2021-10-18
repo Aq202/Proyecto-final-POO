@@ -8,30 +8,31 @@ const Product = require('../models/product.model');
 function signIn(req,res){
     const params = req.body;
     const user = new User();
+    let today = Date.now();
 
-    if(params.dpi && params.username && params.age && params.email && params.password && params.name && params.lastname && params.direction && params.sex && params.birth){
-        User.findOne({$or: [{ username: params.username }, { email: params.email }] }, (err, found) => {
+    if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth){
+        User.findOne({$or: [{ username: params.username }, { email: params.email }, {dpi:params.dpi}] }, (err, found) => {
             if(err)
                 res.status(500).send({error: 'Error interno del servidor.', err});
             else if(found)
-                res.status(400).send({ message: 'El nombre de usuario o correo electrónico ingresado ya está en uso.' });
+                res.status(403).send({ message: 'El dpi, nombre de usuario o correo electrónico ingresado ya está en uso.' });
             else{
+                let birth = new Date(params.birth);
                 user.dpi = params.dpi;
                 user.username = params.username;
                 user.email = params.email;
                 user.name = params.name;
                 user.lastname = params.lastname;
-                user.age = params.age;
+                user.age = calculateAge(birth, today);
                 user.direccion = params.direccion;
                 user.sex = params.sex;
-                user.birth = params.birth;
+                user.birth = birth;
 
                 bcrypt.hash(params.password, null, null, (err, passwordEncripted)=>{
                     if(err)
                         res.status(500).send({ error: 'Error interno del servidor.', err });
                     else if(passwordEncripted){
                         user.password = passwordEncripted;
-
                         user.save((err, saved)=>{
                             if(err)
                                 res.status(500).send({ error: 'Error interno del servidor.', err });
@@ -63,7 +64,6 @@ function signIn(req,res){
 
 function login(req,res){
     const params = req.body;
-    const user = new User();
 
     if(params.username || params.email){
         if(params.password){
@@ -84,16 +84,16 @@ function login(req,res){
                                     'Name': found.name,
                                     'Lastname': found.lastname,
                                     'Age': found.age,
-                                    'Direction': found.direccion,
-                                    'URLImage': found.URLImagen,
-                                    'Sex': found.sexo,
+                                    'Direction': found.address,
+                                    'URLImage': found.urlImage,
+                                    'Sex': found.sex,
                                     'Birth': found.birth,
                                     'Token': jwt.createToken(found)
                                 });
                             }else
                                 res.status(500).send({ error: 'Error al autenticar.' });
                         }else
-                            res.status(400).send({ message: 'Contraseña incorrecta.' });
+                            res.status(403).send({ message: 'Contraseña incorrecta.' });
                     });
                 }else
                     res.status(404).send({ message: 'Nombre de usuario o correo electrónico incorrectos.' });
@@ -102,6 +102,27 @@ function login(req,res){
             res.status(400).send({ message: 'Ingrese su contraseña.' });
     }else
         res.status(400).send({ message: 'Ingrese su correo electrónico o nombre de usuario.' });
+}
+
+function addImage(req,res){
+    var userId = req.params.id;
+    var params = req.body;
+    if(req.user.sub != userId){
+        res.status(403).send({ message: 'No tiene permitido realizar esta acción.' });
+    }else{
+        if(params.urlImage){
+            
+        }else{
+            res.status(400).send({message: 'Debe ingresar la URL de la imagen que desea.'});
+        }
+    }
+}
+
+function calculateAge(birth,today){
+    let diffMonths = today-birth.getTime();
+    let ageDate = new Date(diffMonths);
+    let age = Math.abs(ageDate.getUTCFullYear()-1970);
+    return age;
 }
 
 module.exports={

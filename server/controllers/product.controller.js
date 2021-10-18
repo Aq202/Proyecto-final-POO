@@ -9,97 +9,114 @@ function addProduct(req, res) {
     var userId = req.params.idU;
     var product = new Product();
     var params = req.body;
-
-    if (params.name && params.available && params.cathegory) {
-        product.name = params.name;
-        product.available = params.available == "true" ? true: false;
-        product.cathegory = params.cathegory;
-        product.publishDate = new Date();
-        product.owner = params.idU;
-
-        product.save((err, saved) => {
-            if (err) {
-                res.status(500).send({ error: 'Error interno del servidor', err });
-            } else if (saved) {
-                User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
-                    if (err) {
-                        res.status(500).send({ error: 'Error interno del servidor', err });
-                    } else if (updated) {
-                        res.send({ 'Producto agregado con éxito.': saved });
-                    } else {
-                        res.send({ '¡ADVERTENCIA!': 'Ha ocurrido un problema al asignar el producto con el usuario indicado'});
-                    }  
-                })
-            } else {
-                res.status(400).send({ message: 'No ha sido posible guardar el producto.' });
-            }
-        });
-    } else {
-        res.status(400).send({ message: 'Debe ingresar todos los datos requeridos.' })
+    if (req.user.sub != userId) {
+        res.status(403).send({ message: 'No tiene permitido realizar esta acción.' });
+    }else{
+        if (params.name && params.available && params.cathegory && params.department && params.municipality) {
+            product.name = params.name;
+            product.description = params.description && params.description != null ? params.description : "Sin descripción";
+            product.available = params.available;
+            product.publishDate = Date.now();
+            product.cathegory = params.cathegory;
+            product.department = params.department;
+            product.municipality = params.municipality;
+            product.urlImage = params.urlImage && params.urlImage != null ? params.urlImage : null;
+            product.ownerId = userId;
+    
+            product.save((err, saved) => {
+                if (err) {
+                    res.status(500).send({ error: 'Error interno del servidor', err });
+                } else if (saved) {
+                    User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
+                        if (err) {
+                            res.status(500).send({ error: 'Error interno del servidor', err });
+                            deleteProduct(saved._id);
+                        } else if (updated) {
+                            updateOwner(saved, updated, res);
+                        } else {
+                            cancelDonation(saved, res);
+                        }  
+                    })
+                } else {
+                    res.status(400).send({ message: 'No ha sido posible realizar la donación.' });
+                }
+            });
+        } else {
+            res.status(400).send({ message: 'Debe ingresar todos los datos requeridos.' })
+        }
     }
+}
+
+function updateOwner(product, user, res){
+    Product.findByIdAndUpdate(product._id, {owner : user.name + ' ' + user.lastname}, {new : true}, (err, updated)=>{
+        if(err){
+            cancelDonation(product, res);
+        }else if(updated){
+            res.send({ 'Producto agregado con éxito.': updated });
+        }else{
+            cancelDonation(product, res);
+        }
+    });
+}
+
+function cancelDonation(product, res){
+    Product.findByIdAndDelete(product._id, (err, deleted)=>{
+        if(err){
+            res.status(500).send({ error: 'Error interno del servidor', err });
+        }else if(deleted){
+            res.send({ error: 'Ha ocurrido un problema al asignar la donación al usuario correspondiente, se ha cancelado la donación.'});
+        }else{
+            res.status(400).send({error: 'Ha ocurrido un problema al asignar la donación al usuairo correspondiente; la donación fue realizada pero inhabilitada.'});
+        }
+    });
 }
 
 function listProducts(req, res) {
     let params = req.body;
-    let quantity = 10;
-    quantity = params.quantity ? params.quantity : 10;
+    let skipped = params.skip ? parseInt(params.skip) : 0;
+    let quantity = params.quantity ? parseInt(params.quantity) : 10;
     Product.find({}, (err, found) => {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
-        } else if (found) {
+        } else if (found && found.length>0) {
             res.send({ 'Productos disponibles': found });
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }
-    }).limit(0,quantity);
-}
-
-function nextList(req,res){
-    let params = req.body;
-    let init = 0;
-    let quantity = 10;
-    quanity = params.quantity ? params.quantity : 10;
-    if(params.listed){
-        Product.find({}, (err,found)=>{
-            if (err) {
-                res.status(500).send({ error: 'Error interno del servidor', err });
-            } else if (found) {
-                res.send({ 'Productos disponibles': found });
-            } else {
-                res.status(404).send({ message: 'No hay datos para mostrar' });
-            }
-        }).limit(params.listed, quantity);
-    }else{
-        listProducts(req,res);
-    }
+    }).skip(skipped).limit(quantity);
 }
 
 function filteredSearch(req,res){
     let params = req.body;
-    let quantity = params.quantity ? params.quatity : 10;
-    let product = new Product();
-    /*let department = params.department != null ? params.department : '';
-    let municipality = '';
-    let search = '';
-    let*/
+    let skipped = params.skip ? parseInt(params.skip) : 0;
+    let quantity = params.quantity ? parseInt(params.quantity) : 10;
+    let instruction = '{"department": "' + params.department+ '"}';
+    if(params.categorias){
+        console.log(params.categorias);
+        let categorias = params.categorias.replace(/[ ]+/g, '').split(",");
+        console.log(categorias[0], categorias[2]);
+    }
     if(params.department){
         if(params.municipality){
-            product.find({$and: [{ department: params.department }, { municipality: params.municipality }] }, (err, found)=>{
+            Product.find({$and: [{ department: params.department }, { municipality: params.municipality }] }, (err, found)=>{
                 if (err) {
                     res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (found) {
+                } else if (found && found.length>0) {
                     res.send({ 'Productos disponibles': found });
+                }else{
+                    res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
                 }
             }).limit(0,quantity);
         }else{
-            product.find({department : params.department}, (err, found)=>{
+            Product.find(JSON.parse(instruction), (err, found)=>{
                 if (err) {
                     res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (found) {
+                } else if (found && found.length>0) {
                     res.send({ 'Productos disponibles': found });
-                    matches++;
+                }else{
+                    res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
                 }
-            }).limit(0,quantity);
+            }).skip(skipped).limit(quantity);
         }
     }
 }
@@ -107,5 +124,5 @@ function filteredSearch(req,res){
 module.exports={
     addProduct,
     listProducts,
-    nextList
+    filteredSearch
 }
