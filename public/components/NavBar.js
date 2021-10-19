@@ -2,6 +2,7 @@ import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { Filter } from "../scripts/Filter.js";
 import { User } from "../scripts/User.js";
 import { NotificationTray } from "./NotificationTray.js";
+import { SideMenu } from "./SideMenu.js";
 
 export class NavBar {
 
@@ -24,41 +25,43 @@ export class NavBar {
         //$nav.classList.add("searching")
 
         $nav.innerHTML = `
-        <div class="navigationIcons">
-            <button id="menuOption" class="navigationIcons"></button>
-        </div>
-        <div id='search'>
-            <div id='search-input-containor'>
-                <button id="x-search"></button>
-                <input type='text' id='input-search' placeholder='Buscar...'>
-                <button id="lupa-search"></button>
+        <div class="navContainer">
+            <div class="navigationIcons">
+                <button id="menuOption" class="navigationIcons"></button>
+            </div>
+            <div id='search'>
+                <div id='search-input-containor'>
+                    <button id="x-search"></button>
+                    <input type='text' id='input-search' placeholder='Buscar...'>
+                    <button id="lupa-search"></button>
+                </div>
+
+                <div id="search-suggestions"> </div>
             </div>
 
-            <div id="search-suggestions"> </div>
-        </div>
-
-        <div id="navigationIconsContainer">
+            <div id="navigationIconsContainer">
 
 
-            <div class="navigationIcons">
-                <button id="searchOption"></button>
+                <div class="navigationIcons">
+                    <button id="searchOption"></button>
+                </div>
+                
+                <div class="navigationIcons">
+                    <button id="donationsOption"></button>
+                </div>
+                <div class="navigationIcons">
+                    <button id="chatOption"></button>
+                </div>
+                <div id="notification-section" class="navigationIcons">
+                    <button id="notificationsOption"></button>
+                </div>
+                <div class="navigationIcons">
+                    <img src="${this._userImageUrl}" alt="${this._userName}" }" id="userImage">
+                </div>
+                
             </div>
-            
-            <div class="navigationIcons">
-                <button id="donationsOption"></button>
-            </div>
-            <div class="navigationIcons">
-                <button id="chatOption"></button>
-            </div>
-            <div id="notification-section" class="navigationIcons">
-                <button id="notificationsOption"></button>
-            </div>
-            <div class="navigationIcons">
-                <img src="${this._userImageUrl}" alt="${this._userName}" }" id="userImage">
-            </div>
-            
-        </div>
-              
+         </div>
+
         `
 
         //agregar paneles de notificaciones
@@ -67,11 +70,16 @@ export class NavBar {
         if ($notificationSection) $notificationSection.appendChild(notificationTray.component);
 
 
+        //agregar side menu
+        const sideMenu = new SideMenu();
+        $nav.querySelector(".navContainer").appendChild(sideMenu.component);
+
 
         //add events
         this.notificationsOptionEvent(notificationTray);
         this.addDynamicHiddingNotifications(notificationTray);
         this.searchVisibilityEvent();
+        this.sideMenuOptionEvent();
 
         //eventos de búsqueda
         $nav.querySelector("#lupa-search").addEventListener("click", e => this.newSearchEvent(e));
@@ -86,6 +94,15 @@ export class NavBar {
         this.addEvents()
 
         return $nav;
+    }
+
+    sideMenuOptionEvent(){
+
+        const $hamburguerMenu = this.component.querySelector("#menuOption");
+        const $sideMenu = this.component.querySelector("#side-menu");
+        if(!$hamburguerMenu || !$sideMenu) return;
+
+        $hamburguerMenu.addEventListener("click", ()=> $sideMenu.classList.toggle("opened"));
     }
 
     notificationsOptionEvent(notificationTray) {
