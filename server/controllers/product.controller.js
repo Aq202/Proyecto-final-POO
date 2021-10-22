@@ -86,7 +86,7 @@ function filteredSearch(req,res){
     let params = req.body;
     let skipped = params.skip ? parseInt(params.skip) : 0;
     let quantity = params.quantity ? parseInt(params.quantity) : 10;
-    let instruction = '{"department": "' + params.department+ '"}';
+    let instruction = "";
     if(params.categorias){
         console.log(params.categorias);
         let categorias = params.categorias.replace(/[ ]+/g, '').split(",");
@@ -94,7 +94,7 @@ function filteredSearch(req,res){
     }
     if(params.department){
         if(params.municipality){
-            Product.find({$and: [{ department: params.department }, { municipality: params.municipality }] }, (err, found)=>{
+            Product.find({$and: [{department:params.department}, { municipality: params.municipality }] }, (err, found)=>{
                 if (err) {
                     res.status(500).send({ error: 'Error interno del servidor', err });
                 } else if (found && found.length>0) {

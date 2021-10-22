@@ -6,7 +6,7 @@ var mdAuth = require('../middlewares/authenticated');
 
 var api = express.Router();
 
-api.post('/addProduct/:idU', mdAuth.ensureAuth, productController.addProduct);
+api.post('/addProduct', mdAuth.ensureAuth, productController.addProduct);
 api.post('/listProducts', productController.listProducts);
 api.post('/filteredSearch', productController.filteredSearch);
 
