@@ -105,6 +105,13 @@ export class User{
         return JSON.parse(dataJSON);
     }
 
+    static get token(){
+
+        const token = localStorage.getItem("Token");
+        if(token === null) return undefined;
+        return token;
+    }
+
     static get userInSession(){
         return (User.userData !== undefined && User.userData !== null);
     }
