@@ -1,4 +1,6 @@
 import { User } from "../scripts/User.js";
+
+import { Footer } from "./Footer.js";
 import { HeaderNavBar } from "./HeaderNavBar.js";
 import { NavBar } from "./NavBar.js";
 import { PageRouter } from "./PageRouter.js";
@@ -17,11 +19,13 @@ export class Main{
 
         const header = new HeaderNavBar();
         const navBar = new NavBar(userData);
-        const pageRouter = new PageRouter()
+        const pageRouter = new PageRouter();
+        const footer = new Footer();
         
-        $root.appendChild(header.component)
+        $root.appendChild(header.component);
         $root.appendChild(navBar.component);
-        $root.appendChild(pageRouter.component)
+        $root.appendChild(pageRouter.component);
+        $root.appendChild(footer.component);
         
         
         const loadedEvent = new CustomEvent(" ");

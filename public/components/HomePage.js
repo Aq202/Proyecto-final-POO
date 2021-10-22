@@ -1,5 +1,6 @@
 import { Banner } from "./Banner.js";
 import { DonationsContainer } from "./DonationsContainer.js";
+import { FilterSection } from "./FilterSection.js";
 
 export class HomePage {
 
@@ -32,9 +33,11 @@ export class HomePage {
 
         this.component.appendChild($separator);
 
+        //seccion de filtros
+        this.component.appendChild(new FilterSection().component);
         //Contenedor de donaicones
         this.component.appendChild(new DonationsContainer().component)
-
+        
 
 
     }

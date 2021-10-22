@@ -2,6 +2,7 @@
 #header-navBar{
     width: 100%;
     grid-column: 1;
+    background-color: #334756;
 }
 
 #root.completeWindow #header-navBar{
@@ -25,7 +26,7 @@
 
 #header-navBar a{
     text-decoration: none;
-    color:black;
+    color:white;
     font-weight: bold;
 }
 

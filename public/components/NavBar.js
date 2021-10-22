@@ -1,3 +1,5 @@
+import { DOMFunctions } from "../helpers/DOMFunctions.js";
+import { Filter } from "../scripts/Filter.js";
 import { User } from "../scripts/User.js";
 import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { NotificationTray } from "./NotificationTray.js";
@@ -74,8 +76,16 @@ export class NavBar {
         this.notificationsOptionEvent(notificationTray);
         this.sessionButtonEvents();
         this.addDynamicHiddingNotifications(notificationTray);
-        this.searchOptionEvent();
+        this.searchVisibilityEvent();
 
+        //eventos de búsqueda
+        $nav.querySelector("#lupa-search").addEventListener("click", e => this.newSearchEvent(e));
+        $nav.querySelector("#input-search").addEventListener("keyup", e => {
+
+            if (e.code === "Enter") {
+                this.newSearchEvent(e);
+            }
+        });
 
 
         this.addEvents()
@@ -111,7 +121,7 @@ export class NavBar {
         })
     }
 
-    searchOptionEvent() {
+    searchVisibilityEvent() {
 
         const $elements = this.component.querySelectorAll("#searchOption, #x-search");
 
@@ -136,6 +146,22 @@ export class NavBar {
                 
             location.hash = "/login";
         })
+    newSearchEvent(evt) {
+        
+        const $searchInput = this.component.querySelector("#input-search");
+        if(!$searchInput) return;
+
+        const searchText = $searchInput.value.trim();
+
+        if(searchText !== ""){
+
+            Filter.addSearch(searchText);
+
+            const event = new CustomEvent("newSearch");
+
+            document.dispatchEvent(event);
+        }
+
     }
 
 
@@ -147,28 +173,28 @@ export class NavBar {
         $profileImage.addEventListener("click", async e => {
 
             let result = await User.getUser({
-                user:prompt("Usuario:"),
-                password:prompt("Contraseña")
+                user: prompt("Usuario:"),
+                password: prompt("Contraseña")
             })
 
             console.log(result)
         })
 
 
-        this.component.querySelector("#chatOption").addEventListener("click", async e =>{
+        this.component.querySelector("#chatOption").addEventListener("click", async e => {
 
 
             let result = await User.createNewUser({
-                dpi:45125426,
-                username:prompt("Ingresa tu usuario: "),
-                age:18,
-                email:"diego@gmail.com",
-                password:prompt("Contraseña: "),
-                name:"Diego",
-                lastname:"Morales",
-                direction:"Villa Nueva",
-                sex:"M",
-                birtday:new Date()
+                dpi: 45125426,
+                username: prompt("Ingresa tu usuario: "),
+                age: 18,
+                email: "diego@gmail.com",
+                password: prompt("Contraseña: "),
+                name: "Diego",
+                lastname: "Morales",
+                direction: "Villa Nueva",
+                sex: "M",
+                birtday: new Date()
             })
 
 
