@@ -57,11 +57,10 @@ export class NavBar {
                     <div class="navigationIcons">
                         <img src="${this._userImageUrl}" alt="${this._userName}" }" id="userImage">
                     </div>
-
+             
+                    <button class="sessionButton" id="signInButton">Regístrate</button>
+                    <button class="sessionButton" id="logInButton">Ingresar</button>
                 </div>
-
-                <button class="sessionButton" id="signInButton">Regístrate</button>
-                <button class="sessionButton" id="logInButton">Ingresar</button>
 
             </div>
               
