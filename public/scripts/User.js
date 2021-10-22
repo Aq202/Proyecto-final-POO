@@ -106,7 +106,7 @@ export class User{
     }
 
     static get userInSession(){
-        return (User.userData !== undefined && User.userData !== undefined);
+        return (User.userData !== undefined && User.userData !== null);
     }
 
 

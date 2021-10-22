@@ -3,7 +3,7 @@ import { User } from "../scripts/User.js";
 export class LoginPage{
     constructor(){
 
-        if(User.userInSession === true) location.href = "/";
+        if(User.userInSession === true) location.hash = "/";
 
         this.initComponent();
     }
@@ -67,7 +67,7 @@ export class LoginPage{
     
     
                 //exitoso, redirigir a la página home
-                location.href = "/";
+                location.hash = "/";
            
             } catch (err) {
                 this.showError("Usuario o constraseña incorrecta.");
