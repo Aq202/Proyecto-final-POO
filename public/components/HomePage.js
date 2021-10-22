@@ -1,3 +1,4 @@
+import { User } from "../scripts/User.js";
 import { Banner } from "./Banner.js";
 import { DonationsContainer } from "./DonationsContainer.js";
 import { FilterSection } from "./FilterSection.js";
@@ -25,9 +26,19 @@ export class HomePage {
         //crear encabezado
         const $separator = document.createElement("div");
         $separator.classList.add("homeHeader");
+
+        let welcomeMessage = "Bienvenido";
+        let secondMessage = "Estamos felices de tenerte con nosotros."
+
+        if(User.userInSession === true){
+            welcomeMessage = `Hola, ${User.name}`;
+            secondMessage = "Estamos felices de tenerte de vuelta."
+            
+        }
+
         $separator.innerHTML = `
-        <h2>Hola, Diego Morales</h2>
-        <h3>Estamos felices de tenerte de vuelta.</h3>
+        <h2>${welcomeMessage}</h2>
+        <h3>${secondMessage}</h3>
         `;
 
 

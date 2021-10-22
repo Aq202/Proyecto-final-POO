@@ -1,7 +1,5 @@
-import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { Filter } from "../scripts/Filter.js";
 import { User } from "../scripts/User.js";
-import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { NotificationTray } from "./NotificationTray.js";
 
 export class NavBar {
@@ -64,6 +62,11 @@ export class NavBar {
         </div>
               
         `
+
+        //agregar estilo para usuario logeado
+        this.addLoggedStyle();
+        window.addEventListener("hashchange", this.addLoggedStyle.bind(this));
+        
 
         //agregar paneles de notificaciones
         const $notificationSection = $nav.querySelector("#notification-section")
@@ -139,13 +142,16 @@ export class NavBar {
     sessionButtonEvents(){
 
         const $logInButton = this.component.querySelector("#logInButton")
-        console.log($logInButton)
-        if(!$logInButton) return;
+        if($logInButton){
 
         $logInButton.addEventListener("click",e =>{
                 
             location.hash = "/login";
         })
+    }
+
+    }
+
     newSearchEvent(evt) {
         
         const $searchInput = this.component.querySelector("#input-search");
@@ -164,7 +170,11 @@ export class NavBar {
 
     }
 
-
+    addLoggedStyle(){
+        if(!this.component) return;
+        if(User.userInSession === true) this.component.classList.add("loggedIn");
+        else this.component.classList.remove("loggedIn");
+    }
 
     addEvents() {
 

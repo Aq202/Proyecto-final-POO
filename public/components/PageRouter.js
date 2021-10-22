@@ -1,5 +1,6 @@
 import { HomePage } from "./HomePage.js";
 import { LoginPage } from "./LoginPage.js";
+import { User } from "../scripts/User.js";
 
 
 export class PageRouter{
@@ -26,7 +27,7 @@ export class PageRouter{
     renderView(){
 
         const hash = location.hash;
-        
+
         //vaciar router container
         this.component.innerHTML = "";
 
@@ -38,6 +39,10 @@ export class PageRouter{
         else if (hash.includes("/login")){
             this.component.appendChild(new LoginPage().component)
             this.setCompleteWindow();
+        }
+        else if (hash.includes("/logout")){
+            User.logout();
+            location.hash = "/login";
         }
         else{
             location.hash = "";

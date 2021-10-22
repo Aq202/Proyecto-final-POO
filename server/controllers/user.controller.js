@@ -63,6 +63,7 @@ function signIn(req,res){
 }
 
 function login(req,res){
+
     const params = req.body;
 
     if(params.username || params.email){
@@ -96,7 +97,7 @@ function login(req,res){
                             res.status(403).send({ message: 'Contraseña incorrecta.' });
                     });
                 }else
-                    res.status(404).send({ message: 'Nombre de usuario o correo electrónico incorrectos.' });
+                    res.status(500).send({ message: 'Nombre de usuario o correo electrónico incorrectos.' });
             });
         }else
             res.status(400).send({ message: 'Ingrese su contraseña.' });

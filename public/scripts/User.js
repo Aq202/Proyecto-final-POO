@@ -12,6 +12,7 @@ export class User{
 
     static login({user, email, password}){
 
+
         return new Promise((resolve, reject) =>{
 
             let data = {
@@ -20,15 +21,19 @@ export class User{
                 password
             }
 
+
             fetch("http://localhost:2004/user/login",{
                 method:"POST",
                 body:JSON.stringify(data),
                 headers:{
                     "Content-Type":"application/json"
                 }
-            }).then(r => r.json())
+            }).then(r =>{ 
+                if(r.ok === false) throw "";
+                return r.json();
+            })
             .then(result =>{
-                console.log(result)
+
                 try{
                     //almacenar datos
                     if(result.hasOwnProperty("Token")){
@@ -39,7 +44,7 @@ export class User{
                     }
 
                     localStorage.setItem("userData", JSON.stringify(result));
-
+        
                     resolve();
             
                 }catch(ex){
@@ -48,8 +53,14 @@ export class User{
 
                 
 
-            }).catch(err => reject(err))
+            }).catch(err =>{                 
+                reject(err)})
         });
+    }
+
+    static logout(){
+        localStorage.removeItem("userData");
+        localStorage.removeItem("sessionToken");
     }
 
     static createNewUser({dpi, username, age, email, password, name, lastname, direction, sex, birtday}){
@@ -89,13 +100,13 @@ export class User{
     static get userData(){
 
         const dataJSON = localStorage.getItem("userData");
-        if(dataJSON === undefined) return;
+        if(dataJSON === undefined || dataJSON === null) return undefined;
 
         return JSON.parse(dataJSON);
     }
 
     static get userInSession(){
-        return (User.userData !== undefined);
+        return (User.userData !== undefined && User.userData !== undefined);
     }
 
 
@@ -158,14 +169,14 @@ export class User{
     static get firstName(){
         
         const userData = User.userData;
-
+        
         if(userData === undefined) return;
-        if(userData.hasOwnProperty("Name")) return userData.Lastname;
+        if(userData.hasOwnProperty("Name")) return userData.Name;
     }
 
     static get name(){
         
-        const name = User.fistName + " " + User.lastName;
+        const name = User.firstName + " " + User.lastName;
         return name;
     }
     

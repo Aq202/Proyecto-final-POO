@@ -7,18 +7,18 @@ export class Banner {
             {
                 image: "images/banners/banner1.jpg",
                 title: "Nombre del proyecto",
-                subtitles: ["&nbsp;Conviertete en el cambio1.", "&nbsp;Ayuda a otras personas1.", "&nbsp;Reutiliza y sé amigable con el planeta1.",]
+                subtitles: ["&nbsp;Conviértete en el cambio1.", "&nbsp;Ayuda a otras personas1.", "&nbsp;Reutiliza y sé amigable con el planeta1.",]
             },
             {
                 image: "images/banners/banner2.jpg",
                 title: "Nombre del proyecto",
-                subtitles: ["&nbsp;Conviertete en el cambio2.", "&nbsp;Ayuda a otras personas2.", "&nbsp;Reutiliza y sé amigable con el planeta2.",]
+                subtitles: ["&nbsp;Conviértete en el cambio2.", "&nbsp;Ayuda a otras personas2.", "&nbsp;Reutiliza y sé amigable con el planeta2.",]
 
             },
             {
                 image: "images/banners/banner3.jpg",
                 title: "Nombre del proyecto",
-                subtitles: ["&nbsp;Conviertete en el cambio3.", "&nbsp;Ayuda a otras personas3.", "&nbsp;Reutiliza y sé amigable con el planeta3.",]
+                subtitles: ["&nbsp;Conviértete en el cambio3.", "&nbsp;Ayuda a otras personas3.", "&nbsp;Reutiliza y sé amigable con el planeta3.",]
 
             },
         ]

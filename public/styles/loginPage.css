@@ -79,3 +79,12 @@
 .loginContainer a:hover{
     color: #fff;
 }
+
+.loginContainer .error{
+    color: rgb(219, 14, 14);
+    font-size: 14px;
+    font-weight:bold;
+    width:100%;
+    text-align:center;
+    display:none;
+}
