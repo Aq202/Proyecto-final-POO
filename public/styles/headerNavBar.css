@@ -5,6 +5,10 @@
     background-color: #334756;
 }
 
+#root.completeWindow #header-navBar{
+    display: none;
+}
+
 #header-navBar ul{
     list-style: none;
     display: flex;

@@ -1,5 +1,7 @@
 import { HomePage } from "./HomePage.js";
 import { ProductRegistrationPage } from "./ProductRegistrationPage.js";
+import { LoginPage } from "./LoginPage.js";
+import { User } from "../scripts/User.js";
 
 
 export class PageRouter{
@@ -26,9 +28,11 @@ export class PageRouter{
     renderView(){
 
         const hash = location.hash;
-        
+
         //vaciar router container
         this.component.innerHTML = "";
+
+        this.removeCompleteWindow();
 
         if(hash === "" || hash.includes("/home")){ //home
             this.component.appendChild(new HomePage().component)
@@ -36,8 +40,32 @@ export class PageRouter{
         else if (hash.includes("/registerProduct")){
             this.component.appendChild(new ProductRegistrationPage().component);
         }
+        else if (hash.includes("/login")){
+            this.component.appendChild(new LoginPage().component)
+            this.setCompleteWindow();
+        }
+        else if (hash.includes("/logout")){
+            User.logout();
+            location.hash = "/login";
+        }
         else{
             location.hash = "";
+        }
+    }
+
+    setCompleteWindow(){
+        const $rootDiv = document.getElementById("root");
+
+        if($rootDiv){
+            $rootDiv.classList.add("completeWindow")
+        }
+    }
+
+    removeCompleteWindow(){
+        const $rootDiv = document.getElementById("root");
+
+        if($rootDiv){
+            $rootDiv.classList.remove("completeWindow")
         }
     }
 }

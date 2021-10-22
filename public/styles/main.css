@@ -26,5 +26,7 @@ div#root{
     position: relative;
 }
 
-
+#root.completeWindow{
+    grid-template-rows: 1fr;
+}
 

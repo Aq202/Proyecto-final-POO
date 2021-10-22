@@ -6,10 +6,10 @@ const express = require('express');
 const http = require("http");
 const socketServer = require("./server/socketServer");
 const jwt = require("jsonwebtoken");
-const key = require("./server/services/key")
+const key = require("./server/services/key");
 
-const userRoutes = require('./server/routes/user.route')
-
+const userRoutes = require('./server/routes/user.route');
+const productRoutes = require('./server/routes/product.route');
 
 
 
@@ -47,6 +47,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/product', productRoutes);
 
 
 const socket = new socketServer(httpServer)
