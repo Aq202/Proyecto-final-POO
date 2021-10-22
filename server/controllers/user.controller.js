@@ -112,6 +112,5 @@ function calculateAge(birth,today){
 
 module.exports={
     signIn,
-    login,
-    uploadImage
+    login
 }
