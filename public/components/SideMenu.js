@@ -26,7 +26,7 @@ export class SideMenu{
                    
             <li class="">
                 <img src="../images/icons/home.svg" alt = "home">
-                <a href="#">Inicio</a>
+                <a href="#/">Inicio</a>
             </li>
        
             <li class="">
@@ -38,7 +38,17 @@ export class SideMenu{
                 <img src="../images/icons/settingsLogo.svg" alt = "settings">
                 <a href="#">Configuración</a>
             </li>
-        </ul>   
+
+            <li class="">
+            <img src="../images/icons/productLogo.svg" alt = "settings">
+            <a href="#/registerProduct">Registrar producto</a>
+
+        </li>
+        </ul>
+        <div id="logout-button">
+            <img src="../images/icons/logOut.svg" alt = "settings">
+            <a href="#/logout">Cerrar sesión</a>
+        </div>   
         `;
 
     }
