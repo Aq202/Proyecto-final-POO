@@ -115,8 +115,6 @@ nav{
 }
 
 #logout-button{
-    position: absolute;
-    bottom: 0;
     width: 100%;
     text-decoration: none;
     font-size: 22px;
