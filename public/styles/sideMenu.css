@@ -103,7 +103,7 @@ nav{
     color: white;
 }
 
-.side-nav li img{
+.side-nav img{
     max-width: 50px;
     height: 50px;
     float: left;
@@ -112,4 +112,17 @@ nav{
 
 .side-nav a:hover{
     font-weight: bold;
+}
+
+#logout-button{
+    width: 100%;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 20px 0 20px;
+    line-height: 50px;
 }
