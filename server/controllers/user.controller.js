@@ -3,7 +3,6 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
-const Product = require('../models/product.model');
 
 function signIn(req,res){
     const params = req.body;
@@ -104,20 +103,6 @@ function login(req,res){
         res.status(400).send({ message: 'Ingrese su correo electrónico o nombre de usuario.' });
 }
 
-function addImage(req,res){
-    var userId = req.params.id;
-    var params = req.body;
-    if(req.user.sub != userId){
-        res.status(403).send({ message: 'No tiene permitido realizar esta acción.' });
-    }else{
-        if(params.urlImage){
-            
-        }else{
-            res.status(400).send({message: 'Debe ingresar la URL de la imagen que desea.'});
-        }
-    }
-}
-
 function calculateAge(birth,today){
     let diffMonths = today-birth.getTime();
     let ageDate = new Date(diffMonths);
@@ -127,5 +112,6 @@ function calculateAge(birth,today){
 
 module.exports={
     signIn,
-    login
+    login,
+    uploadImage
 }

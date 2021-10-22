@@ -6,44 +6,40 @@ const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
 
 function addProduct(req, res) {
-    var userId = req.params.idU;
+    var userId = req.user.sub;
     var product = new Product();
     var params = req.body;
-    if (req.user.sub != userId) {
-        res.status(403).send({ message: 'No tiene permitido realizar esta acción.' });
-    }else{
-        if (params.name && params.available && params.cathegory && params.department && params.municipality) {
-            product.name = params.name;
-            product.description = params.description && params.description != null ? params.description : "Sin descripción";
-            product.available = params.available;
-            product.publishDate = Date.now();
-            product.cathegory = params.cathegory;
-            product.department = params.department;
-            product.municipality = params.municipality;
-            product.urlImage = params.urlImage && params.urlImage != null ? params.urlImage : null;
-            product.ownerId = userId;
-    
-            product.save((err, saved) => {
-                if (err) {
-                    res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (saved) {
-                    User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
-                        if (err) {
-                            res.status(500).send({ error: 'Error interno del servidor', err });
-                            deleteProduct(saved._id);
-                        } else if (updated) {
-                            updateOwner(saved, updated, res);
-                        } else {
-                            cancelDonation(saved, res);
-                        }  
-                    })
-                } else {
-                    res.status(400).send({ message: 'No ha sido posible realizar la donación.' });
-                }
-            });
-        } else {
-            res.status(400).send({ message: 'Debe ingresar todos los datos requeridos.' })
-        }
+    if (params.name && params.cathegory && params.department && params.municipality && params.description) {
+        product.name = params.name;
+        product.description = params.description && params.description != null ? params.description : "Sin descripción";
+        product.available = true;
+        product.publishDate = Date.now();
+        product.cathegory = params.cathegory;
+        product.department = params.department;
+        product.municipality = params.municipality;
+        product.urlImage = params.urlImage && params.urlImage != null ? params.urlImage : null;
+        product.ownerId = userId;
+
+        product.save((err, saved) => {
+            if (err) {
+                res.status(500).send({ error: 'Error interno del servidor', err });
+            } else if (saved) {
+                User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
+                    if (err) {
+                        res.status(500).send({ error: 'Error interno del servidor', err });
+                        deleteProduct(saved._id);
+                    } else if (updated) {
+                        updateOwner(saved, updated, res);
+                    } else {
+                        cancelDonation(saved, res);
+                    }  
+                })
+            } else {
+                res.status(400).send({ message: 'No ha sido posible realizar la donación.' });
+            }
+        });
+    } else {
+        res.status(400).send({ message: 'Debe ingresar todos los datos requeridos.' })
     }
 }
 
