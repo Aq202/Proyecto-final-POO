@@ -10,7 +10,7 @@ export class User{
         this.imageUrl = imageUrl;
     }
 
-    static getUser({user, email, password}){
+    static login({user, email, password}){
 
         return new Promise((resolve, reject) =>{
 
@@ -86,4 +86,87 @@ export class User{
 
     }
 
+    static get userData(){
+
+        const dataJSON = localStorage.getItem("userData");
+        if(dataJSON === undefined) return;
+
+        return JSON.parse(dataJSON);
+    }
+
+    static get userInSession(){
+        return (User.userData !== undefined);
+    }
+
+
+    static get id(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("ID")) return userData.ID;
+    }
+
+    static get age(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("Age")) return userData.Age;
+    }
+
+    static get birth(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("Birth")) return userData.Birth;
+    }
+
+    static get dpi(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("DPI")) return userData.DPI;
+    }
+
+    static get email(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("Email")) return userData.Email;
+    }
+
+    static get username(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("Username")) return userData.Username;
+    }
+
+    static get lastName(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("Lastname")) return userData.Lastname;
+    }
+
+    static get firstName(){
+        
+        const userData = User.userData;
+
+        if(userData === undefined) return;
+        if(userData.hasOwnProperty("Name")) return userData.Lastname;
+    }
+
+    static get name(){
+        
+        const name = User.fistName + " " + User.lastName;
+        return name;
+    }
+    
 }

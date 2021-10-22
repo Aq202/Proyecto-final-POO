@@ -1,5 +1,5 @@
-import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { User } from "../scripts/User.js";
+import { DOMFunctions } from "../helpers/DOMFunctions.js";
 import { NotificationTray } from "./NotificationTray.js";
 
 export class NavBar {

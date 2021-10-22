@@ -1,4 +1,4 @@
-
+import { User } from "../scripts/User.js";
 import { HeaderNavBar } from "./HeaderNavBar.js";
 import { NavBar } from "./NavBar.js";
 import { PageRouter } from "./PageRouter.js";
