@@ -107,7 +107,7 @@ export class User{
 
     static get token(){
 
-        const token = localStorage.getItem("Token");
+        const token = localStorage.getItem("sessionToken");
         if(token === null) return undefined;
         return token;
     }
