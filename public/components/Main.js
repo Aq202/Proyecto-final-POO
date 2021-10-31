@@ -1,4 +1,4 @@
-import { User } from "../scripts/User.js";
+import { Session } from "../scripts/Session.js";
 
 import { Footer } from "./Footer.js";
 import { HeaderNavBar } from "./HeaderNavBar.js";

@@ -19,7 +19,7 @@ export class SideMenu{
         <ul>
 
             <li class="">
-                <h2 id="title" > 
+                <h2 class="title" > 
                     Menú
                 </h2>
             </li>

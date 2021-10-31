@@ -1,0 +1,165 @@
+#productPage{
+    width: 100%;
+    background-color: #FAFAFA;
+    padding: 5vw 0 5vw 0;
+    
+}
+
+#productPage-container{
+    max-width: 1200px;
+    width: 90vw;
+    height: fit-content;
+    background-color: white;
+    margin: auto;
+    box-shadow: 0px 0px 3px 1px rgb(0 0 0 / 5%);
+    position:relative;
+    padding: 50px 0 50px 0;
+}
+
+#main-product-container{
+    display: grid;
+    grid-template-columns: 60% 40%;
+    position:relative;
+}
+
+#productInfo > div{
+    width: 90%;
+}
+
+#productImage{
+    display: flex;
+    justify-content: center;
+}
+#productPage  .imageViewer{
+    width: 80%;
+    height:  400px;
+    position: sticky;
+    top: calc( (100vh - var(--navBar-height) - 400px)/2);
+    background-color: #f2f2f2;
+}
+
+
+#productInfo #productInfo-container{
+
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: auto;
+}
+
+#productInfo .tags > span{
+    color: rgb(10, 124, 230);
+    font-weight: bold;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+#productInfo .tags > span:not(.separator){
+    cursor:pointer;
+}
+
+#productInfo .tags > span:not(.separator):hover{
+    text-decoration: underline;
+}
+
+#productInfo #product-title{
+    font-size: 35px;
+    line-height: 115%;
+}
+
+#product-author img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+#product-author{
+    margin-left:  15px;
+    font-weight: bold;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    user-select: none;
+    -moz-user-select: none;
+}
+
+#product-author img{
+    cursor: pointer;
+}
+
+#product-author span{
+    cursor: pointer;
+}
+
+#product-author span:hover{
+    text-decoration: underline;
+}
+
+#product-author img:hover ~ span{
+    text-decoration: underline;
+}
+
+#product-description{
+    color: #9b9b9b;
+    text-align: justify;
+    margin: 0 15px 0 15px;
+
+}
+
+#product-buttons{
+    display: flex;
+    justify-content: center;
+}
+
+#product-buttons button.requestDonation{
+    border: none;
+    outline: none;
+    width: auto;
+    margin: auto;
+    background-color: rgb(7, 93, 223);
+    font-size: 18px;
+    padding: 12px 25px 12px 25px;
+    color: white;
+    border-radius: 5px;
+}
+
+#product-buttons button.requestDonation:hover{
+    background-color: rgb(42, 120, 236);
+}
+
+#product-buttons button.requestDonation:active{
+    background-color: rgb(6, 86, 206);
+}
+#product-buttons button.requestDonation:disabled{
+    background-color: rgb(108 162 243);
+    cursor: not-allowed;
+}
+
+@media only screen and (max-width:900px){
+
+    #main-product-container{
+        display: grid;
+        grid-template-columns: 1fr;
+        position:relative;
+        gap: 50px;
+    }
+
+    #productInfo{
+        grid-row: 1;
+    }
+
+    #productImage{
+        grid-row: 2;
+    }
+
+   
+
+    #productPage-container{
+        
+    }
+
+}

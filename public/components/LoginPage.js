@@ -1,9 +1,9 @@
-import { User } from "../scripts/User.js";
+import { Session } from "../scripts/Session.js";
 
 export class LoginPage{
     constructor(){
 
-        if(User.userInSession === true) location.hash = "/";
+        if(Session.userInSession === true) location.hash = "/";
 
         this.initComponent();
     }
@@ -59,7 +59,7 @@ export class LoginPage{
 
         if(userName.trim() !== "" && password.trim() != ""){
             try {
-                await User.login({
+                await Session.login({
                     user: userName,
                     email: userName,
                     password: password

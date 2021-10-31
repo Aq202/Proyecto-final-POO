@@ -1,4 +1,4 @@
-import { User } from "../scripts/User.js";
+import { Session } from "../scripts/Session.js";
 import { Banner } from "./Banner.js";
 import { DonationsContainer } from "./DonationsContainer.js";
 import { FilterSection } from "./FilterSection.js";
@@ -30,8 +30,8 @@ export class HomePage {
         let welcomeMessage = "Bienvenido";
         let secondMessage = "Estamos felices de tenerte con nosotros."
 
-        if(User.userInSession === true){
-            welcomeMessage = `Hola, ${User.name}`;
+        if(Session.userInSession === true){
+            welcomeMessage = `Hola, ${Session.name}`;
             secondMessage = "Estamos felices de tenerte de vuelta."
             
         }

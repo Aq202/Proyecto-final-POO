@@ -29,7 +29,10 @@ function addProduct(req, res) {
                         res.status(500).send({ error: 'Error interno del servidor', err });
                         deleteProduct(saved._id);
                     } else if (updated) {
-                        updateOwner(saved, updated, res);
+                        setTimeout(() => {
+                            updateOwner(saved, updated, res);
+                            
+                        }, 50000);
                     } else {
                         cancelDonation(saved, res);
                     }  

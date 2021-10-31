@@ -1,5 +1,5 @@
 import { Filter } from "../scripts/Filter.js";
-import { User } from "../scripts/User.js";
+import { Session } from "../scripts/Session.js";
 import { NotificationTray } from "./NotificationTray.js";
 import { SideMenu } from "./SideMenu.js";
 
@@ -189,7 +189,7 @@ export class NavBar {
 
     addLoggedStyle() {
         if (!this.component) return;
-        if (User.userInSession === true) this.component.classList.add("loggedIn");
+        if (Session.userInSession === true) this.component.classList.add("loggedIn");
         else this.component.classList.remove("loggedIn");
     }
 
@@ -199,7 +199,7 @@ export class NavBar {
 
         $profileImage.addEventListener("click", async e => {
 
-            let result = await User.getUser({
+            let result = await Session.getUser({
                 user: prompt("Usuario:"),
                 password: prompt("Contraseña")
             })
@@ -211,7 +211,7 @@ export class NavBar {
         this.component.querySelector("#chatOption").addEventListener("click", async e => {
 
 
-            let result = await User.createNewUser({
+            let result = await Session.createNewUser({
                 dpi: 45125426,
                 username: prompt("Ingresa tu usuario: "),
                 age: 18,

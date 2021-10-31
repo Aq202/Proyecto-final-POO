@@ -98,7 +98,7 @@ nav{
     transition: 0.3s;
 }
 
-#title {
+.side-nav .title {
     text-align: center;
     color: white;
 }
