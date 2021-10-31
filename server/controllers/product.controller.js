@@ -86,35 +86,46 @@ function filteredSearch(req,res){
     let params = req.body;
     let skipped = params.skip ? parseInt(params.skip) : 0;
     let quantity = params.quantity ? parseInt(params.quantity) : 10;
-    let instruction = "";
-    if(params.categorias){
-        console.log(params.categorias);
-        let categorias = params.categorias.replace(/[ ]+/g, '').split(",");
-        console.log(categorias[0], categorias[2]);
-    }
+    let instruction = '{';
     if(params.department){
-        if(params.municipality){
-            Product.find({$and: [{department:params.department}, { municipality: params.municipality }] }, (err, found)=>{
-                if (err) {
-                    res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (found && found.length>0) {
-                    res.send({ 'Productos disponibles': found });
-                }else{
-                    res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
-                }
-            }).limit(0,quantity);
-        }else{
-            Product.find(JSON.parse(instruction), (err, found)=>{
-                if (err) {
-                    res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (found && found.length>0) {
-                    res.send({ 'Productos disponibles': found });
-                }else{
-                    res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
-                }
-            }).skip(skipped).limit(quantity);
-        }
+        if(instruction[1]!=undefined)
+                instruction += ', ';
+        instruction += '"department": "'+params.department+'"';
     }
+    if(params.municipality){
+        if(instruction[1]!=undefined)
+            instruction += ', ';
+        instruction += '"municipality": "'+params.municipality+'"';
+    }
+    if(params.search){
+        if(instruction[1]!=undefined)
+            instruction += ', ';
+        instruction += '"$or": [{ "name": { "$regex":"'+params.search+'", "$options": "\'i\'"}}, { "description": { "$regex":"'+params.search+'", "$options": "\'i\'"} }]';
+    }
+    if(params.cathegory){
+        if(instruction[1]!=undefined)
+            instruction += ', ';
+        instruction += '"$or": [';
+        let cathegories = params.cathegory.replace(/[\[\]]+/g, '').split(',');
+        let contador = 0;
+        cathegories.forEach(category=>{
+            if(contador>0 && contador < cathegories.length)
+                instruction += ', ';
+            instruction += '{"cathegory": "'+category+'"}';
+            contador++;
+        });
+        instruction += ']';
+    }
+    instruction += '}';
+    Product.find(JSON.parse(instruction)/*{department:params.department, municipality:params.municipality}*/, (err, found)=>{
+        if (err) {
+            res.status(500).send({ error: 'Error interno del servidor', err });
+        } else if (found && found.length>0) {
+            res.send({ 'Productos disponibles': found });
+        }else{
+            res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
+        }
+    }).skip(skipped).limit(quantity);
 }
 
 module.exports={

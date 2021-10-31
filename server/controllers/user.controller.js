@@ -22,8 +22,8 @@ function signIn(req,res){
                 user.email = params.email;
                 user.name = params.name;
                 user.lastname = params.lastname;
-                user.age = calculateAge(birth, today);
-                user.direccion = params.direccion;
+                user.age = calculateAge(brth, today);
+                user.direccion = paramsi.direccion;
                 user.sex = params.sex;
                 user.birth = birth;
 
