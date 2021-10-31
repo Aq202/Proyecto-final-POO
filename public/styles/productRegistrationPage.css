@@ -1,0 +1,181 @@
+#productRegistrationPage{
+    width: 100%;
+    height: auto;
+    min-height: 60vh;
+    display: grid;
+    grid-template-columns: 450px 1fr;
+    grid-template-rows: 1;
+    position: relative;
+}
+
+
+
+#productRegistrationPage #previewSection{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    position: sticky;
+    top: calc(var(--navBar-height) + 50px);
+    height: calc(90vh - var(--navBar-height));
+    
+}
+
+
+
+#productRegistrationPage .imageViewer{
+    
+    margin-top: 75px;
+    width: 500px;
+    height:  400px;
+}
+
+
+
+/*Formulario*/
+
+#productRegistrationPage #formSection{
+    
+    padding: 50px 40px 50px 40px;
+    background-color: white;
+    box-shadow: 0px -5px 3px 1px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#formSection > img{
+    width: 90%;
+    margin-bottom: 25px;
+}
+
+#formSection h1{
+    width: 100%;
+    text-align: center;
+}
+
+#productRegistrationPage #formSection form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 25px;
+}
+
+#productRegistrationPage .inputContainer{
+    position:relative;
+    width: 100%;
+
+}
+
+
+#formSection input[type="text"], 
+#formSection textarea,
+#formSection select{
+
+    width: 100%;
+    padding: 15px 10px 13px 10px;
+    border: 1.5px #969696 solid;
+    color: var(--gray-text-color);
+    border-radius: 5px;
+    font-size: 17px;
+    position: relative;
+    outline: none;
+    background-color: white;
+    font-family: var(--text-font);
+}
+
+#formSection textarea{
+    min-height: 100px;
+}
+
+#formSection select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+
+#productRegistrationPage .inputContainer label{
+    position: absolute;
+    top: -13px;
+    left: 10px;
+    font-size: 17px;
+    background-color: white;
+    color:#2c2c2c;
+    font-weight: bold;
+    padding: 0 3px 0 3px;
+}
+
+#formSection .filePicker{
+    width: 100%;
+}
+
+#productRegistrationPage .imagePicker{
+    width: 100%;
+    min-height: 200px;
+}
+
+#formSection .errorMessage{
+    font-weight: bold;
+    color: red;
+    width: 100%;
+    text-align: center;
+    display: none;
+}
+
+#formSection #send-donation-button{
+    border: none;
+    outline: none;
+    width: auto;
+    margin: auto;
+    background-color: rgb(7, 93, 223);
+    font-size: 18px;
+    padding: 12px 25px 12px 25px;
+    color: white;
+    border-radius: 5px;
+}
+
+#formSection #send-donation-button:hover{
+    background-color: rgb(42, 120, 236);
+}
+
+#formSection #send-donation-button:active{
+    background-color: rgb(6, 86, 206);
+}
+#formSection #send-donation-button:disabled{
+    background-color: rgb(108 162 243);
+    cursor: not-allowed;
+}
+
+@media only screen and (max-width:1000px){
+    #productRegistrationPage{
+        grid-template-columns: 1fr auto;
+    }
+
+}
+
+@media only screen and (max-width:850px){
+    #productRegistrationPage{
+        grid-template-columns: 80% ;
+        margin: 0 10% 0 10%;
+    }
+    
+    #productRegistrationPage #formSection{
+        box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        margin-top: 50px;
+    }
+
+}
+
+@media only screen and (max-width:500px){
+    #productRegistrationPage{
+        grid-template-columns: 95% ;
+        margin: 0 2.5% 0 2.5%;
+    }
+
+}

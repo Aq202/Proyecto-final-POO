@@ -5,7 +5,10 @@ const Product = require('../models/product.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
 
+
 function addProduct(req, res) {
+
+
     var userId = req.user.sub;
     var product = new Product();
     var params = req.body;
@@ -26,7 +29,7 @@ function addProduct(req, res) {
             } else if (saved) {
                 User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
                     if (err) {
-                        res.status(500).send({ error: 'Error interno del servidor', err });
+                        res.status(500).send({ message: 'Error interno del servidor', err });
                         deleteProduct(saved._id);
                     } else if (updated) {
                         updateOwner(saved, updated, res);
@@ -48,7 +51,7 @@ function updateOwner(product, user, res){
         if(err){
             cancelDonation(product, res);
         }else if(updated){
-            res.send({ 'Producto agregado con éxito.': updated });
+            res.send({ message:'Producto agregado con éxito.', data: updated });
         }else{
             cancelDonation(product, res);
         }

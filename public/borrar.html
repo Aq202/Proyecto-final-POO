@@ -1,52 +1,39 @@
-<div class="filterItem">
+<div id="formSection">
 
-    <div class="filterRow filterHeader ">
-        <span>Categorias</span>
-        <div class="arrowIcon"></div>
-    </div>
+    <h1>Nueva Donación</h1>
 
-    <div class="filterBody scrollbar-gray">
-        <div class="filterRow">
-            <input type="checkbox">
-            <span>Ropa y accesorios</span>
+    <img src="../images/others/charity.svg" alt="Neva donación">
+    <form>
+        <div class="inputContainer">
+            <input type="text" id="product-name">
+            <label for="product-name">Título</label>
         </div>
-        <div class="filterRow">
-            <input type="checkbox">
-            <span>Teléfonos</span>
+        <div class="inputContainer">
+            <textarea id="product-description" class="scrollbar-gray"></textarea>
+            <label for="product-description">Descripción</label>
         </div>
-        <div class="filterRow">
-            <input type="checkbox">
-            <span>Electrodomésticos</span>
+        <div class="inputContainer">
+            <select id="product-category">
+                <option value="">Telefonos</option>
+            </select>
+            <label for="product-category">Categoría</label>
+        </div>
+        <div class="inputContainer">
+            <select id="product-department">
+                <option value="">Telefonos</option>
+            </select>
+            <label for="product-department">Departamento</label>
+        </div>
+        <div class="inputContainer">
+            <select id="product-municipality">
+                <option value="">Telefonos</option>
+            </select>
+            <label for="product-municipality">Municipío</label>
         </div>
 
-    </div>
+        <div class="filePicker"></div>
+
+        <input type="submit" id="send-donation-button" value="Realizar Donación">
+        
+    </form>
 </div>
-
-<div id="ubicationFilter" class="filterItem">
-
-    <div class="filterRow filterHeader ">
-        <span>Ubicación</span>
-        <div class="arrowIcon"></div>
-    </div>
-
-    <div class="filterBody scrollbar-gray">
-
-        <span>Departamento</span>
-        <select>
-            <option value="">Guatemala</option>
-            <option value="">San Marcos</option>
-            <option value="">Petén</option>
-        </select>
-        <span>Municipio</span>
-        <select>
-            <option value="">Guatemala</option>
-            <option value="">San Marcos</option>
-            <option value="">Petén</option>
-        </select>
-    </div>
-
-</div>
-
-
-
-<img src="../images/waves/wave3.svg" alt="Wave">

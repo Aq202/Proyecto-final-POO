@@ -1,0 +1,139 @@
+.imagePicker{
+    background-color: rgb(242,242,242);
+    border: 1px dashed rgb(105, 105, 105);
+    border-radius: 7px;
+}
+
+.imagePicker > div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    gap: 10px;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+
+.imagePicker .inputFileContainer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.imagePicker .uploadIcon{
+    width: 100px;
+    height: 100px; /*70% ancho*/
+    background-image: url(../images/icons/upload.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.imagePicker .inputFile{
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+
+}
+
+.imagePicker .fileInputInfo{
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    max-width: 80%;
+}
+.imagePicker .fileInputInfo span{
+    text-align: center;
+}
+.imagePicker .fileInputInfo span.boldSpan{
+    font-size: 20px;
+    font-weight: bold;
+}
+.imagePicker .fileInputInfo span:not(.boldSpan){
+    font-size: 17px;
+    color:var(--gray-text-color);
+}
+
+
+.inputFileContainer input[type="file"]{
+    cursor: pointer;
+}
+
+
+/*Estilo de galeria*/
+
+.galleryStyle{
+    padding: 10px;
+}
+
+.imagePicker.galleryStyle .card{
+
+    width: 85px;
+    height: 100px;
+    overflow: hidden;
+    background-color:  #D8DADF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+    cursor: pointer;
+}
+
+
+.card .cardImage{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.imagePicker.galleryStyle .inputFileContainer:hover{
+    background-color:  #cacacc;
+}
+
+.imagePicker.galleryStyle .inputFileContainer span{
+    display: none;
+}
+.imagePicker.galleryStyle .uploadIcon{
+    width: 50px;
+    height: 50px;
+    background-image: url(../images/icons/uploadWhite.svg);
+}
+
+.galleryStyle .deleteCard{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none; /*flex*/
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+}
+
+.galleryStyle .deleteCard div{
+    background-image: url(../images/icons/garbage.svg);
+    background-size: cover;
+    background-position: center;
+    width:50px;
+    height: 50px;
+}
+
+.imagePicker.galleryStyle .card:hover .deleteCard{
+    display: flex;
+    opacity: 1;
+}
