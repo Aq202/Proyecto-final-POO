@@ -1,13 +1,14 @@
 import { Session } from "../scripts/Session.js";
 
-export class LoginPage{
-    constructor(){
+export class LoginPage {
+    constructor({ back }) {
 
-        if(Session.userInSession === true) location.hash = "/";
+        if (Session.userInSession === true) location.hash = "/";
 
+        this.back = back || false;
         this.initComponent();
     }
-    initComponent(){
+    initComponent() {
         this.component = document.createElement("div");
         const $loginPage = this.component;
 
@@ -38,10 +39,10 @@ export class LoginPage{
         </div>
             `;
 
-            $loginPage.querySelector("#btn-login").addEventListener("click", e => {
-                e.preventDefault();
-                this.login();
-            })
+        $loginPage.querySelector("#btn-login").addEventListener("click", e => {
+            e.preventDefault();
+            this.login();
+        })
     }
 
     async login() {
@@ -51,49 +52,53 @@ export class LoginPage{
         const $inputUserName = this.component.querySelector("#username-input");
         const $inputPassword = this.component.querySelector("#password-input");
 
-        if(!$inputUserName || !$inputPassword) return;
+        if (!$inputUserName || !$inputPassword) return;
 
         const userName = $inputUserName.value;
         const password = $inputPassword.value;
 
 
-        if(userName.trim() !== "" && password.trim() != ""){
+        if (userName.trim() !== "" && password.trim() != "") {
             try {
                 await Session.login({
                     user: userName,
                     email: userName,
                     password: password
                 })
-    
-    
-                //exitoso, redirigir a la página home
-                location.hash = "/";
-           
+
+
+                if (this.back !== true) {
+                    //exitoso, redirigir a la página home
+                    location.hash = "/";
+                } else {
+                   window.history.back();
+                }
+
             } catch (err) {
                 this.showError("Usuario o constraseña incorrecta.");
             }
         }
-        else{
+        else {
             this.showError("Usuario o contraseña incorrecta.");
         }
 
-        
+
 
     }
 
     showError(error) {
 
         const $errorMessage = this.component.querySelector(".error");
-        if(!$errorMessage || error == undefined) return;
-        
+        if (!$errorMessage || error == undefined) return;
+
         $errorMessage.style.display = "block";
         $errorMessage.innerText = error;
     }
 
-    hideError(){
+    hideError() {
         const $errorMessage = this.component.querySelector(".error");
-        if(!$errorMessage) return;
-        
+        if (!$errorMessage) return;
+
         $errorMessage.style.display = "none";
     }
 

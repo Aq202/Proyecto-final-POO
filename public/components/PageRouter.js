@@ -36,14 +36,15 @@ export class PageRouter{
 
         this.removeCompleteWindow();
 
-        if(hash === "" || hash.includes("/home")){ //home
+        if(hash === "" || hash === "#/" || hash.includes("/home")){ //home
             this.component.appendChild(new HomePage().component)
         }
         else if (hash.includes("/registerProduct")){
             this.component.appendChild(new ProductRegistrationPage().component);
         }
         else if (hash.includes("/login")){
-            this.component.appendChild(new LoginPage().component)
+            let back = (this.getParameters(hash)?.back != undefined)? true: false;
+            this.component.appendChild(new LoginPage({back}).component)
             this.setCompleteWindow();
         }
         else if (hash.includes("/logout")){

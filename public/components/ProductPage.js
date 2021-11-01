@@ -1,5 +1,7 @@
 import { ImageViewer } from "./ImageViewer.js";
 import { Product } from "../scripts/Product.js";
+import { RequestDonationPopUp } from "./RequestDonationPopUp.js";
+import { UnauthorizedPopUp } from "./UnauthorizedPopUp.js";
 
 export class ProductPage {
 
@@ -50,7 +52,7 @@ export class ProductPage {
                 <p id="product-description">${this.description}</p>
     
                 <div id="product-buttons">
-                    <button class="requestDonation">Solicitar</button>
+                    <button class="action-button red-button">Solicitar</button>
                 </div>
             </div>
             </div>
@@ -65,6 +67,29 @@ export class ProductPage {
             imageViewer.addImage(imageUrl);
         }
 
-        $productPage.querySelector("#productImage").appendChild(imageViewer.component)
+        $productPage.querySelector("#productImage").appendChild(imageViewer.component);
+
+        //agregar eventos
+        $productPage.querySelector("button.action-button").addEventListener("click", e => this.selectAction());
+
+    }
+
+    selectAction(){
+
+        this.openPopUp()    
+
+
+    }
+
+    async openPopUp(){
+
+        //const popUp = new RequestDonationPopUp({closeWithBackgroundClick:true, productId:this.productId});
+        //await popUp.open()
+
+        //alert("Modificando boton")
+
+        const popUp = new UnauthorizedPopUp();
+        popUp.open();
+        console.log("hola")
     }
 }
