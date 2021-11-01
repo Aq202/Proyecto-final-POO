@@ -28,16 +28,16 @@ export class UnauthorizedPopUp extends PopUP {
         $popUpBody.appendChild($popUpBodyContainer);
 
         //eventos
-        $popUpBody.querySelector(".register").addEventListener("click", async e => {
+        $popUpBody.querySelector(".register").addEventListener("click", e => {
 
-            await this.close();
+            this.fastClose();
             if(this.reject != undefined) this.reject();
             window.location.hash = "/"
         })
 
-        $popUpBody.querySelector(".login").addEventListener("click", async e => {
+        $popUpBody.querySelector(".login").addEventListener("click", e => {
 
-            await this.close();
+            this.fastClose();
             if(this.reject != undefined) this.reject();
             window.location.hash = "/#/login?back=true"
         })

@@ -36,6 +36,7 @@ export class PopUP {
             });
         }
 
+        //evento de cerrar al dar click al fondo
         if (this.closeWithBackgroundClick !== true) {
 
             $popUp.addEventListener("click", e => {
@@ -47,6 +48,17 @@ export class PopUP {
                 }
             })
         }
+
+        const hashChange = () => {
+            window.removeEventListener("hashchange", hashChange);
+
+            if(this.opened === true){
+                this.fastClose();
+                if(this.reject !== undefined) this.reject();
+            }
+        }
+
+        window.addEventListener("hashchange", hashChange);
 
     }
 
@@ -63,6 +75,12 @@ export class PopUP {
 
             })
         }
+    }
+
+    fastClose(){
+        if (!this.component) return;
+        this.opened = false;
+        this.component.remove();
     }
 
     close() {

@@ -1,6 +1,6 @@
-export class Session{
+export class Session {
 
-    constructor({userId, email, name, lastName, birthday, sex, imageUrl}){
+    constructor({ userId, email, name, lastName, birthday, sex, imageUrl }) {
         this.userId = userId;
         this.email = email;
         this.name = name;
@@ -10,147 +10,201 @@ export class Session{
         this.imageUrl = imageUrl;
     }
 
-    static login({user, email, password}){
+    static async login({ user, email, password }) {
 
+        const token = localStorage.getItem("sessionToken") || false;
+        const userData = localStorage.getItem("userData") || false;
 
-        return new Promise((resolve, reject) =>{
+        if (token === false && userData === false) {
+
+            const result = await this.authenticateUser({ user, email, password });
+
+        }else if(token !== false && userData === false){
+            this.validateSessionToken(token);
+
+        }
+
+        this.sendSessionEvent();
+
+    }
+
+    static authenticateUser({ user, email, password }) {
+
+        return new Promise((resolve, reject) => {
 
             let data = {
-                username:user,
-                email:email,
+                username: user,
+                email: email,
                 password
             }
 
 
-            fetch("/user/login",{
-                method:"POST",
-                body:JSON.stringify(data),
-                headers:{
-                    "Content-Type":"application/json"
+            fetch("/user/login", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            }).then(r =>{ 
-                if(r.ok === false) throw "";
+            }).then(r => {
+                if (r.ok === false) throw "";
                 return r.json();
             })
-            .then(result =>{
+                .then(result => {
 
-                try{
-                    //almacenar datos
-                    if(result.hasOwnProperty("Token")){
-                        localStorage.setItem("sessionToken", result.Token)
-                        delete result.Token;
-                    }else{
-                        reject("No token");
+                    try {
+                        //almacenar datos
+                        if (result.hasOwnProperty("Token")) {
+                            localStorage.setItem("sessionToken", result.Token)
+                            delete result.Token;
+                        } else {
+                            reject("No token");
+                        }
+
+                        localStorage.setItem("userData", JSON.stringify(result));
+
+                        resolve();
+
+                    } catch (ex) {
+                        reject(ex);
                     }
 
-                    localStorage.setItem("userData", JSON.stringify(result));
-        
-                    resolve();
-            
-                }catch(ex){
-                    reject(ex);
+                }).catch(err => {
+                    reject(err)
+                })
+        });
+
+    }
+
+    static validateSessionToken() {
+
+        return new Promise((resolve, reject) => {
+
+            let data = {
+                username: user,
+                email: email,
+                password
+            }
+
+
+            fetch("/user/validateToken", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json"
                 }
+            }).then(r => {
+                if (r.ok === false) throw "";
+                return r.json();
+            })
+                .then(result => {
 
-                
+                   resolve()
 
-            }).catch(err =>{                 
-                reject(err)})
+                }).catch(err => {
+                    reject(err)
+                })
         });
     }
 
-    static logout(){
+    static logout() {
         localStorage.removeItem("userData");
         localStorage.removeItem("sessionToken");
+        this.sendSessionEvent();
     }
-    
-    static get userData(){
+
+    static sendSessionEvent(){
+        const sessionEvent = new CustomEvent("sessionStateChanged");
+        document.dispatchEvent(sessionEvent);
+    }
+
+    static get userData() {
 
         const dataJSON = localStorage.getItem("userData");
-        if(dataJSON === undefined || dataJSON === null) return undefined;
+        if (dataJSON === undefined || dataJSON === null) return undefined;
 
         return JSON.parse(dataJSON);
     }
 
-    static get token(){
+    static get token() {
 
         const token = localStorage.getItem("sessionToken");
-        if(token === null) return undefined;
+        if (token === null) return undefined;
         return token;
     }
 
-    static get userInSession(){
+    static get userInSession() {
         return (Session.userData !== undefined && Session.userData !== null);
     }
 
 
-    static get id(){
-        
+    static get id() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("ID")) return userData.ID;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("ID")) return userData.ID;
     }
 
-    static get age(){
-        
+    static get age() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("Age")) return userData.Age;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("Age")) return userData.Age;
     }
 
-    static get birth(){
-        
+    static get birth() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("Birth")) return userData.Birth;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("Birth")) return userData.Birth;
     }
 
-    static get dpi(){
-        
+    static get dpi() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("DPI")) return userData.DPI;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("DPI")) return userData.DPI;
     }
 
-    static get email(){
-        
+    static get email() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("Email")) return userData.Email;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("Email")) return userData.Email;
     }
 
-    static get username(){
-        
+    static get username() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("Username")) return userData.Username;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("Username")) return userData.Username;
     }
 
-    static get lastName(){
-        
+    static get lastName() {
+
         const userData = Session.userData;
 
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("Lastname")) return userData.Lastname;
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("Lastname")) return userData.Lastname;
     }
 
-    static get firstName(){
-        
+    static get firstName() {
+
         const userData = Session.userData;
-        
-        if(userData === undefined) return;
-        if(userData.hasOwnProperty("Name")) return userData.Name;
+
+        if (userData === undefined) return;
+        if (userData.hasOwnProperty("Name")) return userData.Name;
     }
 
-    static get name(){
-        
+    static get name() {
+
         const name = Session.firstName + " " + Session.lastName;
         return name;
     }
-    
+
 }

@@ -15,10 +15,9 @@ export class Main{
 
         if(!$root)return;
         
-        const userData = this.login();
 
         const header = new HeaderNavBar();
-        const navBar = new NavBar(userData);
+        const navBar = new NavBar();
         const pageRouter = new PageRouter();
         const footer = new Footer();
         
@@ -34,14 +33,7 @@ export class Main{
         
     }
 
-    login(){
 
-        return{
-            id: "sdfsadffas",
-            name: "Diego Morales",
-            profileImage: "images/profileImages/1.jpg"
-        }
-    }
 
 
 
