@@ -63,7 +63,11 @@ export class Product {
     static newRequestOfDonation({user, productId}){
 
         return new Promise((resolve, reject) => {
-            resolve();
+
+            setTimeout(() => {
+                
+                resolve();
+            }, 5000);
         })
     }
 

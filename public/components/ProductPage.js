@@ -2,6 +2,8 @@ import { ImageViewer } from "./ImageViewer.js";
 import { Product } from "../scripts/Product.js";
 import { RequestDonationPopUp } from "./RequestDonationPopUp.js";
 import { UnauthorizedPopUp } from "./UnauthorizedPopUp.js";
+import { DonationRequestsContainer } from "./DonationRequestsContainer.js";
+import { Session } from "../scripts/Session.js";
 
 export class ProductPage {
 
@@ -33,42 +35,49 @@ export class ProductPage {
         $productPage.id = "productPage";
 
         $productPage.innerHTML = `
-        <div id="productPage-container">
-    
-        <div id="main-product-container">
-    
-            <div id="productImage"></div>
-            <div id="productInfo">
-            <div id="productInfo-container">
-    
-                <div class="tags">
-                    <span id="cathegory">${this.cathegory}</span>
-                    <span class="separator">|</span>
-                    <span id="place">${this.municipality}</span>
-                </div>
-    
-                <h1 id="product-title">${this.title}</h1>
-    
-                <div id="product-author">
-                    <img src="${this.profileImage}" alt="profile">
-                    <span>${this.authorName}</span>
-                </div>
-    
-                <p id="product-description">${this.description}</p>
-    
-                <div id="product-buttons">
-                    <button id="action-button"></button>
-                    <button id="action-button2"></button>
-                </div>
+            <div id="productPage-container">
+        
+                <div id="main-product-container">
+            
+                    <div id="productImage"></div>
+                    <div id="productInfo">
+                    <div id="productInfo-container" class="productInfo-section">
+            
+                        <div class="tags">
+                            <span id="cathegory">${this.cathegory}</span>
+                            <span class="separator">|</span>
+                            <span id="place">${this.municipality}</span>
+                        </div>
+            
+                        <h1 id="product-title">${this.title}</h1>
+            
+                        <div id="product-author">
+                            <img src="${this.profileImage}" alt="profile">
+                            <span>${this.authorName}</span>
+                        </div>
+            
+                        <p id="product-description">${this.description}</p>
+            
+                        <div id="product-buttons">
+                            <button id="deleteProduct-button" class="red-button product-button">Eliminar</button>
+                            <button id="makeRequest-button" class="blue-button product-button">Solicitar</button>
+                            <button id="deleteRequest-button" class="red-button product-button">Eliminar Solicitud</button>
+                            <button id="confirmOfReceived-button" class="green-button product-button">Confirmar</button>
+                            <button id="rejectDonation-button" class="red-button product-button">Rechazar</button>
+                        </div>
 
-                <div class="statusInfo">
-                    <div class="icon"></div>
-                    <div class="textInfo">El autor se encuentra analizando tu solicitud.</div>
+                        <div class="spinner-grow text-primary spinner" role="status"></div>                    
+
+                        <p class = "errorMessage">Ocurrió un error.</p>
+
+                        <div class="statusInfo">
+                            <div class="icon"></div>
+                            <div class="textInfo">El autor se encuentra analizando tu solicitud.</div>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
-            </div>
-        </div>
-    </div>
         
         `;
 
@@ -80,132 +89,172 @@ export class ProductPage {
 
         $productPage.querySelector("#productImage").appendChild(imageViewer.component);
 
-        this.selectButtonStyle();
+        this.selectActionElements();
+
+
+        //añadir seccion de solicitudes (si es el autor)
+        if (this.isOwner === true) {
+
+            const donationRequests = new DonationRequestsContainer({
+                requests: [
+                    {
+                        requestId: "a",
+                        userId: "b",
+                        userName: "Diego Morales",
+                        userAlias: "dgo202",
+                        profileImage: "images/profileImages/1.jpg",
+                        userEmail: "diegoguatedb2002@gmail.com",
+                        userDPI: "3943011290101",
+                        userGender: "Masculino",
+                        userAge: 18,
+                        requestMessage: "La verdad no lo quiero, lo necesito xd",
+                        documents: [
+                            "http://cdn.shopify.com/s/files/1/0101/2522/files/dslr-manual-focus_grande.jpg?3541"
+                        ],
+                        date: new Date(),
+                        selected: false
+                    }
+                ]
+            });
+            this.component.querySelector("#productInfo").appendChild(donationRequests.component);
+
+
+        }
 
         //agregar eventos
-        $productPage.querySelector("button#action-button").addEventListener("click", e => this.selectAction());
-        $productPage.querySelector("button#action-button2").addEventListener("click", e => this.selectAction2());
+        $productPage.querySelector("button#deleteProduct-button").addEventListener("click", e => this.deleteProduct());
+        $productPage.querySelector("button#makeRequest-button").addEventListener("click", e => this.makeNewRequest());
+        $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
+        $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
+        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.confirmOfReceived());
+
+        document.addEventListener("requestAccepted", e => this.updateProductState());
+
 
     }
 
-    selectButtonStyle() {
+    selectActionElements() {
 
-        const $button = this.component.querySelector("button#action-button");
-        const $button2 = this.component.querySelector("button#action-button2");
+        try {
+            this.hideButtons();
 
-        if (!$button || !$button2) return;
+            //si es el autor
+            if (this.isOwner === true) {
 
-        this.resetButtonStyle($button, $button2)
+                if (this.donationRequestAccepted !== true && this.donationReceived !== true) { // estado inicial
+                    
+                    $(this.component.querySelector("#deleteProduct-button")).show();
 
-        //si es el autor
-        if (this.isOwner === true) {
+                } else if (this.donationRequestAccepted === true && this.donationReceivedConfirmed !== true) { //en espera de confirmacion del beneficiario
 
-            if (this.donationRequestAccepted !== true && this.donationReceived !== true) { // estado inicial
-                $button.style.display = "block";
-                $button.classList.add("red-button");
-                $button.innerText = "Eliminar";
+                    this.addMessage({ message: "En espera de la confirmación de recibido del usuario." })
 
-            } else if (this.donationRequestAccepted === true && this.donationReceivedConfirmed !== true) { //en espera de confirmacion del beneficiario
+                } else if (this.donationReceivedConfirmed) { //confirmacion recibida
 
-                this.addMessage({ message: "En espera de la confirmación de recibido del usuario." })
+                    this.addMessage({ message: "¡Donación completada!", green: true })
 
-            } else if (this.donationReceivedConfirmed) { //confirmacion recibida
-
-                this.addMessage({ message: "¡Donación completada!", green: true })
+                }
 
             }
+            //no es el autor
+            else {
 
-        }
-        //no es el autor
-        else {
+                if (this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //estado inicial
 
-            if (this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //estado inicial
+                    $(this.component.querySelector("#makeRequest-button")).show();
 
-                $button.style.display = "block";
-                $button.classList.add("blue-button");
-                $button.innerText = "Solicitar";
+                } else if (this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //solicitud realizada
 
-            } else if (this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //solicitud realizada
+                    $(this.component.querySelector("#deleteRequest-button")).show();
 
-                $button.style.display = "block";
-                $button.classList.add("red-button");
-                $button.innerText = "Eliminar solicitud";
-                this.addMessage({ message: "El propietario se encuentra analizando tu solicitud." })
+                } else if (this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true) { //elegido como beneficiario
 
-            } else if (this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true) { //elegido como beneficiario
+                    $(this.component.querySelector("#confirmOfReceived-button")).show();
+                    $(this.component.querySelector("#rejectDonation-button")).show();
 
-                $button.style.display = "block";
-                $button.classList.add("green-button");
-                $button.innerText = "Confirmar";
+                    this.addMessage({ message: "Confirma la donación hasta que recibas físicamente el producto.", red: true });
 
-                $button2.classList.add("red-button");
-                $button2.innerText = "Rechazar";
-                $button2.style.display = "block";
-                this.addMessage({ message: "Confirma la donación hasta que recibas físicamente el producto.", red: true });
+                } else if (this.selectedAsBeneficiary === true && this.donationReceivedConfirmed) { //donacion confirmada
 
-            } else if (this.selectedAsBeneficiary === true && this.donationReceivedConfirmed) { //donacion confirmada
+                    this.addMessage({ message: "¡Donación recibida correctamente!", green: true })
 
-                this.addMessage({ message: "¡Donación recibida correctamente!", green: true })
+                } else if (this.selectedAsBeneficiary !== true && this.donationRequestAccepted === true) { //donacion no disponible
 
-            } else if (this.selectedAsBeneficiary !== true && this.donationRequestAccepted === true) { //donacion no disponible
+                    this.addMessage({ message: "Esta donación ya no se encuentra disponible.", red: true })
+                }
 
-                this.addMessage({ message: "Esta donación ya no se encuentra disponible.", red: true })
             }
+        } catch (ex) {
 
         }
     }
 
-    resetButtonStyle(button1, button2) {
+    hideButtons() {
 
-        if (!button1 || !button2) return;
+        const $buttons = this.component.querySelectorAll(".product-button");
+        if (!$buttons) return;
 
-        button1.removeAttribute("class");
-        button2.removeAttribute("class");
-        button1.style.display = "none";
-        button2.style.display = "none";
+        $buttons.forEach(elem => {
+            elem.style.display = "none";
+        })
 
     }
 
-    selectAction() {
+    verifySession(){
 
-        if (this.isOwner === true) {
-
-            if (this.donationRequestAccepted !== true && this.donationReceived !== true) { // estado inicial
-                
-                alert("ELIMINAR DONACION")
-
-            } 
-        }
-        //no es el autor
-        else {
-
-            if (this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //estado inicial
-
-                this.openPopUp();
-
-            }else if (this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //eliminar solicitud
-
-                alert("eliminar solicitud")
-
-            }else if (this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true) { // accion de confirmar
-
-                alert("confirmando...")
-
-            } 
+        if(Session.userInSession !== true){
+            new UnauthorizedPopUp().open();
+            return false;
+        }else{
+            return true;
         }
 
     }
 
-    selectAction2(){
+    deleteProduct(){
+        if(!this.verifySession()) return;
+        if(this.isOwner !== true) return;
+        if (!(this.donationRequestAccepted !== true && this.donationReceived !== true)) return;
 
-        if (this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true) { // accion de rechazar donacion
-
-            alert("Rechazando donación...")
-
-        } 
+        alert("Eliminar donacion")
 
     }
 
+    async makeNewRequest(){
+        if(!this.verifySession()) return;
+        if(this.isOwner === true) return;
+        if (!(this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true)) return;
+
+        const popUp = new RequestDonationPopUp(this.productId);
+        await popUp.open();
+        
+    }
+    
+    deleteRequest(){
+        if(!this.verifySession()) return;
+        if(this.isOwner === true) return;
+        if (!(this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true)) return;
+
+        alert("Eliminado");
+        
+    }
+    confirmOfReceived(){
+        if(!this.verifySession()) return;
+        if(this.isOwner === true) return;
+        if (!(this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true)) return;
+
+        alert("Confirmando de recibido");
+        
+    }
+    rejectDonation(){
+        if(!this.verifySession()) return;
+        if(this.isOwner === true) return;
+        if (!(this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true)) return;
+
+        alert("Rechazando donacion");
+        
+    }
+    
     async openPopUp() {
 
         //const popUp = new RequestDonationPopUp({closeWithBackgroundClick:true, productId:this.productId});
@@ -233,4 +282,45 @@ export class ProductPage {
         else if (green === true) $statusInfo.classList.add("green-icon");
         else $statusInfo.classList.remove("red-icon");
     }
+
+    updateProductState() {
+        this.donationRequestAccepted = true;
+        this.selectButtonStyle();
+    }
+
+
+
+    showSpinner() {
+
+        const $spinner = this.component.querySelectorAll(".spinner");
+        if (!$spinner) return;
+
+        $($spinner).fadeIn(300);
+
+    }
+
+    hideSpinner() {
+        const $spinner = this.component.querySelectorAll(".spinner");
+        if (!$spinner) return;
+
+        $($spinner).hide();
+    }
+
+    showError(error) {
+
+        const $error = this.component.querySelector(".errorMessage");
+        if (!$error) return;
+
+        $error.style.display = "block";
+        $error.innerText = error || "";
+
+    }
+    hideError() {
+        const $error = this.component.querySelector(".errorMessage");
+        if (!$error) return;
+
+        $error.style.display = "none";
+    }
+
+
 }

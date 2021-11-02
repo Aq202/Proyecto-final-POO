@@ -1,0 +1,142 @@
+.popUp.manageRequest .popUp-body-container{
+
+    width: 100%;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: repeat(2, calc(50% - 12.5px)) ;
+    gap: 25px;
+
+}
+
+.popUp.manageRequest .applicant-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
+    background-color: #282c34;
+    border-radius: 5px;
+    padding: 25px 20px 25px 20px;
+    color: white;
+}
+
+.popUp.manageRequest .applicant-info .profilePicture{
+    width: 50%;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.2);
+}
+
+.popUp.manageRequest .applicant-info .userName h3{
+    font-weight: bold;
+    font-family: 'Yanone Kaffeesatz';
+    font-size: 40px;
+    text-align: center;
+}
+
+.popUp.manageRequest .applicant-info .userName h4{
+    font-weight: 300;
+    font-size: 18px;
+    text-align: center;
+}
+
+.popUp.manageRequest .applicant-info ul.generalData{
+    width: 70%;
+}
+
+.popUp.manageRequest .applicant-info ul.generalData li{
+    margin-bottom: 7px;
+}
+.popUp.manageRequest .applicant-info ul.generalData p{
+    text-align: center;
+    margin-top: 5px;
+}
+
+
+.popUp.manageRequest .request-data{
+    padding: 25px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+    
+}
+
+.popUp.manageRequest .request-data h3{
+    font-weight: bold;
+    font-family: 'Yanone Kaffeesatz';
+    font-size: 55px;
+    text-align: center
+}
+
+.popUp.manageRequest .request-data p.requestMessage {
+    text-align: justify;
+    max-height: 250px;
+    line-height: 150%;
+    padding: 0 10px 0 10px;
+    word-break: break-word;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: auto;
+}
+
+.popUp.manageRequest .request-data .manage-buttons{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.popUp.manageRequest .popUp-body-container .request-data .giveEmailCheck{
+    display: flex;
+    gap: 5px;
+}
+
+.popUp.manageRequest .popUp-body-container .request-data .giveEmailCheck label{
+    font-size: 13px;
+    text-align: justify;
+}
+
+.popUp.manageRequest .popUp-body-container .warning{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 15px 0 15px;
+}
+
+.popUp.manageRequest .popUp-body-container .warning .icon{
+    width: 16px;
+    height: 16px;
+    min-height: 16px;
+    min-width: 16px;
+    background-image: url(../images/icons/red-info.png);
+    background-size: cover;
+    background-position: center;
+}
+
+.popUp.manageRequest .popUp-body-container .warning .textInfo{
+    font-size: 12px;
+    color: gray;
+    text-align: justify;
+}
+
+.popUp.manageRequest .spinner{
+    margin: 0px auto 50px auto;
+}
+
+@media only screen and (max-width:700px){
+    .popUp.manageRequest .popUp-body-container{
+        grid-template-columns: 1fr;
+        width: 80%;
+        margin: auto;
+
+    }
+}
+
+@media only screen and (max-width:530px){
+    .popUp.manageRequest .popUp-body-container{
+        grid-template-columns: 1fr;
+        width: 95%;
+        margin: auto;
+
+    }
+}

@@ -1,4 +1,4 @@
-.popUp.unauthorized .popUp-body div.popUp-body-container{
+.popUp.alert .popUp-body > div{
 
     display: flex;
     flex-direction: column;
@@ -7,20 +7,27 @@
     align-items: center;
 }
 
-.popUp.unauthorized img{
-    width: 80px;
-    height: 80px;
+.popUp.alert img{
+    width: 40%;
+    height: auto;
 }
 
-.popUp.unauthorized h3{
-    font-size: 50px;
+.popUp.alert h3{
+    font-size: 40px;
     text-align: center;
     width: 100%;
     font-family: 'Yanone Kaffeesatz';
     font-weight: 300;
 }
 
-.popUp.unauthorized .buttons{
+.popUp.alert p{
+    line-height: 120%;
+    width: 80%;
+    margin: 0 auto 0 auto;
+    text-align: center;
+}
+
+.popUp.alert .buttons{
     display: flex;
     gap: 10px;
     flex-wrap: wrap;

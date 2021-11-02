@@ -2,8 +2,14 @@ import { PopUP } from "./PopUp.js";
 
 export class UnauthorizedPopUp extends PopUP {
 
-    constructor() {
-        super({ closeButton: true, closeWithBackgroundClick: true, maxWidth: 550 });
+    constructor(restringed) {
+        super({ closeButton: true, closeWithBackgroundClick: true, maxWidth: 600 });
+
+        if(restringed === true){
+            this.closeButton = false;
+            this.closeWithBackgroundClick = false;
+        }
+
 
         this.initComponent();
     }
@@ -15,6 +21,9 @@ export class UnauthorizedPopUp extends PopUP {
 
         const $popUpBody = this.component.querySelector(".popUp-body");
         const $popUpBodyContainer = document.createElement("div");
+
+        $popUpBodyContainer.classList.add("popUp-body-container")
+        
 
         $popUpBodyContainer.innerHTML = `
         

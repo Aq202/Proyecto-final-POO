@@ -18,7 +18,7 @@ export class PopUP {
         $popUp.classList.add("popUp");
 
         $popUp.innerHTML = `
-            <div class="popUp-body scrollbar-skyBlue">
+            <div class="popUp-body scrollbar-gray">
                 <div class="x-button"></div>
             </div>
         `;
@@ -28,7 +28,7 @@ export class PopUP {
         //añadir boton de cerrar
         if (this.closeButton === true) {
             const $closeButton = $popUp.querySelector(".x-button");
-            $closeButton.style = "block";
+            $closeButton.style.display = "block";
             $closeButton.addEventListener("click", e => {
 
                 this.close();
@@ -37,7 +37,7 @@ export class PopUP {
         }
 
         //evento de cerrar al dar click al fondo
-        if (this.closeWithBackgroundClick !== true) {
+        if (this.closeWithBackgroundClick === true) {
 
             $popUp.addEventListener("click", e => {
 
@@ -98,6 +98,39 @@ export class PopUP {
         });
 
 
+    }
+
+    showError(error) {
+
+        const $error = this.component.querySelector(".errorMessage");
+        if (!$error) return;
+
+        $error.style.display = "block";
+        $error.innerText = error || "";
+
+    }
+
+    hideError() {
+        const $error = this.component.querySelector(".errorMessage");
+        if (!$error) return;
+
+        $error.style.display = "none";
+    }
+
+    showSpinner() {
+
+        const $spinner = this.component.querySelectorAll(".spinner");
+        if (!$spinner) return;
+
+        $($spinner).fadeIn(300);
+
+    }
+
+    hideSpinner() {
+        const $spinner = this.component.querySelectorAll(".spinner");
+        if (!$spinner) return;
+
+        $($spinner).hide();
     }
 
 }

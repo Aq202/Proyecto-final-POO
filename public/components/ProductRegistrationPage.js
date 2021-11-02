@@ -1,11 +1,15 @@
 import { Filter } from "../scripts/Filter.js";
 import { Product } from "../scripts/Product.js";
+import { Session } from "../scripts/Session.js";
 import { ImagePicker } from "./ImagePicker.js";
 import { ImageViewer } from "./ImageViewer.js";
+import { UnauthorizedPopUp } from "./UnauthorizedPopUp.js";
 
 export class ProductRegistrationPage {
 
     constructor() {
+
+
 
         this.initComponent();
 
@@ -16,6 +20,10 @@ export class ProductRegistrationPage {
         this.municipality = "";
         this.imageFiles = [];
         this.buttonLocked = false;
+
+        if (Session.userInSession !== true) {
+            new UnauthorizedPopUp(true).open();
+        }
 
     }
 
@@ -340,7 +348,7 @@ export class ProductRegistrationPage {
 
                 this.hideSpinner();
                 alert("Registro exitoso");
-                
+
 
             } catch (ex) {
                 this.hideSpinner();
@@ -380,7 +388,7 @@ export class ProductRegistrationPage {
 
     }
 
-    enableSendButton(){
+    enableSendButton() {
         const $sendButton = this.component.querySelector("#send-donation-button");
         if (!$sendButton) return;
 
@@ -388,7 +396,7 @@ export class ProductRegistrationPage {
         $($sendButton).fadeIn(200);
     }
 
-    disableSendButton(){
+    disableSendButton() {
         const $sendButton = this.component.querySelector("#send-donation-button");
         if (!$sendButton) return;
 

@@ -2,19 +2,19 @@ import { Product } from "../scripts/Product.js";
 import { Session } from "../scripts/Session.js";
 import { PopUP } from "./PopUp.js";
 
-export class RequestDonationPopUp extends PopUP{
+export class RequestDonationPopUp extends PopUP {
 
-    constructor({ productId, closeButton, closeWithBackgroundClick, maxWidth}){
-        super({closeButton, closeWithBackgroundClick, maxWidth});
+    constructor(productId) {
+        super({ closeButton: true, closeWithBackgroundClick: true, maxWidth: 700 });
 
         this.productId = productId;
-
+        this.actionBlocked = false;
         this.initComponent();
 
-       
+
     }
 
-    initComponent(){
+    initComponent() {
 
         super.initComponent();
 
@@ -22,6 +22,7 @@ export class RequestDonationPopUp extends PopUP{
 
         const $popUpBody = this.component.querySelector(".popUp-body");
         const $popUpBodyContainer = document.createElement("div");
+
 
         $popUpBodyContainer.innerHTML += `
             <img src="../images/icons/charity.png" alt="donation">
@@ -33,6 +34,8 @@ export class RequestDonationPopUp extends PopUP{
             <label for="confirmation-check">Estoy de acuerdo con compartir mis datos personales con el donador.</label>
             </div>
             <button id="sendRequest-button" class="blue-button" disabled>Enviar</button>
+            <div class="spinner-grow text-primary spinner" role="status"></div>                    
+            <p class = "errorMessage">Ocurrió un error </p>
         `;
 
         $popUpBody.appendChild($popUpBodyContainer);
@@ -43,49 +46,82 @@ export class RequestDonationPopUp extends PopUP{
         $popUpBody.querySelector("#sendRequest-button").addEventListener("click", e => this.sendRequest())
     }
 
-    changeButtonStatus(){
+    changeButtonStatus() {
 
         const $requestMessage = this.component.querySelector("#requestMessage");
         const $confirmationCheck = this.component.querySelector("#confirmation-check");
         const $button = this.component.querySelector("#sendRequest-button")
 
-        if(!$button) return;
-        
-        if(!$requestMessage || !$confirmationCheck){
+        if (!$button) return;
+
+        if (!$requestMessage || !$confirmationCheck) {
             $button.disabled = true;
-        }else if($requestMessage.value.trim() === "" || $confirmationCheck.checked === false){
+        } else if ($requestMessage.value.trim() === "" || $confirmationCheck.checked === false) {
             $button.disabled = true;
-        }else{
+        } else {
             $button.disabled = false;
         }
 
     }
 
-    async sendRequest(){
+    async sendRequest() {
 
+        if (this.actionBlocked === true) return;
 
-            const $requestMessage = this.component.querySelector("#requestMessage");
-            const $confirmationCheck = this.component.querySelector("#confirmation-check");
+        const $requestMessage = this.component.querySelector("#requestMessage");
+        const $confirmationCheck = this.component.querySelector("#confirmation-check");
 
-            if(!$requestMessage || !$confirmationCheck) return;
+        if (!$requestMessage || !$confirmationCheck) return;
 
-            if(Session.userInSession === true){
-            if($requestMessage.value.trim() !== "" && $confirmationCheck.checked === true){
+        if (Session.userInSession === true) {
+            if ($requestMessage.value.trim() !== "" && $confirmationCheck.checked === true) {
 
-                await Product.newRequestOfDonation({
-                    user:Session.id,
-                    productId:this.productId
-                })
+                this.actionBlocked = true;
+                this.showSpinner();
+                this.hideButton();
 
-                alert("Solicitud enviada exitosamente.");
+                try {
+                    await Product.newRequestOfDonation({
+                        user: Session.id,
+                        productId: this.productId
+                    });
+
+                    //proceso exitoso
+                    alert("Solicitud enviada exitosamente")
+
+                } catch (ex) {
+                    this.showError("Ocurrió un error");
+                    this.actionBlocked = false;
+                    this.showButton();
+
+                }finally{
+                    this.hideSpinner();
+                }
+
                 this.close();
-                
-                if(this.resolve != undefined) this.resolve();
+
+                if (this.resolve != undefined) this.resolve();
             }
-        }else{
+        } else {
             alert("Usuario no loggeado")
         }
 
-        
+
+    }
+
+    showButton(){
+
+        const $button = this.component.querySelector("#sendRequest-button")
+        if (!$button) return;
+        $button.style.display = "block";
+
+    }
+
+    hideButton(){
+
+        const $button = this.component.querySelector("#sendRequest-button")
+        if (!$button) return;
+        $button.style.display = "none";
+
     }
 }
