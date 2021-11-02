@@ -22,8 +22,8 @@ function signIn(req,res){
                 user.email = params.email;
                 user.name = params.name;
                 user.lastname = params.lastname;
-                user.age = calculateAge(brth, today);
-                user.direccion = paramsi.direccion;
+                user.age = calculateAge(birth, today);
+                user.direccion = params.direccion;
                 user.sex = params.sex;
                 user.birth = birth;
 
@@ -45,7 +45,7 @@ function signIn(req,res){
                                 'Lastname': saved.lastname,
                                 'Age': saved.age,
                                 'Direction': saved.direccion,
-                                'URLImagen': saved.URLImagen,
+                                'profilePic': saved.profilePic,
                                 'Sex': saved.sex,
                                 'Birth': saved.birth
                             });
@@ -85,7 +85,7 @@ function login(req,res){
                                     'Lastname': found.lastname,
                                     'Age': found.age,
                                     'Direction': found.address,
-                                    'URLImage': found.urlImage,
+                                    'profilePic': found.profilePic,
                                     'Sex': found.sex,
                                     'Birth': found.birth,
                                     'Token': jwt.createToken(found)
@@ -111,7 +111,41 @@ function calculateAge(birth,today){
     return age;
 }
 
+function addProfilePicture(req,res){
+    const userId = req.user.sub;
+    let image = "";
+    if(req.imagesUrl){
+        req.imagesUrl.forEach(image=>{
+            image = image;
+        });
+        User.findByIdAndUpdate(userId, {profilePic:image}, {new : true},(err, imageAdded)=>{
+            if (err) {
+                res.status(500).send({ message: 'Error interno del servidor', err });
+            } else if (imageAdded) {
+                res.send({
+                    'User updated': imageAdded._id,
+                    'DPI': imageAdded.dpi,
+                    'Username': imageAdded.username,
+                    'Email': imageAdded.email,
+                    'Name': imageAdded.name,
+                    'Lastname': imageAdded.lastname,
+                    'Age': imageAdded.age,
+                    'Direction': imageAdded.address,
+                    'profilePic': imageAdded.profilePic,
+                    'Sex': imageAdded.sex,
+                    'Birth': imageAdded.birth
+                });
+            } else {
+                cancelDonation(saved, res);
+            } 
+        });
+    }else{
+        req.status(400).send({message:"Debe ingresar la imagen que desea para su perfil"})
+    }
+}
+
 module.exports={
     signIn,
-    login
+    login,
+    addProfilePicture
 }

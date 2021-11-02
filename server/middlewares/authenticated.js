@@ -5,7 +5,7 @@ const moment = require('moment');
 const key = require('../services/key');
 
 exports.ensureAuth = (req, res, next) => {
-console.log(req)
+//console.log(req)
     if (!req.headers.authorization) {
         return res.status(401).send({ message: 'Petición sin autenticación.' });
     } else {
