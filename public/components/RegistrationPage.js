@@ -42,14 +42,16 @@ export class RegistrationPage{
                     </div>
                 </div>
                 <div class="sex-details">
+                    <input type="radio" name="sex" id="dot-1">
+                    <input type="radio" name="sex" id="dot-2">
                     <span class="gender-title">Sexo</span>
                     <div class="category">
-                        <label for="">
+                        <label for="dot-1">
                             <span class="dot one"></span>
                             <span class="gender">Masculino</span>
                         </label>
-                        <label for="">
-                            <span class="dot one"></span>
+                        <label for="dot-2">
+                            <span class="dot two"></span>
                             <span class="gender">Femenino</span>
                         </label>
                     </div>
