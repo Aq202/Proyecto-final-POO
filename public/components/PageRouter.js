@@ -1,6 +1,7 @@
 import { HomePage } from "./HomePage.js";
 import { ProductRegistrationPage } from "./ProductRegistrationPage.js";
 import { LoginPage } from "./LoginPage.js";
+import { RegistrationPage } from "./RegistrationPage.js";
 import { User } from "../scripts/User.js";
 
 
@@ -47,6 +48,10 @@ export class PageRouter{
         else if (hash.includes("/logout")){
             User.logout();
             location.hash = "/login";
+        }
+        else if (hash.includes("/registration")){
+            this.component.appendChild(new RegistrationPage().component)
+            this.setCompleteWindow();
         }
         else{
             location.hash = "";
