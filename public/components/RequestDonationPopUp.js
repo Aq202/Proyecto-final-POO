@@ -86,8 +86,7 @@ export class RequestDonationPopUp extends PopUP {
                         productId: this.productId
                     });
 
-                    //proceso exitoso
-                    alert("Solicitud enviada exitosamente")
+                    if(this.resolve != undefined) this.resolve();
 
                 } catch (ex) {
                     this.showError("Ocurrió un error");

@@ -1,12 +1,12 @@
 export class DonationItem {
 
-    constructor({title, donationImage, ownerImage, date, donationPath: path}) {
+    constructor({title, donationImage, ownerImage, date, donationPath}) {
 
         this.title = title;
         this.donationImage = donationImage;
         this.ownerImage = ownerImage;
         this.date = date;
-        this.path = path;
+        this.donationPath = donationPath;
 
         this.initComponent();
     }
@@ -25,7 +25,7 @@ export class DonationItem {
             <div class='cont-info'>
                 <img class='rounded-circle' src='${this.ownerImage}' alt='ImgAutor'>
                 <span>${this.date}</span>
-                <a href='${this.path}'>${this.title}</a>
+                <a href='${this.donationPath}'>${this.title}</a>
             </div>`;
 
     }

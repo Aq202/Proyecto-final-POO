@@ -13,7 +13,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    gap: 20px;
+    gap: 15px;
     background-color: #282c34;
     border-radius: 5px;
     padding: 25px 20px 25px 20px;
@@ -39,16 +39,23 @@
     text-align: center;
 }
 
-.popUp.manageRequest .applicant-info ul.generalData{
-    width: 70%;
+.popUp.manageRequest .applicant-info .generalData{
+    width: 90%;
+    margin: 0;
+    overflow: hidden;
 }
 
-.popUp.manageRequest .applicant-info ul.generalData li{
+.popUp.manageRequest .applicant-info .generalData ul{
+    list-style-position: inside;
+}
+
+.popUp.manageRequest .applicant-info  .generalData ul li{
     margin-bottom: 7px;
 }
-.popUp.manageRequest .applicant-info ul.generalData p{
+.popUp.manageRequest .applicant-info .generalData ul p{
     text-align: center;
     margin-top: 5px;
+    word-break: break-all;
 }
 
 

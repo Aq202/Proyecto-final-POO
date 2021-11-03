@@ -5,13 +5,22 @@
     min-height: 100vh;
     width: 100%;
     padding: 45px;
-    display: grid;
-    grid-template-columns: repeat(5,1fr);
-    gap: 25px;
     max-width: 2000px;
     margin:auto;
 
     --product-info-height: 110px;
+}
+
+#donationsContainer .products-container{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(5,1fr);
+}
+
+#donationsContainer.loading .products-container{
+    display: none;
 }
 
 .donationItem{
@@ -95,6 +104,17 @@
     color: rgb(65, 4, 4);
 }
 
+#donationsContainer .spinner-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+}
+
+#donationsContainer:not(.loading) .spinner-container{
+    display: none;
+}
+
 @keyframes showItem{
 
     from{
@@ -105,32 +125,32 @@
 
 
 @media only screen and (max-width:1850px){
-    #donationsContainer{
+    #donationsContainer .products-container{
         grid-template-columns: repeat(4,1fr);
     }
 }
 
 @media only screen and (max-width:1440px){
-    #donationsContainer{
+    #donationsContainer .products-container{
         grid-template-columns: repeat(3,1fr);
     }
 }
 
 @media only screen and (max-width:900px){
-    #donationsContainer{
+    #donationsContainer .products-container{
         grid-template-columns: repeat(2,1fr);
     }
 }
 
 @media only screen and (max-width:620px){
-    #donationsContainer{
+    #donationsContainer {
         padding: 25px;
     }
 }
 
 
 @media only screen and (max-width:580px){
-    #donationsContainer{
+    #donationsContainer .products-container{
         grid-template-columns: 1fr;
     }
     .donationItem{

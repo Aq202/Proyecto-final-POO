@@ -42,4 +42,43 @@ export class DonationRequest{
         });
 
     }
+
+    deleteRequest(){
+
+        return new Promise((resolve, reject) => {
+
+            setTimeout(() =>{
+                resolve();
+            }, 5000)
+
+
+        });
+
+    }
+
+    confirmOfReceived(){
+
+        return new Promise((resolve, reject) => {
+
+            setTimeout(() =>{
+                resolve();
+            }, 5000)
+
+
+        });
+
+    }
+
+    rejectDonation(){
+
+        return new Promise((resolve, reject) => {
+
+            setTimeout(() =>{
+                resolve();
+            }, 5000)
+
+
+        });
+
+    }
 }

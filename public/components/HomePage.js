@@ -1,3 +1,5 @@
+import { Filter } from "../scripts/Filter.js";
+import { Product } from "../scripts/Product.js";
 import { Session } from "../scripts/Session.js";
 import { Banner } from "./Banner.js";
 import { DonationsContainer } from "./DonationsContainer.js";
@@ -46,9 +48,31 @@ export class HomePage {
 
         //seccion de filtros
         this.component.appendChild(new FilterSection().component);
-        //Contenedor de donaicones
-        this.component.appendChild(new DonationsContainer().component)
+
+        //Contenedor de donaciones
+        this.donationsContainer = new DonationsContainer();
+        this.component.appendChild(this.donationsContainer.component);
+        this.fillDonationContainer();
         
+
+
+    }
+
+    async fillDonationContainer(max){
+
+        max ||= 10;
+
+        const {department, municipality, search, category} = Filter.filters;
+
+        this.donationsContainer.addLoadingStyle();
+
+        const productList = await Product.getProducts({department, municipality, search, category, max});
+
+        this.donationsContainer.removeLoadingStyle();
+
+        this.donationsContainer.addContent(...productList);
+
+
 
 
     }

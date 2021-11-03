@@ -18,6 +18,14 @@ export class DonationsContainer {
 
         $donationContainer.setAttribute("id", "donationsContainer");
 
+        $donationContainer.innerHTML = `
+            <div class="spinner-container">
+                <div class="spinner-border text-dark spinner" role="status"></div>
+            </div>
+            <div class="products-container"> </div>
+        `;
+
+        /*
         let img = [
             "http://cdn.shopify.com/s/files/1/0101/2522/files/dslr-manual-focus_grande.jpg?3541",
             "https://curiosfera-historia.com/wp-content/uploads/historia-de-la-cuna-1.jpg",
@@ -41,12 +49,37 @@ export class DonationsContainer {
                 }).component)
             }
         }
+        */
 
 
     }
 
-    addDonationsContent(){
+    addContent(...donationsData){
 
-        console.log(Filter.filters)
+        const productContainer = this.component.querySelector(".products-container");
+        if(!productContainer) return;
+
+        const fragment = document.createDocumentFragment();
+        
+        for(let donationObject of donationsData){
+
+            fragment.appendChild(new DonationItem(donationObject).component);
+        }
+        productContainer.appendChild(fragment);
     }
+
+    clear(){
+        const productContainer = this.component.querySelector(".products-container");
+        if(!productContainer) return;
+        productContainer.innerHTML = "";
+    }
+
+    addLoadingStyle(){
+        this.component.classList.add("loading");
+    }
+    
+    removeLoadingStyle(){
+        this.component.classList.remove("loading");
+    }
+
 }

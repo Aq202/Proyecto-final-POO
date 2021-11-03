@@ -38,25 +38,26 @@ export class ManageRequestPopUp extends PopUP {
                 <h4>@${userAlias}</h4>
             </div>
 
-
-            <ul class="generalData">
-                <li>
-                    <strong>Email: </strong>
-                    <p>${userEmail}</p>
-                </li>
-                <li>
-                    <strong>DPI: </strong>
-                    <p>${userDPI}</p>
-                </li>
-                <li>
-                    <strong>Sexo: </strong>
-                    <p>${userGender}</p>
-                </li>
-                <li>
-                    <strong>Edad:</strong>
-                    <p>${userAge}</p>
-                </li>
-            </ul>
+            <div class="generalData">
+                <ul>
+                    <li>
+                        <strong>Email: </strong>
+                        <p>${userEmail}</p>
+                    </li>
+                    <li>
+                        <strong>DPI: </strong>
+                        <p>${userDPI}</p>
+                    </li>
+                    <li>
+                        <strong>Sexo: </strong>
+                        <p>${userGender}</p>
+                    </li>
+                    <li>
+                        <strong>Edad:</strong>
+                        <p>${userAge}</p>
+                    </li>
+                </ul>
+            </div>
 
             <button class="white-button showDocuments">Documentos</button>
         </div>

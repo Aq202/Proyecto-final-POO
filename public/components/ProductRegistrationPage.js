@@ -1,6 +1,7 @@
 import { Filter } from "../scripts/Filter.js";
 import { Product } from "../scripts/Product.js";
 import { Session } from "../scripts/Session.js";
+import { AlertPopUp } from "./alertPopUp.js";
 import { ImagePicker } from "./ImagePicker.js";
 import { ImageViewer } from "./ImageViewer.js";
 import { UnauthorizedPopUp } from "./UnauthorizedPopUp.js";
@@ -347,13 +348,21 @@ export class ProductRegistrationPage {
                 await Product.createNewProduct(data);
 
                 this.hideSpinner();
-                alert("Registro exitoso");
+                
+                const alertPopUp = new AlertPopUp({
+                    imgUrl: "../images/others/heroe.svg",
+                    title: "Producto registrado correctamente",
+                    text: "Gracias por tu aporte " + Session.firstName + ", juntos lograremos cambiar la vida de muchas personas."
+                });
+
+                await alertPopUp.open();
 
 
             } catch (ex) {
                 this.hideSpinner();
                 this.enableSendButton();
                 this.showError("Ocurrió un error en el servidor.")
+                console.error("RegistrationError:: ",ex)
             }
         }
     }

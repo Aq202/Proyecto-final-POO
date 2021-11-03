@@ -32,7 +32,7 @@ function addProduct(req, res) {
                         setTimeout(() => {
                             updateOwner(saved, updated, res);
                             
-                        }, 50000);
+                        }, 500);
                     } else {
                         cancelDonation(saved, res);
                     }  

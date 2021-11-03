@@ -4,10 +4,12 @@ import { RequestDonationPopUp } from "./RequestDonationPopUp.js";
 import { UnauthorizedPopUp } from "./UnauthorizedPopUp.js";
 import { DonationRequestsContainer } from "./DonationRequestsContainer.js";
 import { Session } from "../scripts/Session.js";
+import { DonationRequest } from "../scripts/DonationRequest.js";
+import { AlertPopUp } from "./alertPopUp.js";
 
 export class ProductPage {
 
-    constructor({ productId, cathegory, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed }) {
+    constructor({ productId, cathegory, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed, userRequestId }) {
 
         this.productId = productId || null;
         this.cathegory = cathegory;
@@ -17,11 +19,16 @@ export class ProductPage {
         this.profileImage = profileImage;
         this.authorName = name;
         this.productImages = productImages;
-        this.isOwner = isOwner || false;
+        this.isOwner = isOwner || true;
         this.alreadyRequested = alreadyRequested || false;
         this.selectedAsBeneficiary = selectedAsBeneficiary || false;
         this.donationRequestAccepted = donationRequestAccepted || false;
         this.donationReceivedConfirmed = donationReceivedConfirmed || false;
+        this.userRequestId = userRequestId || undefined;
+
+        if (!this.userRequestId) this.userRequestObject = new DonationRequest({ requestId: this.userRequestId });
+
+        this.actionBlocked = false;
 
         this.initComponent();
 
@@ -126,7 +133,7 @@ export class ProductPage {
         $productPage.querySelector("button#makeRequest-button").addEventListener("click", e => this.makeNewRequest());
         $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
         $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
-        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.confirmOfReceived());
+        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.rejectDonation());
 
         document.addEventListener("requestAccepted", e => this.updateProductState());
 
@@ -137,12 +144,13 @@ export class ProductPage {
 
         try {
             this.hideButtons();
+            this.hideMessage();
 
             //si es el autor
             if (this.isOwner === true) {
 
                 if (this.donationRequestAccepted !== true && this.donationReceived !== true) { // estado inicial
-                    
+
                     $(this.component.querySelector("#deleteProduct-button")).show();
 
                 } else if (this.donationRequestAccepted === true && this.donationReceivedConfirmed !== true) { //en espera de confirmacion del beneficiario
@@ -200,61 +208,224 @@ export class ProductPage {
 
     }
 
-    verifySession(){
+    verifySession() {
 
-        if(Session.userInSession !== true){
+        if (Session.userInSession !== true) {
             new UnauthorizedPopUp().open();
             return false;
-        }else{
+        } else {
             return true;
         }
 
     }
 
-    deleteProduct(){
-        if(!this.verifySession()) return;
-        if(this.isOwner !== true) return;
+    async deleteProduct() {
+        if (this.actionBlocked === true) return;
+        if (!this.verifySession()) return;
+        if (this.isOwner !== true) return;
         if (!(this.donationRequestAccepted !== true && this.donationReceived !== true)) return;
 
-        alert("Eliminar donacion")
+        if ("¿Estás seguro que deseas eliminar permanentemente este producto?") {
 
+            this.actionBlocked = true;
+            this.hideButtons();
+            this.showSpinner();
+
+            try {
+
+                await Product.deleteProduct(this.productId);
+
+
+                const alertPopUp = new AlertPopUp({
+                    imgUrl: "../images/others/working.svg",
+                    title: "Tu producto se ha eliminado correctamente",
+                    text: "Agradecemos mucho tu confianza, esperamos verte de nuevo para continuar en esta cruzada por hacer de este un mundo mejor."
+                });
+
+                this.hideSpinner();
+                await alertPopUp.open();
+
+                location.hash = "/";
+
+            } catch (ex) {
+                this.hideSpinner();
+                this.showError(ex);
+                this.actionBlocked = false;
+                this.selectActionElements();
+            }
+
+        }
     }
 
-    async makeNewRequest(){
-        if(!this.verifySession()) return;
-        if(this.isOwner === true) return;
+    async makeNewRequest() {
+
+        if (this.actionBlocked === true) return;
+        if (!this.verifySession()) return;
+        if (this.isOwner === true) return;
         if (!(this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true)) return;
 
-        const popUp = new RequestDonationPopUp(this.productId);
-        await popUp.open();
-        
+        try {
+            const popUp = new RequestDonationPopUp(this.productId);
+            await popUp.open();
+
+            const alertPopUp = new AlertPopUp({
+                imgUrl: "../images/others/charity-market.svg",
+                title: "¡Tu solicitud se ha realizado correctamente!",
+                text: "Ahora no queda más que cruzar los dedos y ser paciente por la respuesta del autor. Te notificaremos en cuento tengamos noticias."
+            });
+
+            await alertPopUp.open();
+
+            //Solicitud aceptada
+            this.alreadyRequested = true;
+            this.selectActionElements();
+
+        } catch (ex) {
+
+        }
+
     }
-    
-    deleteRequest(){
-        if(!this.verifySession()) return;
-        if(this.isOwner === true) return;
+
+    async deleteRequest() {
+
+        if (this.actionBlocked === true) return;
+        if (!this.verifySession()) return;
+        if (this.isOwner === true) return;
         if (!(this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true)) return;
 
-        alert("Eliminado");
-        
+        if (this.userRequestObject !== undefined) {
+
+            if (confirm("¿Deseas eliminar tu solicitud para este producto?")) {
+
+                try {
+                    this.actionBlocked = true;
+                    this.showSpinner();
+                    this.hideButtons();
+
+                    await this.userRequestObject.deleteRequest();
+
+                    const alertPopUp = new AlertPopUp({
+                        imgUrl: "../images/others/working.svg",
+                        title: "Tu solicitud se ha eliminado correctamente",
+                        text: "Estamos seguros que alguien más podrá aprovecharlo al máximo. Te invitamos a seguir explorando para encontrar más productos que sean para tí."
+                    });
+
+                    this.alreadyRequested = false;
+                    this.hideSpinner();
+                    this.selectActionElements();
+
+                    await alertPopUp.open();
+
+                    this.actionBlocked = false;
+
+
+                } catch (ex) {
+
+                    this.hideSpinner();
+                    this.selectActionElements();
+                    this.showError(ex);
+                    this.actionBlocked = false;
+
+                }
+            }
+
+        }
+
     }
-    confirmOfReceived(){
-        if(!this.verifySession()) return;
-        if(this.isOwner === true) return;
+
+    async confirmOfReceived() {
+        if (this.actionBlocked === true) return;
+        if (!this.verifySession()) return;
+        if (this.isOwner === true) return;
         if (!(this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true)) return;
 
-        alert("Confirmando de recibido");
-        
+        if (this.userRequestObject !== undefined) {
+
+            if (confirm("¿Deseas confirmar de que haz recibido físicamente este producto?")) {
+
+                try {
+                    this.actionBlocked = true;
+                    this.showSpinner();
+                    this.hideButtons();
+
+                    await this.userRequestObject.confirmOfReceived();
+
+                    const alertPopUp = new AlertPopUp({
+                        imgUrl: "../images/others/celebration.svg",
+                        title: "¡La donación se ha completado correctamente!",
+                        text: "Estamos muy felices por tí, esperamos que puedas aprovecharlo al máximo. <b>¡Felicidades!</b>"
+                    });
+
+                    this.donationReceivedConfirmed = true;
+                    this.hideSpinner();
+                    this.selectActionElements();
+
+                    await alertPopUp.open();
+
+                } catch (ex) {
+
+                    this.hideSpinner();
+                    this.selectActionElements();
+                    this.showError(ex);
+
+                } finally {
+                    this.actionBlocked = false;
+                }
+            }
+
+        }
     }
-    rejectDonation(){
-        if(!this.verifySession()) return;
-        if(this.isOwner === true) return;
+
+    async rejectDonation() {
+        if (this.actionBlocked === true) return;
+        if (!this.verifySession()) return;
+        if (this.isOwner === true) return;
         if (!(this.selectedAsBeneficiary === true && this.donationReceivedConfirmed !== true)) return;
 
-        alert("Rechazando donacion");
-        
+        if (this.userRequestObject !== undefined) {
+
+            if (confirm("¿Deseas rechazar esta donación? Recuerda que el autor de esta publicación te ha seleccionado y al completar con esta acción, el producto volverá a estar disponible para todos.")) {
+
+                try {
+                    this.actionBlocked = true;
+                    this.showSpinner();
+                    this.hideButtons();
+
+                    await this.userRequestObject.rejectDonation();
+
+                    const alertPopUp = new AlertPopUp({
+                        imgUrl: "../images/others/working.svg",
+                        title: "La donación ha sido rechazada",
+                        text: "Bueno... La proxima vez será."
+                    });
+
+                    this.alreadyRequested = false;
+                    this.selectedAsBeneficiary = false;
+                    this.donationRequestAccepted = false;
+                    this.donationReceivedConfirmed = false;
+                    this.userRequestId = undefined;
+                    this.userRequestObject = undefined;
+
+                    this.hideSpinner();
+                    this.selectActionElements();
+
+                    await alertPopUp.open();
+
+                } catch (ex) {
+
+                    this.hideSpinner();
+                    this.selectActionElements();
+                    this.showError(ex);
+
+                } finally {
+                    this.actionBlocked = false;
+                }
+
+            }
+        }
+
     }
-    
+
     async openPopUp() {
 
         //const popUp = new RequestDonationPopUp({closeWithBackgroundClick:true, productId:this.productId});
@@ -281,6 +452,13 @@ export class ProductPage {
         if (red === true) $statusInfo.classList.add("red-icon");
         else if (green === true) $statusInfo.classList.add("green-icon");
         else $statusInfo.classList.remove("red-icon");
+    }
+
+    hideMessage(){
+        const $statusInfo = this.component.querySelectorAll(".statusInfo");
+        if (!$statusInfo) return;
+
+        $($statusInfo).hide();
     }
 
     updateProductState() {
