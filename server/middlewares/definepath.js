@@ -1,10 +1,10 @@
 function pathProducts(req,res,next){
-    req.productsPath = "./public/resources/productImages/";
+    req.imagesPath = "./public/resources/productImages/";
     next();
 }
 
 function pathUsers(req,res,next){
-    req.productsPath = "./public/resources/profileImages/";
+    req.imagesPath = "./public/resources/profileImages/";
     next();
 }
 

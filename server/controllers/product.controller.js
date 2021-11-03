@@ -2,9 +2,6 @@
 
 const User = require('../models/user.model');
 const Product = require('../models/product.model');
-const bcrypt = require('bcrypt-nodejs');
-const jwt = require('../services/jwt');
-const multer = require('../services/multer');
 const mongoose = require('mongoose');
 
 function getProduct(req,res){
@@ -91,12 +88,12 @@ function addProduct(req, res) {
             } else if (saved) {
                 User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
                     if (err) {
-                        res.status(500).send({ message: 'Error interno del servidor', err });
-                        deleteProduct(saved._id);
+                        console.log(err);
+                        cancelDonation(saved, res, "Error interno del servidor", 500);
                     } else if (updated) {
                         updateOwner(saved, updated, res);
                     } else {
-                        cancelDonation(saved, res);
+                        cancelDonation(saved, res, "Ha ocurrido un error al agregar la donacion al registro del usuario.",500);
                     }  
                 })
             } else {
@@ -111,23 +108,23 @@ function addProduct(req, res) {
 function updateOwner(product, user, res){
     Product.findByIdAndUpdate(product._id, {owner : user.name + ' ' + user.lastname}, {new : true}, (err, updated)=>{
         if(err){
-            cancelDonation(product, res);
+            cancelDonation(product, res, "Error interno del servidor",500);
         }else if(updated){
             res.send({ message:'Producto agregado con éxito.', data: updated });
         }else{
-            cancelDonation(product, res);
+            cancelDonation(product, res, "Ha ocurrido un error al asignar la donación al usuario correspondiente.", 500);
         }
     });
 }
 
-function cancelDonation(product, res){
+function cancelDonation(product, res, message, status){
     Product.findByIdAndDelete(product._id, (err, deleted)=>{
         if(err){
             res.status(500).send({ error: 'Error interno del servidor', err });
         }else if(deleted){
-            res.send({ error: 'Ha ocurrido un problema al asignar la donación al usuario correspondiente, se ha cancelado la donación.'});
+            res.status(status).send({ error: message});
         }else{
-            res.status(400).send({error: 'Ha ocurrido un problema al asignar la donación al usuairo correspondiente; la donación fue realizada pero inhabilitada.'});
+            res.status(400).send({error: 'Ha ocurrido un problema al asignar la donación al usuario correspondiente; la donación fue realizada pero inhabilitada.'});
         }
     });
 }

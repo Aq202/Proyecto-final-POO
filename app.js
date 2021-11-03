@@ -10,8 +10,7 @@ const key = require("./server/services/key");
 
 const userRoutes = require('./server/routes/user.route');
 const productRoutes = require('./server/routes/product.route');
-//const fileRoutes = require('./server/routes/file.route');
-
+const requestRoutes = require('./server/routes/request.route');
 
 
 const app = express();
@@ -48,7 +47,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);
-//app.use("/file",fileRoutes);
+app.use('/request', requestRoutes);
 
 const socket = new socketServer(httpServer)
 

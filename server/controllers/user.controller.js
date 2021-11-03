@@ -115,8 +115,8 @@ function addProfilePicture(req,res){
     const userId = req.user.sub;
     let image = "";
     if(req.imagesUrl){
-        req.imagesUrl.forEach(image=>{
-            image = image;
+        req.imagesUrl.forEach(i=>{
+            image = i;
         });
         User.findByIdAndUpdate(userId, {profilePic:image}, {new : true},(err, imageAdded)=>{
             if (err) {
