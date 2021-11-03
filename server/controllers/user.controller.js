@@ -144,8 +144,39 @@ function addProfilePicture(req,res){
     }
 }
 
+function getInfoUser(req,res){
+    if(req.user.sub){
+        let userId = req.user.sub;
+        User.findById(userId,(err,found)=>{
+            if(err){
+                console.log(err);
+                res.status(500).send({error: "Error interno del servidor."});
+            }else if(found){
+                res.send({
+                    'Current User': found._id,
+                    'DPI': found.dpi,
+                    'Username': found.username,
+                    'Email': found.email,
+                    'Name': found.name,
+                    'Lastname': found.lastname,
+                    'Age': found.age,
+                    'Direction': found.address,
+                    'profilePic': found.profilePic,
+                    'Sex': found.sex,
+                    'Birth': found.birth
+                });
+            }else{
+                res.status(404).send({message:"No se han encontrado usuarios con el ID indicado."});
+            }
+        })
+    }else{
+        res.status(400).send({message:"Debe iniciar sesión para acceder a esta función."});
+    }
+}
+
 module.exports={
     signIn,
     login,
-    addProfilePicture
+    addProfilePicture,
+    getInfoUser
 }

@@ -17,8 +17,7 @@ exports.createToken = (user) =>{
         urlImagen: user.urlImagen,
         sex: user.sex,
         bith: user.birth,
-        iat: moment().unix(),
-        exp: moment().add(30, "minutes").unix()
+        iat: moment().unix()
     }
     return jwt.encode(payload, key);
 }
