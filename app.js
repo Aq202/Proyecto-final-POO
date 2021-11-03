@@ -10,8 +10,7 @@ const key = require("./server/services/key");
 
 const userRoutes = require('./server/routes/user.route');
 const productRoutes = require('./server/routes/product.route');
-
-
+const requestRoutes = require('./server/routes/request.route');
 
 
 const app = express();
@@ -38,17 +37,17 @@ app.use(express.json())
 app.use(express.static('./public'))
 app.use(express.urlencoded({ extended: true }))
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
-});
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method', 'multipart/form-data');
+//     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+//     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+//     next();
+// });
 
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);
-
+app.use('/request', requestRoutes);
 
 const socket = new socketServer(httpServer)
 

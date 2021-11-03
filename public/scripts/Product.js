@@ -2,25 +2,29 @@ import { Session } from "./Session.js";
 
 export class Product {
 
-    static createNewProduct({ name, category, department, municipality, description }) {
+    static createNewProduct({ name, cathegory, department, municipality, description, images }) {
 
         return new Promise((resolve, reject) => {
 
             if (!Session.userInSession) reject();
 
-            const obj = {
-                name,
-                cathegory: category,
-                department,
-                municipality,
-                description
+            const form = new FormData();
+
+            for(let file of images){
+                    form.append('files[]', file, file.name);      
             }
 
             let reqObject;
+            form.append("name",name);
+            form.append("cathegory",cathegory);
+            form.append("department",department);
+            form.append("municipality",municipality);
+            form.append("description",description);
+            
 
             fetch("/product/addProduct", {
                 method: "POST",
-                body: JSON.stringify(obj),
+                body: form,
                 headers: {
                     'Authorization': Session.token,
                     "Content-Type": "application/json"

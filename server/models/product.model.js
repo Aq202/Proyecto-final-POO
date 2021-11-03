@@ -12,7 +12,7 @@ const productSchema = Schema({
     cathegory: String,
     department: String,
     municipality: String,
-    urlImagen:String,
+    images:[],
     interested: [{ type: Schema.Types.ObjectId, ref: 'user' }]
 });
 
