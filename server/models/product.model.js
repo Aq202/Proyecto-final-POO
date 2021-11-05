@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const productSchema = Schema({
     owner: String,
     ownerId: String,
+    ownerProfilePic: String,
     name: String,
     description: String,
     available: Boolean,

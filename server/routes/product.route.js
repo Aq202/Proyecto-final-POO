@@ -10,7 +10,7 @@ const multer = require('../services/multer');
 var api = express.Router();
 
 api.use(dp.pathProducts);
-api.post('/infoProduct',mdAuth.ensureAuth, productController.getProduct);
+api.post('/infoProduct',mdAuth.choicelyAuth, productController.getProduct);
 api.post('/addProduct', mdAuth.ensureAuth, multer.any(), productController.addProduct);
 api.post('/listProducts', productController.listProducts);
 api.post('/filteredSearch', productController.filteredSearch);
