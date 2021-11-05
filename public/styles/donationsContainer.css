@@ -19,7 +19,8 @@
     grid-template-columns: repeat(5,1fr);
 }
 
-#donationsContainer.loading .products-container{
+#donationsContainer.loading .products-container,
+#donationsContainer.no-results .products-container{
     display: none;
 }
 
@@ -113,6 +114,27 @@
 
 #donationsContainer:not(.loading) .spinner-container{
     display: none;
+}
+
+#donationsContainer .no-results-message{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 25px;
+    animation: showItem .5s ;
+}
+
+#donationsContainer:not(.no-results) .no-results-message{
+    display: none;
+    opacity: 0;
+}
+
+#donationsContainer .no-results-message h3 {
+    font-size: 35px;
+    text-align: center;
+    line-height: 2;
+    font-weight: 300;
 }
 
 @keyframes showItem{

@@ -1,16 +1,17 @@
 export class Filter {
 
     static filters = {
-        department: "Escuintla",
-        municipality: "San Pedro Necta",
-        search: "HOLA MUNDO",
-        category: ["Ropa"]
+        department: "",
+        municipality: "",
+        search: "",
+        category: null
     }
 
     static get defaultCategories() {
         return [
             "Ropa",
             "Electrodomésticos",
+            "Fotografía",
             "Teléfonos",
             "Televisiones",
             "Calzado",
@@ -49,20 +50,25 @@ export class Filter {
     }
 
 
-    static set department(department) {
+    static setDepartment(department) {
 
-        Filter.departmentsOfGuatemala.then(departments => {
+        return new Promise((resolve, reject) => {
 
-            if (departments.hasOwnProperty(department)) {
-                this.filters.department = department;
+            Filter.departmentsOfGuatemala.then(departments => {
 
-            } else {
-                this.filters.department = null;
-                this.filters.municipality = null;
-            }
-            Filter.throwFilterChangedEvent();
+                if (departments.hasOwnProperty(department)) {
+                    this.filters.department = department;
 
-        })
+                } else {
+                    
+                    this.filters.department = "";
+                    this.filters.municipality = "";
+                }
+                Filter.throwFilterChangedEvent();
+
+                resolve();
+            })
+        });
     }
 
     static get department() {
@@ -93,14 +99,14 @@ export class Filter {
         return this.filters.municipality;
     }
 
-    static addCategory({category, addAll}) {
+    static addCategory({ category, addAll }) {
 
         if (this.removedCategories.has(category)) {
             //se elimina de la lista
             this.removedCategories.delete(category);
         }
 
-        if(addAll === true){
+        if (addAll === true) {
             //vaciar lista de eliminados
             this.removedCategories.clear();
         }
@@ -112,16 +118,16 @@ export class Filter {
         Filter.throwFilterChangedEvent();
     }
 
-    static removeCategory({category, removeAll}) {
+    static removeCategory({ category, removeAll }) {
 
         if (!this.removedCategories.has(category)) {
             //añadir a la lista de eliminados
             this.removedCategories.add(category);
         }
 
-        if(removeAll === true){
+        if (removeAll === true) {
             //añadir todas a la lista de eliminados
-            this.defaultCategories.forEach( cat => this.removedCategories.add(cat));
+            this.defaultCategories.forEach(cat => this.removedCategories.add(cat));
         }
 
         //añadiendo todas las categorias que no hayan sido deseleccionadas
@@ -130,18 +136,18 @@ export class Filter {
 
         Filter.throwFilterChangedEvent();
     }
-    static get categories(){
+    static get categories() {
         return this.filters.category;
     }
 
-    static addSearch(search){
-        
-        try{
-        const searchFilter = search.trim();
-        if(searchFilter != "") this.filters.search = searchFilter;
-        else this.filters.search = null;
-        
-        }catch(ex){
+    static addSearch(search) {
+
+        try {
+            const searchFilter = search.trim();
+            if (searchFilter != "") this.filters.search = searchFilter;
+            else this.filters.search = null;
+
+        } catch (ex) {
             this.filters.search = null;
         }
 
@@ -149,16 +155,16 @@ export class Filter {
     }
 
 
-    static removeSearch(){
+    static removeSearch() {
         this.filters.search = null;
         Filter.throwFilterChangedEvent();
     }
 
-    static get search(){
+    static get search() {
         return this.filters.search;
     }
 
-    static throwFilterChangedEvent(){
+    static throwFilterChangedEvent() {
 
         const event = new CustomEvent("filterChanged");
 

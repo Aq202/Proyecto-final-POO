@@ -32,10 +32,10 @@ export class HomePage {
         let welcomeMessage = "Bienvenido";
         let secondMessage = "Estamos felices de tenerte con nosotros."
 
-        if(Session.userInSession === true){
+        if (Session.userInSession === true) {
             welcomeMessage = `Hola, ${Session.name}`;
             secondMessage = "Estamos felices de tenerte de vuelta."
-            
+
         }
 
         $separator.innerHTML = `
@@ -50,31 +50,65 @@ export class HomePage {
         this.component.appendChild(new FilterSection().component);
 
         //Contenedor de donaciones
-        this.donationsContainer = new DonationsContainer();
+        this.donationsContainer = new DonationsContainer({});
         this.component.appendChild(this.donationsContainer.component);
         this.fillDonationContainer();
-        
+
+        document.addEventListener("filterChanged", e => { 
+
+            document.querySelector("body").scrollTo({
+                top: this.donationsContainer.component.offsetTop - 80,
+                behavior: 'smooth'
+              });
+
+            this.fillDonationContainer();
+        })
+        this.donationsContainer.component.addEventListener("fullySeen", e => this.addOlderContent());
 
 
     }
 
-    async fillDonationContainer(max){
+    async fillDonationContainer() {
 
-        max ||= 10;
+        const max = 10;
 
-        const {department, municipality, search, category} = Filter.filters;
+        const { department, municipality, search, category } = Filter.filters;
 
         this.donationsContainer.addLoadingStyle();
+        this.donationsContainer.clear();
+        this.donationsContainer.removeNoResultsStyle();
 
-        const productList = await Product.getProducts({department, municipality, search, category, max});
+        try {
 
-        this.donationsContainer.removeLoadingStyle();
+            const productList = await Product.getProducts({ department, municipality, search, category, max });
+            if (productList.length > 0)
+                this.donationsContainer.addContent(...productList);
+            else
+                this.donationsContainer.addNoResultsStyle();
 
-        this.donationsContainer.addContent(...productList);
+        } catch (ex) {
+            console.error(ex)
+            this.donationsContainer.addNoResultsStyle();
+        } finally {
+            this.donationsContainer.removeLoadingStyle();
 
+        }
+    }
 
+    async addOlderContent(){
 
+        const max = 10, skip = this.donationsContainer.itemsCount || 0
+        const { department, municipality, search, category } = Filter.filters;
 
+        try{
+
+            const productList = await Product.getProducts({ department, municipality, search, category, max, skip });
+                if (productList.length > 0)
+                    this.donationsContainer.addContent(...productList);
+
+        }catch(ex){
+            console.warn(ex);
+        }
     }
 
 }
