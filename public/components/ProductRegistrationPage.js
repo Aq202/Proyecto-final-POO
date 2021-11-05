@@ -1,11 +1,16 @@
 import { Filter } from "../scripts/Filter.js";
 import { Product } from "../scripts/Product.js";
+import { Session } from "../scripts/Session.js";
+import { AlertPopUp } from "./alertPopUp.js";
 import { ImagePicker } from "./ImagePicker.js";
 import { ImageViewer } from "./ImageViewer.js";
+import { UnauthorizedPopUp } from "./UnauthorizedPopUp.js";
 
 export class ProductRegistrationPage {
 
     constructor() {
+
+
 
         this.initComponent();
 
@@ -15,7 +20,11 @@ export class ProductRegistrationPage {
         this.department = "";
         this.municipality = "";
         this.imageFiles = [];
+        this.buttonLocked = false;
 
+        if (Session.userInSession !== true) {
+            new UnauthorizedPopUp(true).open();
+        }
 
     }
 
@@ -63,6 +72,8 @@ export class ProductRegistrationPage {
                     <div class="filePicker"></div>
 
                     <input type="submit" id="send-donation-button" value="Realizar Donación">
+                    <div class="spinner-grow text-primary spinner" role="status">
+                    </div>
                     <p class="errorMessage"></p>
                     
                 </form>
@@ -113,41 +124,47 @@ export class ProductRegistrationPage {
 
 
         //añadir evento de modificacion de formulario
-        $page.querySelector("#product-name").addEventListener("keyup", e => this.selectName(e));
-        $page.querySelector("#product-description").addEventListener("keyup", e => this.selectDescription(e));
-        $page.querySelector("#product-department").addEventListener("change", e => this.selectDepartment(e));
-        $page.querySelector("#product-municipality").addEventListener("change", e => this.selectMunicipality(e));
-        $page.querySelector("#product-category").addEventListener("change", e => this.selectCategory(e));
+        $page.querySelector("#product-name").addEventListener("keyup", e => this.selectName());
+        $page.querySelector("#product-description").addEventListener("keyup", e => this.selectDescription());
+        $page.querySelector("#product-department").addEventListener("change", e => {
+            this.selectDepartment();
+            this.addMunicipalitiesOptions();
+        });
+        $page.querySelector("#product-municipality").addEventListener("change", e => this.selectMunicipality());
+        $page.querySelector("#product-category").addEventListener("change", e => this.selectCategory());
         $page.querySelector("#send-donation-button").addEventListener("click", e => this.sendForm(e));
 
 
     }
 
-    selectName(e) {
-        if (e.target === undefined) return;
-        this.name = e.target.value.trim();
+    selectName() {
+        const $nameInput = this.component.querySelector("#product-name");
+        if ($nameInput === undefined) return;
+        this.name = $nameInput.value.trim();
     }
 
-    selectDescription(e) {
-        if (e.target === undefined) return;
-        this.description = e.target.value.trim();
+    selectDescription() {
+        const $descriptionInput = this.component.querySelector("#product-description");
+        if ($descriptionInput === undefined) return;
+        this.description = $descriptionInput.value.trim();
     }
 
-    selectCategory(e) {
-        if (e.target === undefined) return;
-        this.category = e.target.value.trim();
+    selectCategory() {
+        const $categorySelect = this.component.querySelector("#product-category");
+        if ($categorySelect === undefined) return;
+        this.category = $categorySelect.value.trim();
     }
 
-    selectDepartment(e) {
-        if (e.target === undefined) return;
-        this.department = e.target.value.trim();
-
-        this.addMunicipalitiesOptions();
+    selectDepartment() {
+        const $departmentSelect = this.component.querySelector("#product-department");
+        if ($departmentSelect === undefined) return;
+        this.department = $departmentSelect.value.trim();
     }
 
-    selectMunicipality(e) {
-        if (e.target === undefined) return;
-        this.municipality = e.target.value.trim();
+    selectMunicipality() {
+        const $departmentMunicipality = this.component.querySelector("#product-municipality");
+        if ($departmentMunicipality === undefined) return;
+        this.municipality = $departmentMunicipality.value.trim();
     }
 
 
@@ -247,6 +264,11 @@ export class ProductRegistrationPage {
 
         const departments = await Filter.departmentsOfGuatemala;
 
+        this.selectCategory();
+        this.selectDepartment();
+        this.selectName();
+        this.selectMunicipality();
+
         //Validar nombre de producto
         if (this.name === "") {
             this.showError("El campo Titulo es obligatorio.");
@@ -288,9 +310,14 @@ export class ProductRegistrationPage {
     }
 
     async sendForm(e) {
+
         e.preventDefault();
 
         if (await this.validateData() === true) {
+
+            //bloquear boton y mostrar spinner de carga
+            this.disableSendButton();
+            this.showSpinner();
 
             try {
 
@@ -304,10 +331,22 @@ export class ProductRegistrationPage {
                 }
                 await Product.createNewProduct(data);
 
+                this.hideSpinner();
+                
+                const alertPopUp = new AlertPopUp({
+                    imgUrl: "../images/others/heroe.svg",
+                    title: "Producto registrado correctamente",
+                    text: "Gracias por tu aporte " + Session.firstName + ", juntos lograremos cambiar la vida de muchas personas."
+                });
+
+                await alertPopUp.open();
 
 
             } catch (ex) {
-                this.showError(ex);
+                this.hideSpinner();
+                this.enableSendButton();
+                this.showError("Ocurrió un error en el servidor.")
+                console.error("RegistrationError:: ",ex)
             }
         }
     }
@@ -322,5 +361,39 @@ export class ProductRegistrationPage {
 
         $errorElement.style.display = "block";
         $errorElement.innerText = errorMessage.trim();
+    }
+
+    showSpinner() {
+
+        const $spinner = this.component.querySelector(".spinner");
+        if (!$spinner) return;
+
+        $($spinner).fadeIn(200);
+    }
+
+    hideSpinner() {
+
+
+        const $spinner = this.component.querySelector(".spinner");
+        if (!$spinner) return;
+
+        $spinner.style.display = "none";
+
+    }
+
+    enableSendButton() {
+        const $sendButton = this.component.querySelector("#send-donation-button");
+        if (!$sendButton) return;
+
+        $sendButton.disabled = false;
+        $($sendButton).fadeIn(200);
+    }
+
+    disableSendButton() {
+        const $sendButton = this.component.querySelector("#send-donation-button");
+        if (!$sendButton) return;
+
+        $sendButton.disabled = true;
+        $sendButton.style.display = "none";
     }
 }

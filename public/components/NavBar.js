@@ -1,15 +1,15 @@
 import { Filter } from "../scripts/Filter.js";
-import { User } from "../scripts/User.js";
+import { Session } from "../scripts/Session.js";
 import { NotificationTray } from "./NotificationTray.js";
 import { SideMenu } from "./SideMenu.js";
 
 export class NavBar {
 
-    constructor({ id, name, profileImage }) {
+    constructor() {
 
-        this._userId = id;
-        this._userName = name;
-        this._userImageUrl = profileImage;
+        this._userId = Session.id;
+        this._userName = Session.name;
+        this._userImageUrl = Session?.profileImage || "images/profileImages/default.jpeg";
 
         this.initComponent();
     }
@@ -67,8 +67,8 @@ export class NavBar {
         `;
 
         //agregar estilo para usuario logeado
-        this.addLoggedStyle();
-        window.addEventListener("hashchange", this.addLoggedStyle.bind(this));
+        this.changeLoggedStyle();
+        document.addEventListener("sessionStateChanged", this.changeLoggedStyle.bind(this));
 
 
         //agregar paneles de notificaciones
@@ -87,7 +87,7 @@ export class NavBar {
         this.sessionButtonEvents();
         this.addDynamicHiddingNotifications(notificationTray);
         this.searchVisibilityEvent();
-        this.sideMenuOptionEvent();
+        this.sideMenuOptionEvent(sideMenu);
 
         //eventos de búsqueda
         $nav.querySelector("#lupa-search").addEventListener("click", e => this.newSearchEvent(e));
@@ -104,13 +104,11 @@ export class NavBar {
         return $nav;
     }
 
-    sideMenuOptionEvent() {
+    sideMenuOptionEvent(sideMenu) {
 
         const $hamburguerMenu = this.component.querySelector("#menuOption");
-        const $sideMenu = this.component.querySelector("#side-menu");
-        if (!$hamburguerMenu || !$sideMenu) return;
 
-        $hamburguerMenu.addEventListener("click", () => $sideMenu.classList.toggle("opened"));
+        $hamburguerMenu.addEventListener("click", () => sideMenu.toggle());
     }
 
     notificationsOptionEvent(notificationTray) {
@@ -187,9 +185,9 @@ export class NavBar {
 
     }
 
-    addLoggedStyle() {
+    changeLoggedStyle() {
         if (!this.component) return;
-        if (User.userInSession === true) this.component.classList.add("loggedIn");
+        if (Session.userInSession === true) this.component.classList.add("loggedIn");
         else this.component.classList.remove("loggedIn");
     }
 
@@ -199,7 +197,7 @@ export class NavBar {
 
         $profileImage.addEventListener("click", async e => {
 
-            let result = await User.getUser({
+            let result = await Session.getUser({
                 user: prompt("Usuario:"),
                 password: prompt("Contraseña")
             })
@@ -211,7 +209,7 @@ export class NavBar {
         this.component.querySelector("#chatOption").addEventListener("click", async e => {
 
 
-            let result = await User.createNewUser({
+            let result = await Session.createNewUser({
                 dpi: 45125426,
                 username: prompt("Ingresa tu usuario: "),
                 age: 18,

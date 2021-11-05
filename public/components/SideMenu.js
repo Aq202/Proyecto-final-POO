@@ -19,7 +19,7 @@ export class SideMenu{
         <ul>
 
             <li class="">
-                <h2 id="title" > 
+                <h2 class="title" > 
                     Menú
                 </h2>
             </li>
@@ -51,5 +51,22 @@ export class SideMenu{
         </div>   
         `;
 
+        //eventos cerrar menu
+        this.component.querySelectorAll("a").forEach(elem =>{
+            elem.addEventListener("click", e => this.close());
+        });
+
+        window.addEventListener("hashchange", e => this.close());
+
+    }
+
+    toggle(){
+        this.component.classList.remove("instant");
+        this.component.classList.toggle("opened");
+    }
+
+    close(){
+        this.component.classList.add("instant");
+        this.component.classList.remove("opened");
     }
 }

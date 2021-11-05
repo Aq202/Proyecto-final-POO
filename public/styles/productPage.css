@@ -1,0 +1,199 @@
+#productPage{
+    width: 100%;
+    background-color: #FAFAFA;
+    padding: 5vw 0 5vw 0;
+    
+}
+
+#productPage-container{
+    max-width: 1200px;
+    width: 90vw;
+    height: fit-content;
+    background-color: white;
+    margin: auto;
+    box-shadow: 0px 0px 3px 1px rgb(0 0 0 / 5%);
+    position:relative;
+    padding: 50px 0 50px 0;
+}
+
+#productPage #main-product-container{
+    display: grid;
+    grid-template-columns: 60% 40%;
+    position:relative;
+}
+
+#productPage #productInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+#productPage #productInfo > div{
+    width: 90%;
+}
+
+#productPage #productImage{
+    display: flex;
+    justify-content: center;
+}
+#productPage  .imageViewer{
+    width: 80%;
+    height:  400px;
+    position: sticky;
+    top: calc( (100vh - var(--navBar-height) - 400px)/2);
+    background-color: #f2f2f2;
+}
+
+
+#productPage #productInfo #productInfo-container{
+
+    
+    
+}
+
+#productPage #productInfo .productInfo-section{
+
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 15px;
+    margin: auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#productPage #productInfo .tags > span{
+    color: rgb(10, 124, 230);
+    font-weight: bold;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+#productPage #productInfo .tags > span:not(.separator){
+    cursor:pointer;
+}
+
+#productPage #productInfo .tags > span:not(.separator):hover{
+    text-decoration: underline;
+}
+
+#productPage #productInfo #product-title{
+    font-size: 35px;
+    line-height: 115%;
+}
+
+#productPage #product-author img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+#productPage #product-author{
+    margin-left:  15px;
+    font-weight: bold;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    user-select: none;
+    -moz-user-select: none;
+}
+
+#productPage #product-author img{
+    cursor: pointer;
+}
+
+#productPage #product-author span{
+    cursor: pointer;
+}
+
+#productPage #product-author span:hover{
+    text-decoration: underline;
+}
+
+#productPage #product-author img:hover ~ span{
+    text-decoration: underline;
+}
+
+#productPage #product-description{
+    color: #9b9b9b;
+    text-align: justify;
+    margin: 0 15px 0 15px;
+
+}
+
+#productPage #product-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#productPage .action-button2{
+    display: none;
+}
+
+#productPage .statusInfo{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 15px 0 15px;
+    display: none;
+}
+
+#productPage .statusInfo .icon{
+    width: 16px;
+    height: 16px;
+    min-height: 16px;
+    min-width: 16px;
+    background-image: url(../images/icons/info.png);
+    background-size: cover;
+    background-position: center;
+}
+
+#productPage .statusInfo.red-icon .icon{
+    background-image: url(../images/icons/red-info.png);
+}
+
+#productPage .statusInfo.green-icon .icon{
+    background-image: url(../images/icons/green-info.png);
+}
+
+
+#productPage .statusInfo .textInfo{
+    font-size: 12px;
+    color: gray;
+    text-align: justify;
+}
+
+#productPage .spinner{
+    margin: auto;
+    display: none;
+}
+
+#productPage .errorMessage{
+    text-align: center;
+    font-weight: bold;
+    color: red;
+    display: none;
+}
+
+
+@media only screen and (max-width:900px){
+
+    #productPage #main-product-container{
+        display: grid;
+        grid-template-columns: 1fr;
+        position:relative;
+        gap: 50px;
+    }
+
+    #productPage #productInfo{
+        grid-row: 1;
+    }
+
+    #productPage #productImage{
+        grid-row: 2;
+    }
+
+}

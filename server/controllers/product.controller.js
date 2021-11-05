@@ -5,6 +5,7 @@ const Product = require('../models/product.model');
 const Request = require('../models/request.model');
 const mongoose = require('mongoose');
 
+<<<<<<< HEAD
 function requestAccepted(productId, userId=null){
     if(userId != null){
         Request.findOne({productId:productId, petitionerId:userId, aprovved: true},(err,found)=>{
@@ -74,6 +75,53 @@ function getProduct(req, res) {
                 res.status(404).send({ error: "No se han encontrado productos con el ID indcado" });
             }
         });
+=======
+function getProduct(req, res) {
+    const params = req.body;
+    if (params.productId) {
+        var productId = mongoose.Types.ObjectId(params.productId);
+        Product.findById(productId, (err, found) => {
+            if (err) {
+                res.status(500).send({ error: 'Error interno del servidor.' });
+                console.log(err);
+            } else if (found) {
+                User.findById(found.ownerId, (err, userFound) => {
+                    if (found.ownerId == req.user.sub) {
+                        res.send({
+                            "Product found": found._id,
+                            "Cathegory": found.cathegory,
+                            "Department": found.department,
+                            "Municipality": found.municipality,
+                            "Images": found.images,
+                            "Owner profile picture": userFound.profilePic,
+                            "Owner": found.owner,
+                            "Owner ID": found.ownerId,
+                            "Product description": found.description,
+                            "isOwner": true,
+                            "donationRequestAccepted": (found.available == true) ? false : true,
+                            "donationReceivedConfirmed": (found.available == false) ? true : false
+                        });
+                    } else {
+                        res.send({
+                            "Product found": found._id,
+                            "Cathegory": found.cathegory,
+                            "Department": found.department,
+                            "Municipality": found.municipality,
+                            "Images": found.images,
+                            "Owner profile picture": userFound.profilePic,
+                            "Owner": found.owner,
+                            "Owner ID": found.ownerId,
+                            "Product description": found.description,
+                            "alreadyRequested": found.interested.includes(req.user.sub) ? true : false,
+                            "selectedAsBeneficiary": (found.interested.includes(req.user.sub) && found.available == false) ? true : false
+                        });
+                    }
+                });
+            } else {
+                res.status(404).send({ error: 'No se han encontrado productos con el ID indicado.' });
+            }
+        })
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
     } else {
         res.status(400).send({ message: "Indique el ID del producto que desea ver con detalle." });
     }
@@ -85,7 +133,12 @@ function addProduct(req, res) {
     var params = req.body;
     const date = new Date();
     date.setTime(date.getTime() - (6 * 60 * 60 * 1000));
+<<<<<<< HEAD
 
+=======
+    
+    //date.setHours(date.getHours-6);
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
     if (params.name && params.cathegory && params.department && params.municipality && params.description && req.imagesUrl) {
         product.name = params.name;
         product.description = params.description && params.description != null ? params.description : "Sin descripción";
@@ -99,10 +152,18 @@ function addProduct(req, res) {
         req.imagesUrl.forEach(image => {
             let imageArray = image.split('/');
             image = "";
+<<<<<<< HEAD
             for(let i = 2; i < imageArray.length; i++ ){
 
                 image += imageArray[i]
                 if(i !== (imageArray.length - 1))  image += "/";
+=======
+            for (let i = 2; i < imageArray.length; i++) {
+
+                image += imageArray[i]
+                if(i !== (imageArray.length - 1))  image += "/";
+
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
             }
             images.push(image);
         });
@@ -113,17 +174,29 @@ function addProduct(req, res) {
                 console.log(err);
                 res.status(500).send({ error: 'Error interno del servidor', err });
             } else if (saved) {
+<<<<<<< HEAD
                 User.findByIdAndUpdate(userId, { $push: { donations: saved._id } }, { new:true }, (err, updated) => {
+=======
+                User.findByIdAndUpdate(userId, { $push: { donations: saved._id } }, { new: true }, (err, updated) => {
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
                     if (err) {
                         console.log(err);
                         cancelDonation(saved, res, "Error interno del servidor", 500);
                     } else if (updated) {
                         setTimeout(() => {
                             updateOwner(saved, updated, res);
+<<<<<<< HEAD
                         }, 500);
                     } else {
                         cancelDonation(saved, res, "Ha ocurrido un error al agregar la donacion al registro del usuario.", 500);
                     }  
+=======
+
+                        }, 500);
+                    } else {
+                        cancelDonation(saved, res, "Ha ocurrido un error al agregar la donacion al registro del usuario.", 500);
+                    }
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
                 })
             } else {
                 res.status(400).send({ message: 'No ha sido posible realizar la donación.' });
@@ -134,8 +207,13 @@ function addProduct(req, res) {
     }
 }
 
+<<<<<<< HEAD
 function updateOwner(product, user, res){
     Product.findByIdAndUpdate(product._id, { owner : user.name + ' ' + user.lastname, ownerProfilePic: user.profilePic }, { new : true }, (err, updated) => {
+=======
+function updateOwner(product, user, res) {
+    Product.findByIdAndUpdate(product._id, { owner: user.name + ' ' + user.lastname }, { new: true }, (err, updated) => {
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
         if (err) {
             cancelDonation(product, res, "Error interno del servidor", 500);
         } else if (updated) {
@@ -182,6 +260,7 @@ function filteredSearch(req, res) {
     let instruction = '{';
     if (params.department) {
         if (instruction[1] != undefined)
+<<<<<<< HEAD
                 instruction += ', ';
         instruction += '"department": "' + params.department + '"';
     }
@@ -217,6 +296,43 @@ function filteredSearch(req, res) {
     instruction += '}';
     console.log(instruction)
     Product.find(JSON.parse(instruction), (err, found) => {
+=======
+            instruction += ', ';
+        instruction += '"department": "' + params.department + '"';
+    }
+    if (params.municipality) {
+        if (instruction[1] != undefined)
+            instruction += ', ';
+        instruction += '"municipality": "' + params.municipality + '"';
+    }
+    if (params.search) {
+        if (instruction[1] != undefined)
+            instruction += ', ';
+        instruction += '"$or": [{ "name": { "$regex":"' + params.search + '", "$options": "\'i\'"}}, { "description": { "$regex":"' + params.search + '", "$options": "\'i\'"} }]';
+    }
+    if (params.cathegory !== undefined && params.cathegory != null && params.cathegory.length > 0) {
+
+            if (instruction[1] != undefined)
+                instruction += ', ';
+            instruction += '"$or": [';
+            
+            const cathegories = params.cathegory;
+
+            let contador = 0;
+            cathegories.forEach(category => {
+                if (contador > 0 && contador < cathegories.length)
+                    instruction += ', ';
+                instruction += '{"cathegory": "' + category + '"}';
+                contador++;
+            });
+            instruction += ']';
+
+        
+    }
+    instruction += '}';
+    console.log(instruction)
+    Product.find(JSON.parse(instruction)/*{department:params.department, municipality:params.municipality}*/, (err, found) => {
+>>>>>>> 3e515712fc0f2794972586a2b2eab0a191ddad30
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
         } else if (found && found.length > 0) {

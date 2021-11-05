@@ -1,0 +1,34 @@
+.popUp.alert .popUp-body > div{
+
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUp.alert img{
+    width: 40%;
+    height: auto;
+}
+
+.popUp.alert h3{
+    font-size: 40px;
+    text-align: center;
+    width: 100%;
+    font-family: 'Yanone Kaffeesatz';
+    font-weight: 300;
+}
+
+.popUp.alert p{
+    line-height: 120%;
+    width: 80%;
+    margin: 0 auto 0 auto;
+    text-align: center;
+}
+
+.popUp.alert .buttons{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
