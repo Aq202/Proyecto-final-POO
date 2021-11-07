@@ -1,5 +1,5 @@
-import { Session } from "../scripts/Session.js";
 
+import { SocketClient } from "../scripts/SocketClient.js";
 import { Footer } from "./Footer.js";
 import { HeaderNavBar } from "./HeaderNavBar.js";
 import { NavBar } from "./NavBar.js";
@@ -25,10 +25,11 @@ export class Main{
         $root.appendChild(navBar.component);
         $root.appendChild(pageRouter.component);
         $root.appendChild(footer.component);
-        
-        
-        const loadedEvent = new CustomEvent(" ");
-        document.dispatchEvent(loadedEvent);
+    
+
+        //inciar cliente de socket
+        const socketClient = new SocketClient();
+        socketClient.initSocket();
 
         
     }

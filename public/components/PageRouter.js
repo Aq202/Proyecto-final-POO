@@ -29,6 +29,9 @@ export class PageRouter{
 
     async renderView(){
 
+        //Intentar restaurar sesion
+        if(!Session.userInSession) await Session.restoreSessionByToken();
+
         const hash = location.hash;
 
         //vaciar router container

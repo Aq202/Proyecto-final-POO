@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const port = 2004;
 const express = require('express');
 const http = require("http");
-const socketServer = require("./server/socketServer");
+const socketServer = require("./server/services/socketServer");
 const jwt = require("jsonwebtoken");
 const key = require("./server/services/key");
 
@@ -49,52 +49,13 @@ app.use('/user', userRoutes);
 app.use('/product', productRoutes);
 app.use('/request', requestRoutes);
 
-const socket = new socketServer(httpServer)
-
-
-app.post("/login", (req, res) => {
-
-    const userId = req.body.user;
-    const password = req.body.password;
-
-    if (userId != undefined && password != undefined) {
-
-        jwt.sign({
-            user: userId
-        }, key, (err, token) => {
-            if (err) res.sendStatus(403);
-
-            res.json({
-                token
-            })
-        })
-
-
-    } else {
-        res.sendStatus(404)
-    }
-})
-
-app.post("/emit", (req, res) => {
-    //id, title, text, image, url, date, viewed
-    console.log(req.body)
-    console.log("enviando jjsjss")
-    socket.io.emit("global-notification", {
-        title: req.body.title,
-        text: req.body.text,
-        url: req.body.url,
-        id: req.body.id,
-        date: new Date()
-
-    })
-
-    res.send("enviado")
-})
+new socketServer(httpServer)
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html")
 
 })
+
 
 app.post("/fakeNotifications", (req, res) => {
     //id, title, text, image, url, date, viewed
@@ -117,7 +78,3 @@ app.post("/fakeNotifications", (req, res) => {
         })
     }, 3000)
 })
-
-
-
-

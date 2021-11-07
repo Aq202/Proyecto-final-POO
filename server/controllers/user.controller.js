@@ -37,7 +37,7 @@ function signIn(req,res){
                                 res.status(500).send({ error: 'Error interno del servidor.', err });
                             else if(saved){
                             res.send({
-                                'User signed': saved._id,
+                                'Id': saved._id,
                                 'DPI': saved.dpi,
                                 'Username': saved.username,
                                 'Email': saved.email,
@@ -77,7 +77,7 @@ function login(req,res){
                         else if(matched){
                             if(params.gettoken = true){
                                 res.send({
-                                    'Logged User': found._id,
+                                    'Id': found._id,
                                     'DPI': found.dpi,
                                     'Username': found.username,
                                     'Email': found.email,
@@ -153,7 +153,7 @@ function getInfoUser(req,res){
                 res.status(500).send({error: "Error interno del servidor."});
             }else if(found){
                 res.send({
-                    'Current User': found._id,
+                    'Id': found._id,
                     'DPI': found.dpi,
                     'Username': found.username,
                     'Email': found.email,

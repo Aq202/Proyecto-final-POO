@@ -6,7 +6,7 @@ export class Product {
 
         return new Promise((resolve, reject) => {
 
-            if (!Session.userInSession) reject();
+            if (!Session.userInSession) reject(new Error("Unauthorized"));
 
             const form = new FormData();
 
@@ -36,9 +36,20 @@ export class Product {
                 .then(res => {
 
                     if (reqObject.ok === true) resolve(res);
-                    else reject(res);
+                    else{ 
+
+                        if(reqObject.status === 401){//unauthorized
+                            Session.logout();
+                            reject(new Error("Unauthorized"));
+                            
+                        }else{
+                            reject()
+                        }
+
+                        
+                    }
                 })
-                .catch(err => reject(err));
+                .catch(err => reject());
 
         });
 
@@ -113,7 +124,6 @@ export class Product {
             if(search === undefined) delete props.search;
             if(category === undefined) delete props.cathegory;
 
-            console.log(props)
 
             let reqObject;
             fetch("/product/filteredSearch", {
@@ -125,7 +135,6 @@ export class Product {
                 }
             })
             .then(r => {
-                console.log(r)
                 reqObject = r;
                 return r.json();
             })
@@ -134,7 +143,6 @@ export class Product {
                 if(reqObject.ok === true){
                     resolve(result.products)
                 }else{
-                    console.log("heeey")
                     reject();
                 }
 

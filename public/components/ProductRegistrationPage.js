@@ -332,7 +332,7 @@ export class ProductRegistrationPage {
                 await Product.createNewProduct(data);
 
                 this.hideSpinner();
-                
+
                 const alertPopUp = new AlertPopUp({
                     imgUrl: "../images/others/heroe.svg",
                     title: "Producto registrado correctamente",
@@ -344,9 +344,17 @@ export class ProductRegistrationPage {
 
             } catch (ex) {
                 this.hideSpinner();
-                this.enableSendButton();
-                this.showError("Ocurrió un error en el servidor.")
-                console.error("RegistrationError:: ",ex)
+
+                //mostrar mensaje inicio sesión
+                if (ex?.message === "Unauthorized") {
+                    new UnauthorizedPopUp(true).open();
+                } else {
+
+                    this.enableSendButton();
+                    this.showError("Ocurrió un error en el servidor.")
+                    console.error("RegistrationError:: ", ex)
+
+                }
             }
         }
     }

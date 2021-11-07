@@ -435,7 +435,6 @@ export class ProductPage {
 
         const popUp = new UnauthorizedPopUp();
         popUp.open();
-        console.log("hola")
     }
 
     addMessage({ message, red, green }) {
