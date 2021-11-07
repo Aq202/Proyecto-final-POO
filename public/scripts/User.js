@@ -43,7 +43,6 @@ export class User{
                 }
             }).then(r => r.json())
             .then(result =>{
-                console.log(result)
                
                     resolve();
             

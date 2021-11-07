@@ -1,3 +1,5 @@
+import parseJwt from "../helpers/parseJwt.js";
+
 export class Session {
 
     constructor({ userId, email, name, lastName, birthday, sex, imageUrl }) {
@@ -13,18 +15,25 @@ export class Session {
     static async login({ user, email, password }) {
 
         const token = localStorage.getItem("sessionToken") || false;
-        const userData = localStorage.getItem("userData") || false;
+        const userData = sessionStorage.getItem("userData") || false;
 
         if (token === false && userData === false) {
 
             const result = await this.authenticateUser({ user, email, password });
+            this.sendSessionEvent();
 
-        }else if(token !== false && userData === false){
-            this.validateSessionToken(token);
+        } else if (token !== false && userData === false) {
+
+            try {
+                await this.restoreSessionByToken(token);
+                this.sendSessionEvent();
+            } catch (ex) {
+
+            }
 
         }
 
-        this.sendSessionEvent();
+
 
     }
 
@@ -60,7 +69,7 @@ export class Session {
                             reject("No token");
                         }
 
-                        localStorage.setItem("userData", JSON.stringify(result));
+                        sessionStorage.setItem("userData", JSON.stringify(result));
 
                         resolve();
 
@@ -75,53 +84,54 @@ export class Session {
 
     }
 
-    static validateSessionToken() {
+    static restoreSessionByToken() {
 
-        return new Promise((resolve, reject) => {
+        if (Session.userInSession) return;
+        if (Session.token === undefined) return;
 
-            let data = {
-                username: user,
-                email: email,
-                password
+        const tokenObj = parseJwt(Session.token);
+        if(tokenObj !== null){
+
+            const {age, bith, dpi, email, sub, lastname, name, sex, username} = tokenObj;
+
+            const sessionObj = {
+                Age: age,
+                Birth: bith,
+                DPI: dpi,
+                Email: email,
+                Id: sub,
+                Lastname: lastname,
+                Name:name,
+                Sex: sex,
+                Username: username
             }
 
+            sessionStorage.setItem("userData", JSON.stringify(sessionObj));
+            Session.sendSessionEvent();
+        }else{
+            Session.logout();
+        }
 
-            fetch("/user/validateToken", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(r => {
-                if (r.ok === false) throw "";
-                return r.json();
-            })
-                .then(result => {
-
-                   resolve()
-
-                }).catch(err => {
-                    reject(err)
-                })
-        });
     }
 
+    
+
+
     static logout() {
-        localStorage.removeItem("userData");
+        sessionStorage.removeItem("userData");
         localStorage.removeItem("sessionToken");
         this.sendSessionEvent();
     }
 
-    static sendSessionEvent(){
+    static sendSessionEvent() {
         const sessionEvent = new CustomEvent("sessionStateChanged");
         document.dispatchEvent(sessionEvent);
     }
 
     static get userData() {
 
-        const dataJSON = localStorage.getItem("userData");
+        const dataJSON = sessionStorage.getItem("userData");
         if (dataJSON === undefined || dataJSON === null) return undefined;
-
         return JSON.parse(dataJSON);
     }
 
@@ -132,7 +142,12 @@ export class Session {
         return token;
     }
 
+    static verifyToken(){
+        if(Session.token === undefined) sessionStorage.clear();
+    }
+
     static get userInSession() {
+        Session.verifyToken();
         return (Session.userData !== undefined && Session.userData !== null);
     }
 
@@ -142,7 +157,7 @@ export class Session {
         const userData = Session.userData;
 
         if (userData === undefined) return;
-        if (userData.hasOwnProperty("ID")) return userData.ID;
+        if (userData.hasOwnProperty("Id")) return userData.Id;
     }
 
     static get age() {

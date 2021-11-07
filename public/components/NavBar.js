@@ -21,8 +21,6 @@ export class NavBar {
 
         $nav.setAttribute("id", "navBar");
 
-        //$nav.classList.add("searching")
-
         $nav.innerHTML = `
             <div class="navContainer">
                 <div class="navigationIcons menuIcon">
@@ -97,9 +95,6 @@ export class NavBar {
                 this.newSearchEvent(e);
             }
         });
-
-
-        this.addEvents()
 
         return $nav;
     }
@@ -191,39 +186,5 @@ export class NavBar {
         else this.component.classList.remove("loggedIn");
     }
 
-    addEvents() {
-
-        const $profileImage = this.component.querySelector("#userImage")
-
-        $profileImage.addEventListener("click", async e => {
-
-            let result = await Session.getUser({
-                user: prompt("Usuario:"),
-                password: prompt("Contraseña")
-            })
-
-            console.log(result)
-        })
-
-
-        this.component.querySelector("#chatOption").addEventListener("click", async e => {
-
-
-            let result = await Session.createNewUser({
-                dpi: 45125426,
-                username: prompt("Ingresa tu usuario: "),
-                age: 18,
-                email: "diego@gmail.com",
-                password: prompt("Contraseña: "),
-                name: "Diego",
-                lastname: "Morales",
-                direction: "Villa Nueva",
-                sex: "M",
-                birtday: new Date()
-            })
-
-
-        })
-
-    }
+    
 }

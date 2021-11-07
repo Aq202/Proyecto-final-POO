@@ -160,7 +160,6 @@ export class NotificationItem {
 
 
     static hideNotificationContextMenu() {
-        console.log("Hl")
         let stopScroll = document.querySelector(".stop-scrolling");
         if (stopScroll) stopScroll.classList.remove("stop-scrolling");
         $(".context-menu").hide();
