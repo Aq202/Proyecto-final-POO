@@ -4,6 +4,11 @@ export class RegistrationPage{
     constructor(){
 
         this.initComponent();
+        this.name = "";
+        this.usename = "";
+        this.email = "";
+        this.dpi = 0;
+        this.password = "";
     }
     initComponent(){
         this.component = document.createElement("div");
@@ -18,27 +23,27 @@ export class RegistrationPage{
                 <div class="user-details">
                     <div class="input-box">
                         <span class="details">Nombre completo</span>
-                        <input type="text" placeholder="Ingrese su nombre completo" required>
+                        <input id="name-input" type="text" placeholder="Ingrese su nombre completo" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Nombre de usuario</span>
-                        <input type="text" placeholder="Ingrese su nombre de usuario" required>
+                        <input id="username-input" type="text" placeholder="Ingrese su nombre de usuario" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Correo electrónico</span>
-                        <input type="text" placeholder="Ingrese su correo electrónico" required>
+                        <input id="email-input" type="text" placeholder="Ingrese su correo electrónico" required>
                     </div>
                     <div class="input-box">
                         <span class="details">DPI</span>
-                        <input type="text" placeholder="Ingrese su número de DPI" required>
+                        <input id="dpi-input" type="text" placeholder="Ingrese su número de DPI" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Contraseña</span>
-                        <input type="text" placeholder="Ingrese su contraseña" required>
+                        <input id="password-input" type="text" placeholder="Ingrese su contraseña" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Confirmar contraseña</span>
-                        <input type="text" placeholder="Ingrese su contraseña nuevamente" required>
+                        <input id="confirmPass-input" type="text" placeholder="Ingrese su contraseña nuevamente" required>
                     </div>
                 </div>
                 <div class="sex-details">
@@ -59,8 +64,37 @@ export class RegistrationPage{
                 <div class="button">
                     <input type="submit" value="Registrarse">
                 </div>
+                <p class="errorMessage"></p>
             </form>
         </div>
         `;
     }
+
+    async signUp(){
+        const $inputName = this.querySelector("#name-input");
+        const $inputUserName = this.querySelector("username-input");
+        const $inputEmail = this.querySelector("email-input");
+        const $inputPassword = this.querySelector("password-input");
+        const $inputConfirmPass = this.querySelector("confirmPass-input");
+    }
+
+    showError(errorMessage) {
+
+        if (!this.component || errorMessage === undefined) return;
+
+        const $errorElement = this.component.querySelector(".errorMessage");
+        if (!$errorElement) return;
+
+        $errorElement.style.display = "block";
+        $errorElement.innerText = errorMessage.trim();
+    }
+
+    hideError(){
+        const $errorMessage = this.component.querySelector(".error");
+        if(!$errorMessage) return;
+        
+        $errorMessage.style.display = "none";
+    }
+
+
 }

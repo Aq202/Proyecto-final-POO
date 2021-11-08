@@ -5,7 +5,7 @@
     box-sizing: border-box;
     font-family: helvetica;
 }
-body{
+#registrationPage{
     display: flex;
     height: 100vh;
     justify-content: center;
@@ -116,4 +116,12 @@ form .button input{
     color: #fff;
     font-size: 18px;
     border-radius: 20px;
+}
+
+form .errorMessage{
+    font-weight: bold;
+    color: red;
+    width: 100%;
+    text-align: center;
+    display: none;
 }
