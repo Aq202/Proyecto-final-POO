@@ -49,7 +49,6 @@ export class DonationsContainer {
             try {
 
                 const { name, owner, publishDate, images, ownerImage, _id } = donationObject;
-                console.log(donationObject)
 
                 if (name === undefined || owner === undefined || publishDate === undefined || images[0] === undefined) continue;
 
@@ -88,7 +87,6 @@ export class DonationsContainer {
 
     throwFullySeenEvent(entry) {
         if (entry[0].isIntersecting) {
-            console.log(entry[0])
 
             const event = new CustomEvent("fullySeen");
             this.component.dispatchEvent(event);

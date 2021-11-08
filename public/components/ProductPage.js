@@ -6,13 +6,14 @@ import { DonationRequestsContainer } from "./DonationRequestsContainer.js";
 import { Session } from "../scripts/Session.js";
 import { DonationRequest } from "../scripts/DonationRequest.js";
 import { AlertPopUp } from "./alertPopUp.js";
-
+import { Filter } from "../scripts/Filter.js";
 export class ProductPage {
 
-    constructor({ productId, cathegory, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed, userRequestId }) {
+    constructor({ productId, cathegory, department, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed, userRequestId }) {
 
         this.productId = productId || null;
-        this.cathegory = cathegory;
+        this.category = cathegory;
+        this.department = department;
         this.municipality = municipality;
         this.title = title;
         this.description = description;
@@ -51,7 +52,7 @@ export class ProductPage {
                     <div id="productInfo-container" class="productInfo-section">
             
                         <div class="tags">
-                            <span id="cathegory">${this.cathegory}</span>
+                            <span id="cathegory">${this.category}</span>
                             <span class="separator">|</span>
                             <span id="place">${this.municipality}</span>
                         </div>
@@ -134,6 +135,8 @@ export class ProductPage {
         $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
         $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
         $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.rejectDonation());
+        $productPage.querySelector("#cathegory").addEventListener("click", e => this.searchSimilarCategories());
+        $productPage.querySelector("#place").addEventListener("click", e => this.searchSimilarMunicipalities());
 
         document.addEventListener("requestAccepted", e => this.updateProductState());
 
@@ -453,7 +456,7 @@ export class ProductPage {
         else $statusInfo.classList.remove("red-icon");
     }
 
-    hideMessage(){
+    hideMessage() {
         const $statusInfo = this.component.querySelectorAll(".statusInfo");
         if (!$statusInfo) return;
 
@@ -497,6 +500,30 @@ export class ProductPage {
         if (!$error) return;
 
         $error.style.display = "none";
+    }
+
+    searchSimilarCategories() {
+
+        if (this.category !== undefined) {
+            Filter.clearFilters();
+            Filter.addCategory({ category: this.category })
+            location.hash = "#/";
+        }
+    }
+
+    async searchSimilarMunicipalities() {
+
+        if (this.department !== undefined && this.municipality !== undefined) {
+
+            Filter.blockEvent = true;
+            Filter.clearFilters();
+            await Filter.setDepartment(this.department);
+            await Filter.setMunicipality(this.municipality);
+            Filter.blockEvent = false;
+            console.log(Filter.filters)
+            location.hash = "#/";
+
+        }
     }
 
 

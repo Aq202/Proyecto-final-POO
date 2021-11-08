@@ -54,15 +54,24 @@ export class HomePage {
         this.component.appendChild(this.donationsContainer.component);
         this.fillDonationContainer();
 
-        document.addEventListener("filterChanged", e => { 
+        const filteredChanged = e => { 
+
+            if(document.body.contains(this.component)){
 
             document.querySelector("body").scrollTo({
                 top: this.donationsContainer.component.offsetTop - 80,
                 behavior: 'smooth'
               });
-
+            
+              debugger
             this.fillDonationContainer();
-        })
+            }else{
+                document.removeEventListener("filterChanged", filteredChanged);
+                console.info(this.component)
+            }
+        }
+
+        document.addEventListener("filterChanged", filteredChanged);
         this.donationsContainer.component.addEventListener("fullySeen", e => this.addOlderContent());
 
 
@@ -81,6 +90,7 @@ export class HomePage {
         try {
 
             const productList = await Product.getProducts({ department, municipality, search, category, max });
+            console.log(productList)
             if (productList.length > 0)
                 this.donationsContainer.addContent(...productList);
             else

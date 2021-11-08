@@ -1,8 +1,8 @@
-footer{
-    
-}
-
 footer .footerWave{
     width: 100%;
     height: 150px;
+}
+
+#root.completeWindow footer{
+    display: none;
 }

@@ -42,30 +42,32 @@ function getProduct(req, res) {
             } else if (found) {
                 if(req.user != null && found.ownerId == req.user.sub){
                     res.send({
-                        "Product found": found._id,
+                        "ProductFoundId": found._id,
                         "Cathegory": found.cathegory,
                         "Department": found.department,
                         "Municipality": found.municipality,
                         "Images": found.images,
-                        "Owner profile picture": found.ownerProfilePic,
+                        "OwnerProfilePicture": found.ownerProfilePic,
                         "Owner": found.owner,
-                        "Owner ID": found.ownerId,
-                        "Product description": found.description,
+                        "OwnerID": found.ownerId,
+                        "ProductName":found.name,
+                        "ProductDescription": found.description,
                         "isOwner": true,
                         "donationRequestAccepted": requestAccepted(found._id),
                         "donationReceivedConfirmed": (found.available == false) ? true : false
                     });    
                 } else {
                     res.send({
-                        "Product found": found._id,
+                        "ProductFoundId": found._id,
                         "Cathegory": found.cathegory,
                         "Department": found.department,
                         "Municipality": found.municipality,
                         "Images": found.images,
-                        "Owner profile picture": found.ownerProfilePic,
+                        "OwnerProfilePicture": found.ownerProfilePic,
                         "Owner": found.owner,
-                        "Owner ID": found.ownerId,
-                        "Product description": found.description,
+                        "OwnerID": found.ownerId,
+                        "ProductName":found.name,
+                        "ProductDescription": found.description,
                         "alreadyRequested": found.interested.includes(req.user.sub),
                         "selectedAsBeneficiary": requestAccepted(found._id, req.user.sub)
                     });
@@ -137,10 +139,12 @@ function addProduct(req, res) {
 }
 
 function updateOwner(product, user, res) {
+    
     Product.findByIdAndUpdate(product._id, { owner: user.name + ' ' + user.lastname }, { new: true }, (err, updated) => {
         if (err) {
             cancelDonation(product, res, "Error interno del servidor", 500);
         } else if (updated) {
+            console.log("XD",updated)
             res.send({ message: 'Producto agregado con éxito.', data: updated });
         } else {
             cancelDonation(product, res, "Ha ocurrido un error al asignar la donación al usuario correspondiente.", 500);

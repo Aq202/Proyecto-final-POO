@@ -1,0 +1,19 @@
+#pageNotFound{
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#pageNotFound img{
+    width: 90%;
+    max-width: 450px;
+}
+
+#pageNotFound h3{
+    font-size: 35px;
+    text-align: center;
+    line-height: 2;
+    font-weight: 300;
+}
