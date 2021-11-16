@@ -12,6 +12,9 @@ const userRoutes = require('./server/routes/user.route');
 const productRoutes = require('./server/routes/product.route');
 const requestRoutes = require('./server/routes/request.route');
 const RequestApprovedEmail = require('./server/services/RequestApprovedEmail');
+const RequestRejectedEmail = require('./server/services/RequestRejectedEmail');
+const NewRequestEmail = require('./server/services/NewRequestEmail');
+const DonationConfirmedAsReceived = require('./server/services/DonationConfirmedAsReceived');
 
 
 const app = express();
@@ -33,17 +36,7 @@ mongoose.connect('mongodb+srv://epdPOO:proyectofinal@cluster0.kxclx.mongodb.net/
 
 httpServer.listen(port, (serv) => {
     console.log("Servidor corriendo en puerto " + port);
-
-    const emailSender = new RequestApprovedEmail({
-        userEmail:"diegoguatedb2002@gmail.com",
-        productName:"Silla gamer p235",
-        userName:"Diego Morales",
-        ownerName: "Juan perez",
-        ownerEmail: "juan@gmail.com"
-    })
-
-    emailSender.sendEmail();
-})
+});
 app.use(express.json())
 app.use(express.static('./public'))
 app.use(express.urlencoded({ extended: true }))

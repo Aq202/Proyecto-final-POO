@@ -66,8 +66,6 @@ module.exports = class Email{
 
         };
 
-        console.log(mailOptions)
-
         this._transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log("No se pudo enviar el email. ", error);
