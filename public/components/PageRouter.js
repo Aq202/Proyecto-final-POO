@@ -36,6 +36,7 @@ export class PageRouter {
 
         //Intentar restaurar sesion
         if (!Session.userInSession) await Session.restoreSessionByToken();
+        Session.updateSessionState();
 
         const hash = location.hash;
 

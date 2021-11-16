@@ -10,6 +10,7 @@ export class Session {
         this.birthday = birthday;
         this.sex = sex;
         this.imageUrl = imageUrl;
+        this._inSession = false;
     }
 
     static async login({ user, email, password }) {
@@ -65,13 +66,17 @@ export class Session {
                         if (result.hasOwnProperty("Token")) {
                             localStorage.setItem("sessionToken", result.Token)
                             delete result.Token;
+
+                            this._inSession = true;
                         } else {
                             reject("No token");
+                            return
                         }
 
                         sessionStorage.setItem("userData", JSON.stringify(result));
 
                         resolve();
+                        this._inSession = true;
 
                     } catch (ex) {
                         reject(ex);
@@ -108,6 +113,7 @@ export class Session {
 
             sessionStorage.setItem("userData", JSON.stringify(sessionObj));
             Session.sendSessionEvent();
+            this._inSession = true;
         }else{
             Session.logout();
         }
@@ -121,6 +127,7 @@ export class Session {
         sessionStorage.removeItem("userData");
         localStorage.removeItem("sessionToken");
         this.sendSessionEvent();
+        this._inSession = false;
     }
 
     static sendSessionEvent() {
@@ -149,6 +156,16 @@ export class Session {
     static get userInSession() {
         Session.verifyToken();
         return (Session.userData !== undefined && Session.userData !== null);
+    }
+
+    /**
+     * Verifica si no se ha actualizado el estado de la sesión.
+     */
+    static updateSessionState(){
+        if(Session.userInSession !== Session._inSession){
+            Session._inSession = Session.userInSession;
+            this.sendSessionEvent();
+        }
     }
 
 

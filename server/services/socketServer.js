@@ -40,12 +40,7 @@ module.exports = class SocketServer {
         SocketServer.io.on("connection", socket => {
             console.log("Cliente conectado")
             
-            
-
-
-        })
-
-        
+        });
 
     }
 
