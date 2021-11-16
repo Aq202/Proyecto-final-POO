@@ -1,26 +1,25 @@
-#donationsContainer{
+.donationsContainer{
 
     grid-column: 2;
     grid-row: 3;
     min-height: 100vh;
     width: 100%;
-    padding: 45px;
     max-width: 2000px;
     margin:auto;
 
     --product-info-height: 110px;
 }
 
-#donationsContainer .products-container{
+.donationsContainer .products-container{
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     display: grid;
     gap: 25px;
     grid-template-columns: repeat(5,1fr);
 }
 
-#donationsContainer.loading .products-container,
-#donationsContainer.no-results .products-container{
+.donationsContainer.loading .products-container,
+.donationsContainer.no-results .products-container{
     display: none;
 }
 
@@ -33,6 +32,7 @@
     overflow: hidden;
     animation: showItem 1s;
     z-index: 1;
+    margin: auto;
 }
 
 .cont-img{
@@ -105,18 +105,18 @@
     color: rgb(65, 4, 4);
 }
 
-#donationsContainer .spinner-container{
+.donationsContainer .spinner-container{
     display: flex;
     align-items: center;
     justify-content: center;
     height: 50px;
 }
 
-#donationsContainer:not(.loading) .spinner-container{
+.donationsContainer:not(.loading) .spinner-container{
     display: none;
 }
 
-#donationsContainer .no-results-message{
+.donationsContainer .no-results-message{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,12 +125,12 @@
     animation: showItem .5s ;
 }
 
-#donationsContainer:not(.no-results) .no-results-message{
+.donationsContainer:not(.no-results) .no-results-message{
     display: none;
     opacity: 0;
 }
 
-#donationsContainer .no-results-message h3 {
+.donationsContainer .no-results-message h3 {
     font-size: 35px;
     text-align: center;
     line-height: 2;
@@ -146,36 +146,3 @@
 }
 
 
-@media only screen and (max-width:1850px){
-    #donationsContainer .products-container{
-        grid-template-columns: repeat(4,1fr);
-    }
-}
-
-@media only screen and (max-width:1440px){
-    #donationsContainer .products-container{
-        grid-template-columns: repeat(3,1fr);
-    }
-}
-
-@media only screen and (max-width:900px){
-    #donationsContainer .products-container{
-        grid-template-columns: repeat(2,1fr);
-    }
-}
-
-@media only screen and (max-width:620px){
-    #donationsContainer {
-        padding: 25px;
-    }
-}
-
-
-@media only screen and (max-width:580px){
-    #donationsContainer .products-container{
-        grid-template-columns: 1fr;
-    }
-    .donationItem{
-        margin: auto;
-    }
-}

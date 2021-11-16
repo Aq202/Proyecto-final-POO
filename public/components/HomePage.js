@@ -63,7 +63,6 @@ export class HomePage {
                 behavior: 'smooth'
               });
             
-              debugger
             this.fillDonationContainer();
             }else{
                 document.removeEventListener("filterChanged", filteredChanged);

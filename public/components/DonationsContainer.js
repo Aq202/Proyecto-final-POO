@@ -19,7 +19,7 @@ export class DonationsContainer {
         this.component = document.createElement("div");
         const $donationContainer = this.component;
 
-        $donationContainer.setAttribute("id", "donationsContainer");
+        $donationContainer.classList.add("donationsContainer");
 
         $donationContainer.innerHTML = `
             <div class="spinner-container">

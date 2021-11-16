@@ -42,3 +42,42 @@
     
 }
 
+/* Modificaciones de donation Container */
+
+#homePage .donationsContainer{
+    padding: 45px;
+}
+
+@media only screen and (max-width:1850px){
+    #homePage .donationsContainer .products-container{
+        grid-template-columns: repeat(4,1fr);
+    }
+}
+
+@media only screen and (max-width:1440px){
+    #homePage .donationsContainer .products-container{
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+
+@media only screen and (max-width:900px){
+    #homePage .donationsContainer .products-container{
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media only screen and (max-width:620px){
+    #homePage .donationsContainer {
+        padding: 25px;
+    }
+}
+
+
+@media only screen and (max-width:580px){
+    #homePage .donationsContainer .products-container{
+        grid-template-columns: 1fr;
+    }
+    #homePage .donationItem{
+        margin: auto;
+    }
+}

@@ -6,6 +6,7 @@ import { ProductPage } from "./ProductPage.js";
 import { Product } from "../scripts/Product.js";
 import { PageNotFound } from "./PageNotFound.js";
 import { LoadingView } from "./LoadingView.js";
+import { ProfilePage } from "./ProfilePage.js";
 
 
 export class PageRouter {
@@ -71,6 +72,9 @@ export class PageRouter {
                 //producto no encontrada
                 this.addNotFoundPage();
             }
+        }
+        else if (hash.includes("/profile")){
+            this.renderView(new ProfilePage().component);
         }
         else {
             this.addNotFoundPage();
