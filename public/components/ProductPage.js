@@ -20,7 +20,7 @@ export class ProductPage {
         this.profileImage = profileImage;
         this.authorName = name;
         this.productImages = productImages;
-        this.isOwner = isOwner || false;
+        this.isOwner = isOwner || true;
         this.alreadyRequested = alreadyRequested || false;
         this.selectedAsBeneficiary = selectedAsBeneficiary || false;
         this.donationRequestAccepted = donationRequestAccepted || false;
