@@ -160,6 +160,14 @@ export class NavBar {
             })
         }
 
+        const $signInButton = this.component.querySelector("#signInButton")
+        if ($signInButton){
+
+            $signInButton.addEventListener("click", e => {
+                location.hash = "/registration";
+            })
+        }
+
     }
 
     newSearchEvent(evt) {
