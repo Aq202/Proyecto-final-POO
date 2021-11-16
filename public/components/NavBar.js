@@ -174,8 +174,10 @@ export class NavBar {
             Filter.addSearch(searchText);
 
             const event = new CustomEvent("newSearch");
-
             document.dispatchEvent(event);
+
+            //redireccionar al home
+            location.hash = "#/"
         }
 
     }

@@ -329,7 +329,7 @@ export class ProductRegistrationPage {
                     cathegory: this.category,
                     images: this.imageFiles
                 }
-                await Product.createNewProduct(data);
+                const productData = await Product.createNewProduct(data);
 
                 this.hideSpinner();
 
@@ -340,6 +340,12 @@ export class ProductRegistrationPage {
                 });
 
                 await alertPopUp.open();
+
+                //reedirigir
+                if (productData?._id !== undefined)
+                    location.hash = `#/product?productId=${productData?._id}`;
+                else
+                    location.hash = `#/`;
 
 
             } catch (ex) {

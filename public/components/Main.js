@@ -28,8 +28,7 @@ export class Main{
     
 
         //inciar cliente de socket
-        const socketClient = new SocketClient();
-        socketClient.initSocket();
+        SocketClient.initSocket();
 
         
     }

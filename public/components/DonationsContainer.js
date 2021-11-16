@@ -8,7 +8,7 @@ export class DonationsContainer {
 
         this.lazyLoad = lazyLoad || true;
         this.itemsCount = 0;
-
+        this.contentLoaded = new Set();
 
         this.initComponent();
 
@@ -49,19 +49,22 @@ export class DonationsContainer {
             try {
 
                 const { name, owner, publishDate, images, ownerImage, _id } = donationObject;
-                console.log(donationObject)
 
                 if (name === undefined || owner === undefined || publishDate === undefined || images[0] === undefined) continue;
 
-                fragment.appendChild(new DonationItem({
-                    title: name,
-                    donationImage: images[0],
-                    ownerImage,
-                    date: publishDate,
-                    donationPath: `/#/product?productId=${_id}`
-                }).component);
+                if (!this.contentLoaded.has(_id)) {
 
-                this.itemsCount++;
+                    fragment.appendChild(new DonationItem({
+                        title: name,
+                        donationImage: images[0],
+                        ownerImage,
+                        date: publishDate,
+                        donationPath: `/#/product?productId=${_id}`
+                    }).component);
+
+                    this.itemsCount++;
+                    this.contentLoaded.add(_id);
+                }
 
             } catch (ex) {
 
@@ -84,12 +87,13 @@ export class DonationsContainer {
         if (!productContainer) return;
         productContainer.innerHTML = "";
         this.itemsCount = 0;
+        this.contentLoaded.clear();
     }
 
     throwFullySeenEvent(entry) {
         if (entry[0].isIntersecting) {
-            console.log(entry[0])
 
+            this.observer.unobserve(entry[0].target)
             const event = new CustomEvent("fullySeen");
             this.component.dispatchEvent(event);
         }

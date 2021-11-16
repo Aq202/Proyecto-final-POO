@@ -4,18 +4,14 @@ import { Session } from "./Session.js";
 
 export class SocketClient {
 
-    constructor() {
-
-    }
-
-    async initSocket() {
+    static async initSocket() {
 
         return new Promise((resolve, reject) => {
             if (Session.userInSession === true && Session.token !== undefined) {
 
                 try{
-                    this.createSocketInstance();
-                    this.startListening();
+                    SocketClient.createSocketInstance();
+                    SocketClient.startListening();
 
                 }catch(ex){
                     reject(ex);
@@ -30,36 +26,33 @@ export class SocketClient {
 
     }
 
-    async createSocketInstance() {
+    static createSocketInstance() {
 
-        this.socketIo = io({
+        SocketClient.socketIo = io({
             auth: {
                 token: Session.token
             }
         });
     }
 
-    startListening() {
+    static startListening() {
 
-        if(this.socketIo === undefined) return;
+        if(SocketClient.socketIo === undefined) return;
 
-        this.socketIo.on("connect_error", err => {
+        SocketClient.socketIo.on("connect_error", err => {
 
             if(err.message === "not authorized"){
                 console.warn("Desconectando socket")
-                this.socketIo.removeAllListeners();
+                SocketClient.socketIo.removeAllListeners();
             }
         })
 
-        this.socketIo.on("global-notification", msg => {
+        SocketClient.socketIo.on("global-notification", msg => {
 
             const notificationEvent = new CustomEvent("newNotification", { detail: msg });
             document.dispatchEvent(notificationEvent);
             console.warn("evento enviado")
         })
     }
-
-
-
 
 }

@@ -35,7 +35,7 @@ export class Product {
                 })
                 .then(res => {
 
-                    if (reqObject.ok === true) resolve(res);
+                    if (reqObject.ok === true) resolve(res.data);
                     else{ 
 
                         if(reqObject.status === 401){//unauthorized
@@ -55,24 +55,56 @@ export class Product {
 
     }
 
+    /**
+     * Retorna la información de un producto en específico.
+     * @param {id del producto} productId 
+     * @returns Promise. Resolve: productData.
+     */
     static getProductData(productId) {
 
         return new Promise((resolve, reject) => {
-            resolve({
-                productId: "asdfñkl",
-                cathegory: "Tecnología",
-                municipality: "Villa Nueva",
-                title: "Cámara nueva canon",
-                description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia soluta eius commodi aut ducimus reiciendis voluptatem laudantium dolorum? Aperiam eius maxime, quaerat tempore fuga esse alias consequatur quis explicabo quam.",
-                profileImage: "images/profileImages/1.jpg",
-                name: "Diego Morales",
-                productImages: [
-                    "http://cdn.shopify.com/s/files/1/0101/2522/files/dslr-manual-focus_grande.jpg?3541",
-                    "https://www.geovirtual2.cl/Entrada/Camara-Pentax-2015-01n.jpg",
-                    "https://mott.pe/noticias/wp-content/uploads/2017/09/Las-5-mejores-c%C3%A1maras-de-fotos-compactas-usadas-por-fot%C3%B3grafos-profesionales-1280x720.jpg"
-                ]
 
-            })
+            const obj = {
+                productId
+            }
+
+            let reqObj;
+
+            fetch("/product/getProduct", {
+                method:"POST",
+                body:JSON.stringify(obj),
+                headers:{
+                    'Authorization': Session.token,
+                    "Content-Type": "application/json"
+                }
+            }).then(r => {
+                reqObj = r;
+                return r.json();
+
+            }).then(result => {
+
+                console.log("INFORMACION PRODUCTO, ", result)
+                if(reqObj.ok === true){
+
+                    resolve({
+                        productId: result.ProductFoundId,
+                        cathegory: result.Cathegory,
+                        department: result.Department,
+                        municipality: result.Municipality,
+                        title: result.ProductName,
+                        description: result.ProductDescription,
+                        profileImage: "images/profileImages/1.jpg",
+                        name: result.Owner,
+                        productImages: result.Images
+        
+                    })
+                    
+                }else{
+                    reject();
+                }
+
+            }).catch(err => reject(err));
+
         })
     }
 

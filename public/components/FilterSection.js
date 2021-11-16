@@ -217,7 +217,7 @@ export class FilterSection {
         
         const municipalityKey = evt.target.value;
         
-        Filter.municipality = municipalityKey;  
+        Filter.setMunicipality(municipalityKey);  
 
     }
 
