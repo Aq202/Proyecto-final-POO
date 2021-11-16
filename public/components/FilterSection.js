@@ -74,7 +74,7 @@ export class FilterSection {
 
         this.slideToogle();
         this.addDepartmentsOptions();
-        this.addMunicipiosOptions();
+        this.addMunicipalitiesOptions();
         this.addCategories();
         this.addSearch();
 
@@ -157,10 +157,9 @@ export class FilterSection {
         }
     }
     
-    addMunicipiosOptions() {
+    addMunicipalitiesOptions() {
 
         const department = Filter.department;
-
         if (this.departmentsInfo != undefined) {
             
             const $municipiosSelect = this.component.querySelector("#municipiosSelect");
@@ -205,12 +204,12 @@ export class FilterSection {
         }
     }
     
-    selectDepartment(evt) {
+    async selectDepartment(evt) {
         
         const departmentKey = evt.target.value;
         
-        Filter.department = departmentKey;  
-        this.addMunicipiosOptions();      
+        await Filter.setDepartment(departmentKey);  
+        this.addMunicipalitiesOptions();      
         
     }
 
@@ -218,7 +217,7 @@ export class FilterSection {
         
         const municipalityKey = evt.target.value;
         
-        Filter.municipality = municipalityKey;  
+        Filter.setMunicipality(municipalityKey);  
 
     }
 

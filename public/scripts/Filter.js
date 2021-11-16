@@ -1,16 +1,20 @@
+
 export class Filter {
 
     static filters = {
-        department: "Escuintla",
-        municipality: "San Pedro Necta",
-        search: "HOLA MUNDO",
-        category: ["Ropa"]
+        department: "",
+        municipality: "",
+        search: "",
+        category: null
     }
+
+    static blockEvent = false;
 
     static get defaultCategories() {
         return [
             "Ropa",
             "Electrodomésticos",
+            "Fotografía",
             "Teléfonos",
             "Televisiones",
             "Calzado",
@@ -27,142 +31,170 @@ export class Filter {
     }
 
     static removedCategories = new Set();
+    static _departmentsOfGuatemala = null;
 
     static get departmentsOfGuatemala() {
 
         return new Promise((resolve, reject) => {
-            fetch("/helpers/Guatemala.json", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(r => r.json())
-                .then(result => {
 
-                    resolve(result);
+            if (this._departmentsOfGuatemala === null || this._departmentsOfGuatemala === undefined) {
+                fetch("/helpers/Guatemala.json", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 })
-                .catch(err => reject(err))
+                    .then(r => r.json())
+                    .then(result => {
 
+                        this._departmentsOfGuatemala = result;
+                        resolve(result);
+                    })
+                    .catch(err => reject(err))
+
+            } else {
+                resolve(this._departmentsOfGuatemala)
+            }
         })
 
     }
 
 
-    static set department(department) {
+    static setDepartment(department) {
 
-        Filter.departmentsOfGuatemala.then(departments => {
+        return new Promise((resolve, reject) => {
 
-            if (departments.hasOwnProperty(department)) {
-                this.filters.department = department;
+            Filter.departmentsOfGuatemala.then(departments => {
 
-            } else {
-                this.filters.department = null;
-                this.filters.municipality = null;
-            }
-            Filter.throwFilterChangedEvent();
+                if (departments.hasOwnProperty(department)) {
+                    Filter.filters.department = department;
 
-        })
+                } else {
+
+                    Filter.filters.department = "";
+                    Filter.filters.municipality = "";
+                }
+                Filter.throwFilterChangedEvent();
+
+                resolve();
+            })
+        });
     }
 
     static get department() {
-        return this.filters.department;
+        return Filter.filters.department;
     }
 
-    static set municipality(municipality) {
+    static setMunicipality(municipality) {
 
-        Filter.departmentsOfGuatemala.then(departments => {
-            const currentDepartment = this.filters.department;
+        return new Promise(async (resolve, reject) => {
+
+            const departments = await Filter.departmentsOfGuatemala;
+            const currentDepartment = Filter.filters.department;
 
             if (currentDepartment !== null && currentDepartment !== undefined) {
 
                 if (departments[currentDepartment].includes(municipality)) {
-                    this.filters.municipality = municipality;
+                    Filter.filters.municipality = municipality;
                     Filter.throwFilterChangedEvent();
+                    resolve();
                     return;
                 }
 
             }
 
-            this.filters.municipality = null;
+            Filter.filters.municipality = null;
             Filter.throwFilterChangedEvent();
-        })
+            reject();
+
+        });
+
     }
 
     static get municipality() {
-        return this.filters.municipality;
+        return Filter.filters.municipality;
     }
 
-    static addCategory({category, addAll}) {
+    static addCategory({ category, addAll }) {
 
-        if (this.removedCategories.has(category)) {
+        if (Filter.removedCategories.has(category)) {
             //se elimina de la lista
-            this.removedCategories.delete(category);
+            Filter.removedCategories.delete(category);
         }
 
-        if(addAll === true){
+        if (addAll === true) {
             //vaciar lista de eliminados
-            this.removedCategories.clear();
+            Filter.removedCategories.clear();
         }
 
         //añadiendo todas las categorias que no hayan sido deseleccionadas
-        if (this.removedCategories.size === 0) this.filters.category = null;
-        else this.filters.category = this.defaultCategories.filter(elem => !this.removedCategories.has(elem));
+        if (Filter.removedCategories.size === 0) Filter.filters.category = null;
+        else Filter.filters.category = Filter.defaultCategories.filter(elem => !Filter.removedCategories.has(elem));
 
         Filter.throwFilterChangedEvent();
     }
 
-    static removeCategory({category, removeAll}) {
+    static removeCategory({ category, removeAll }) {
 
-        if (!this.removedCategories.has(category)) {
+        if (!Filter.removedCategories.has(category)) {
             //añadir a la lista de eliminados
-            this.removedCategories.add(category);
+            Filter.removedCategories.add(category);
         }
 
-        if(removeAll === true){
+        if (removeAll === true) {
             //añadir todas a la lista de eliminados
-            this.defaultCategories.forEach( cat => this.removedCategories.add(cat));
+            Filter.defaultCategories.forEach(cat => Filter.removedCategories.add(cat));
         }
 
         //añadiendo todas las categorias que no hayan sido deseleccionadas
-        if (this.removedCategories.size === 0) this.filters.category = null;
-        else this.filters.category = this.defaultCategories.filter(elem => !this.removedCategories.has(elem));
+        if (Filter.removedCategories.size === 0) Filter.filters.category = null;
+        else Filter.filters.category = Filter.defaultCategories.filter(elem => !Filter.removedCategories.has(elem));
 
         Filter.throwFilterChangedEvent();
     }
-    static get categories(){
-        return this.filters.category;
+    static get categories() {
+        return Filter.filters.category;
     }
 
-    static addSearch(search){
-        
-        try{
-        const searchFilter = search.trim();
-        if(searchFilter != "") this.filters.search = searchFilter;
-        else this.filters.search = null;
-        
-        }catch(ex){
-            this.filters.search = null;
+    static addSearch(search) {
+
+        try {
+            const searchFilter = search.trim();
+            if (searchFilter != "") Filter.filters.search = searchFilter;
+            else Filter.filters.search = null;
+
+        } catch (ex) {
+            Filter.filters.search = null;
         }
 
         Filter.throwFilterChangedEvent();
     }
 
 
-    static removeSearch(){
-        this.filters.search = null;
+    static removeSearch() {
+        Filter.filters.search = null;
         Filter.throwFilterChangedEvent();
     }
 
-    static get search(){
-        return this.filters.search;
+    static get search() {
+        return Filter.filters.search;
     }
 
-    static throwFilterChangedEvent(){
+    static clearFilters() {
+        Filter.filters.department = null;
+        Filter.filters.municipality = null;
+        Filter.filters.search = "";
+        Filter.removeCategory({ removeAll: true })
+        Filter.filters.category = null;
+    }
 
-        const event = new CustomEvent("filterChanged");
+    static throwFilterChangedEvent() {
 
-        document.dispatchEvent(event);
+        if (Filter.blockEvent !== true) {
+            const event = new CustomEvent("filterChanged");
+
+            document.dispatchEvent(event);
+        }
     }
 
 

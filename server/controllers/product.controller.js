@@ -2,67 +2,164 @@
 
 const User = require('../models/user.model');
 const Product = require('../models/product.model');
-const bcrypt = require('bcrypt-nodejs');
-const jwt = require('../services/jwt');
+const Request = require('../models/request.model');
+const mongoose = require('mongoose');
+
+function requestAccepted(productId, userId=null){
+    if(userId != null){
+        Request.findOne({productId:productId, petitionerId:userId, aprovved: true},(err,found)=>{
+            if(err){
+                console.log(err);
+                return false;
+            }else if(found){
+                return true;
+            }else{
+                return false;
+            }
+        });
+    }else{
+        Request.findOne({productId:productId, aprovved: true},(err,found)=>{
+            if(err){
+                console.log(err);
+                return false;
+            }else if(found){
+                return true;
+            }else{
+                return false;
+            }
+        });
+    }
+}
+
+function getProduct(req, res) {
+    const params = req.body;
+    if (params.productId) {
+        let productId = params.productId;
+        Product.findById(productId, (err, found) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send({ error: 'Error interno del servidor', err });
+            } else if (found) {
+                if(req.user != null && found.ownerId == req.user.sub){
+                    res.send({
+                        "ProductFoundId": found._id,
+                        "Cathegory": found.cathegory,
+                        "Department": found.department,
+                        "Municipality": found.municipality,
+                        "Images": found.images,
+                        "OwnerProfilePicture": found.ownerProfilePic,
+                        "Owner": found.owner,
+                        "OwnerID": found.ownerId,
+                        "ProductName":found.name,
+                        "ProductDescription": found.description,
+                        "isOwner": true,
+                        "donationRequestAccepted": requestAccepted(found._id),
+                        "donationReceivedConfirmed": (found.available == false) ? true : false
+                    });    
+                } else {
+                    res.send({
+                        "ProductFoundId": found._id,
+                        "Cathegory": found.cathegory,
+                        "Department": found.department,
+                        "Municipality": found.municipality,
+                        "Images": found.images,
+                        "OwnerProfilePicture": found.ownerProfilePic,
+                        "Owner": found.owner,
+                        "OwnerID": found.ownerId,
+                        "ProductName":found.name,
+                        "ProductDescription": found.description,
+                        "alreadyRequested": found.interested.includes(req.user.sub),
+                        "selectedAsBeneficiary": requestAccepted(found._id, req.user.sub)
+                    });
+                }
+            } else {
+                res.status(404).send({ error: "No se han encontrado productos con el ID indcado" });
+            }
+        });
+    } else {
+        res.status(400).send({ message: "Indique el ID del producto que desea ver de forma detallada"});
+    }
+}
 
 function addProduct(req, res) {
     var userId = req.user.sub;
     var product = new Product();
     var params = req.body;
-    if (params.name && params.cathegory && params.department && params.municipality && params.description) {
+    const date = new Date();
+    date.setTime(date.getTime() - (6 * 60 * 60 * 1000));
+    
+    if (params.name && params.cathegory && params.department && params.municipality && params.description && req.imagesUrl) {
         product.name = params.name;
         product.description = params.description && params.description != null ? params.description : "Sin descripción";
         product.available = true;
-        product.publishDate = Date.now();
+        product.publishDate = date;
         product.cathegory = params.cathegory;
         product.department = params.department;
         product.municipality = params.municipality;
-        product.urlImage = params.urlImage && params.urlImage != null ? params.urlImage : null;
         product.ownerId = userId;
+        let images = []
+        req.imagesUrl.forEach(image => {
+            let imageArray = image.split('/');
+            image = "";
+            for (let i = 2; i < imageArray.length; i++) {
+
+                image += imageArray[i]
+                if(i !== (imageArray.length - 1))  image += "/";
+
+            }
+            images.push(image);
+        });
+        product.images = images;
 
         product.save((err, saved) => {
             if (err) {
+                console.log(err);
                 res.status(500).send({ error: 'Error interno del servidor', err });
             } else if (saved) {
-                User.findByIdAndUpdate(userId, {$push: {donations: saved._id} }, {new:true}, (err, updated)=>{
+                User.findByIdAndUpdate(userId, { $push: { donations: saved._id } }, { new: true }, (err, updated) => {
                     if (err) {
-                        res.status(500).send({ error: 'Error interno del servidor', err });
-                        deleteProduct(saved._id);
+                        console.log(err);
+                        cancelDonation(saved, res, "Error interno del servidor", 500);
                     } else if (updated) {
-                        updateOwner(saved, updated, res);
+                        setTimeout(() => {
+                            updateOwner(saved, updated, res);
+
+                        }, 500);
                     } else {
-                        cancelDonation(saved, res);
-                    }  
+                        cancelDonation(saved, res, "Ha ocurrido un error al agregar la donacion al registro del usuario.", 500);
+                    }
                 })
             } else {
                 res.status(400).send({ message: 'No ha sido posible realizar la donación.' });
             }
         });
     } else {
-        res.status(400).send({ message: 'Debe ingresar todos los datos requeridos.' })
+        res.status(400).send({ message: 'Debe ingresar todos los datos requeridos.' });
     }
 }
 
-function updateOwner(product, user, res){
-    Product.findByIdAndUpdate(product._id, {owner : user.name + ' ' + user.lastname}, {new : true}, (err, updated)=>{
-        if(err){
-            cancelDonation(product, res);
-        }else if(updated){
-            res.send({ 'Producto agregado con éxito.': updated });
-        }else{
-            cancelDonation(product, res);
+function updateOwner(product, user, res) {
+    
+    Product.findByIdAndUpdate(product._id, { owner: user.name + ' ' + user.lastname }, { new: true }, (err, updated) => {
+        if (err) {
+            cancelDonation(product, res, "Error interno del servidor", 500);
+        } else if (updated) {
+            console.log("XD",updated)
+            res.send({ message: 'Producto agregado con éxito.', data: updated });
+        } else {
+            cancelDonation(product, res, "Ha ocurrido un error al asignar la donación al usuario correspondiente.", 500);
         }
     });
 }
 
-function cancelDonation(product, res){
-    Product.findByIdAndDelete(product._id, (err, deleted)=>{
-        if(err){
+function cancelDonation(product, res, message, status) {
+    Product.findByIdAndDelete(product._id, (err, deleted) => {
+        if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
-        }else if(deleted){
-            res.send({ error: 'Ha ocurrido un problema al asignar la donación al usuario correspondiente, se ha cancelado la donación.'});
-        }else{
-            res.status(400).send({error: 'Ha ocurrido un problema al asignar la donación al usuairo correspondiente; la donación fue realizada pero inhabilitada.'});
+        } else if (deleted) {
+            res.status(status).send({ error: message });
+        } else {
+            res.status(400).send({ error: 'Ha ocurrido un problema al asignar la donación al usuario correspondiente; la donación fue realizada pero inhabilitada.' });
         }
     });
 }
@@ -71,54 +168,74 @@ function listProducts(req, res) {
     let params = req.body;
     let skipped = params.skip ? parseInt(params.skip) : 0;
     let quantity = params.quantity ? parseInt(params.quantity) : 10;
+    let order = (params.ascending && params.ascending == "true") ? 1 : -1;
     Product.find({}, (err, found) => {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
-        } else if (found && found.length>0) {
+        } else if (found && found.length > 0) {
             res.send({ 'Productos disponibles': found });
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }
-    }).skip(skipped).limit(quantity);
+    }).skip(skipped).limit(quantity).sort({ publishDate: order });
 }
 
-function filteredSearch(req,res){
+function filteredSearch(req, res) {
     let params = req.body;
     let skipped = params.skip ? parseInt(params.skip) : 0;
     let quantity = params.quantity ? parseInt(params.quantity) : 10;
-    let instruction = "";
-    if(params.categorias){
-        console.log(params.categorias);
-        let categorias = params.categorias.replace(/[ ]+/g, '').split(",");
-        console.log(categorias[0], categorias[2]);
+    let order = (params.ascending && params.ascending == "true") ? 1 : -1;
+    let instruction = '{';
+    if (params.department) {
+        if (instruction[1] != undefined)
+            instruction += ', ';
+        instruction += '"department": "' + params.department + '"';
     }
-    if(params.department){
-        if(params.municipality){
-            Product.find({$and: [{department:params.department}, { municipality: params.municipality }] }, (err, found)=>{
-                if (err) {
-                    res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (found && found.length>0) {
-                    res.send({ 'Productos disponibles': found });
-                }else{
-                    res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
-                }
-            }).limit(0,quantity);
-        }else{
-            Product.find(JSON.parse(instruction), (err, found)=>{
-                if (err) {
-                    res.status(500).send({ error: 'Error interno del servidor', err });
-                } else if (found && found.length>0) {
-                    res.send({ 'Productos disponibles': found });
-                }else{
-                    res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
-                }
-            }).skip(skipped).limit(quantity);
+    if (params.municipality) {
+        if (instruction[1] != undefined)
+            instruction += ', ';
+        instruction += '"municipality": "' + params.municipality + '"';
+    }
+    if (params.search) {
+        if (instruction[1] != undefined)
+            instruction += ', ';
+        instruction += '"$or": [{ "name": { "$regex":"' + params.search + '", "$options": "\'i\'"}}, { "description": { "$regex":"' + params.search + '", "$options": "\'i\'"} }]';
+    }
+    if (params.cathegory !== undefined && params.cathegory != null && params.cathegory.length > 0) {
+
+            if (instruction[1] != undefined)
+                instruction += ', ';
+            instruction += '"$or": [';
+            
+            const cathegories = params.cathegory;
+
+            let contador = 0;
+            cathegories.forEach(category => {
+                if (contador > 0 && contador < cathegories.length)
+                    instruction += ', ';
+                instruction += '{"cathegory": "' + category + '"}';
+                contador++;
+            });
+            instruction += ']';
+
+        
+    }
+    instruction += '}';
+    console.log(instruction)
+    Product.find(JSON.parse(instruction), (err, found) => {
+        if (err) {
+            res.status(500).send({ error: 'Error interno del servidor', err });
+        } else if (found && found.length > 0) {
+            res.send({ products: found });
+        } else {
+            res.status(404).send({ message: "No se han encontrado resultados para la búsqueda." });
         }
-    }
+    }).skip(skipped).limit(quantity).sort({ publishDate: order });
 }
 
-module.exports={
+module.exports = {
     addProduct,
     listProducts,
-    filteredSearch
+    filteredSearch,
+    getProduct
 }

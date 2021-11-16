@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const productSchema = Schema({
     owner: String,
     ownerId: String,
+    ownerProfilePic: String,
     name: String,
     description: String,
     available: Boolean,
@@ -12,7 +13,7 @@ const productSchema = Schema({
     cathegory: String,
     department: String,
     municipality: String,
-    urlImagen:String,
+    images:[],
     interested: [{ type: Schema.Types.ObjectId, ref: 'user' }]
 });
 

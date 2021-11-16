@@ -23,7 +23,7 @@ export class ImagePicker {
                     <span class="boldSpan">Añade una foto</span>
                     <span>Haz click o arrastra y suelta una imagen</span>
                 </div>
-                <input type="file" class="inputFile" multiple>
+                <input type="file" class="inputFile" name="files" multiple>
             </div>  
         </div>
         `;
@@ -101,7 +101,6 @@ export class ImagePicker {
     
     deleteImage(card){
         if(!card) return;
-        console.log("eliminando ",card)
         
         card.component.remove();
         this._files.delete(card.id);

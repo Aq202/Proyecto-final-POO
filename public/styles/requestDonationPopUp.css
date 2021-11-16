@@ -1,0 +1,67 @@
+.popUp.requestDonation .popUp-body > div{
+    display: grid;
+    justify-content: center;
+    gap: 20px;
+    grid-template-columns: 1fr;
+}
+
+.popUp.requestDonation h3{
+    font-size: 50px;
+    text-align: center;
+    width: 100%;
+    font-family: 'Yanone Kaffeesatz';
+    font-weight: 300;
+}
+
+.popUp.requestDonation img{
+    width: 64px;
+    height: 64px;
+    margin: auto;
+
+}
+
+.popUp.requestDonation .confirmation-box{
+    display: flex;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    line-height: 100%;
+    gap: 15px;
+    width: 70%;
+    text-align: justify;
+    font-size: 13px;
+
+}
+
+.popUp.requestDonation textarea{
+    width: 70%;
+    margin: auto;
+    height: 120px;
+    padding: 10px;
+    outline: none;
+    border: none;
+    box-shadow: 0px 0px 2px 1px #0000002e;
+    color: var(--gray-text-color);
+    border-radius: 10px;
+    font-size: 17px;
+    font-family: var(--text-font);
+}
+
+.popUp.requestDonation p{
+    text-align: center;
+}
+
+.popUp.requestDonation .spinner{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+@media only screen and (max-width:480px){
+    .popUp.requestDonation textarea{
+        width: 90%;
+    }
+
+    .popUp.requestDonation .confirmation-box{
+        width: 90%;
+    }
+}

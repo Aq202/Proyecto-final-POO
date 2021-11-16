@@ -1,4 +1,4 @@
-import { NotificationSocketClient } from "../scripts/notificationSocketClient.js";
+
 import { NotificationItem } from "./NotificationItem.js";
 
 
@@ -22,7 +22,6 @@ export class NotificationTray {
 
 
         const userData = JSON.parse(localStorage.getItem("userData"));
-        /*if(userData)  new NotificationSocketClient(userData.user);*/
 
         this.initComponent();
     }
@@ -60,7 +59,6 @@ export class NotificationTray {
             this.pendingNotifications.push(notificationData);
 
         } else if (this.initialized === true) { //agregar notificacion
-            console.log(notificationData)
             const notificationItem = new NotificationItem(notificationData).component;
 
             const $panel = this.component.querySelector("#notification-list");

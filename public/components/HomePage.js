@@ -1,4 +1,6 @@
-import { User } from "../scripts/User.js";
+import { Filter } from "../scripts/Filter.js";
+import { Product } from "../scripts/Product.js";
+import { Session } from "../scripts/Session.js";
 import { Banner } from "./Banner.js";
 import { DonationsContainer } from "./DonationsContainer.js";
 import { FilterSection } from "./FilterSection.js";
@@ -30,10 +32,10 @@ export class HomePage {
         let welcomeMessage = "Bienvenido";
         let secondMessage = "Estamos felices de tenerte con nosotros."
 
-        if(User.userInSession === true){
-            welcomeMessage = `Hola, ${User.name}`;
+        if (Session.userInSession === true) {
+            welcomeMessage = `Hola, ${Session.name}`;
             secondMessage = "Estamos felices de tenerte de vuelta."
-            
+
         }
 
         $separator.innerHTML = `
@@ -46,11 +48,77 @@ export class HomePage {
 
         //seccion de filtros
         this.component.appendChild(new FilterSection().component);
-        //Contenedor de donaicones
-        this.component.appendChild(new DonationsContainer().component)
-        
+
+        //Contenedor de donaciones
+        this.donationsContainer = new DonationsContainer({});
+        this.component.appendChild(this.donationsContainer.component);
+        this.fillDonationContainer();
+
+        const filteredChanged = e => { 
+
+            if(document.body.contains(this.component)){
+
+            document.querySelector("body").scrollTo({
+                top: this.donationsContainer.component.offsetTop - 80,
+                behavior: 'smooth'
+              });
+            
+              debugger
+            this.fillDonationContainer();
+            }else{
+                document.removeEventListener("filterChanged", filteredChanged);
+                console.info(this.component)
+            }
+        }
+
+        document.addEventListener("filterChanged", filteredChanged);
+        this.donationsContainer.component.addEventListener("fullySeen", e => this.addOlderContent());
 
 
+    }
+
+    async fillDonationContainer() {
+
+        const max = 10;
+
+        const { department, municipality, search, category } = Filter.filters;
+
+        this.donationsContainer.addLoadingStyle();
+        this.donationsContainer.clear();
+        this.donationsContainer.removeNoResultsStyle();
+
+        try {
+
+            const productList = await Product.getProducts({ department, municipality, search, category, max });
+            console.log(productList)
+            if (productList.length > 0)
+                this.donationsContainer.addContent(...productList);
+            else
+                this.donationsContainer.addNoResultsStyle();
+
+        } catch (ex) {
+            console.error(ex)
+            this.donationsContainer.addNoResultsStyle();
+        } finally {
+            this.donationsContainer.removeLoadingStyle();
+
+        }
+    }
+
+    async addOlderContent(){
+
+        const max = 10, skip = this.donationsContainer.itemsCount || 0
+        const { department, municipality, search, category } = Filter.filters;
+
+        try{
+
+            const productList = await Product.getProducts({ department, municipality, search, category, max, skip });
+                if (productList.length > 0)
+                    this.donationsContainer.addContent(...productList);
+
+        }catch(ex){
+            console.warn(ex);
+        }
     }
 
 }

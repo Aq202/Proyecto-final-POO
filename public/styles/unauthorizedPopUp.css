@@ -1,0 +1,27 @@
+.popUp.unauthorized .popUp-body div.popUp-body-container{
+
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUp.unauthorized img{
+    width: 80px;
+    height: 80px;
+}
+
+.popUp.unauthorized h3{
+    font-size: 50px;
+    text-align: center;
+    width: 100%;
+    font-family: 'Yanone Kaffeesatz';
+    font-weight: 300;
+}
+
+.popUp.unauthorized .buttons{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}

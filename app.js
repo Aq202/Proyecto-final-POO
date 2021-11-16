@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 const port = 2004;
 const express = require('express');
 const http = require("http");
-const socketServer = require("./server/socketServer");
+const socketServer = require("./server/services/socketServer");
 const jwt = require("jsonwebtoken");
 const key = require("./server/services/key");
 
 const userRoutes = require('./server/routes/user.route');
 const productRoutes = require('./server/routes/product.route');
-
-
+const requestRoutes = require('./server/routes/request.route');
+const RequestApprovedEmail = require('./server/services/RequestApprovedEmail');
 
 
 const app = express();
@@ -33,69 +33,40 @@ mongoose.connect('mongodb+srv://epdPOO:proyectofinal@cluster0.kxclx.mongodb.net/
 
 httpServer.listen(port, (serv) => {
     console.log("Servidor corriendo en puerto " + port);
+
+    const emailSender = new RequestApprovedEmail({
+        userEmail:"diegoguatedb2002@gmail.com",
+        productName:"Silla gamer p235",
+        userName:"Diego Morales",
+        ownerName: "Juan perez",
+        ownerEmail: "juan@gmail.com"
+    })
+
+    emailSender.sendEmail();
 })
 app.use(express.json())
 app.use(express.static('./public'))
 app.use(express.urlencoded({ extended: true }))
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
-});
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method', 'multipart/form-data');
+//     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+//     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+//     next();
+// });
 
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);
+app.use('/request', requestRoutes);
 
-
-const socket = new socketServer(httpServer)
-
-
-app.post("/login", (req, res) => {
-
-    const userId = req.body.user;
-    const password = req.body.password;
-
-    if (userId != undefined && password != undefined) {
-
-        jwt.sign({
-            user: userId
-        }, key, (err, token) => {
-            if (err) res.sendStatus(403);
-
-            res.json({
-                token
-            })
-        })
-
-
-    } else {
-        res.sendStatus(404)
-    }
-})
-
-app.post("/emit", (req, res) => {
-    //id, title, text, image, url, date, viewed
-    console.log(req.body)
-    console.log("enviando jjsjss")
-    socket.io.emit("global-notification", {
-        title: req.body.title,
-        text: req.body.text,
-        url: req.body.url,
-        id: req.body.id,
-        date: new Date()
-
-    })
-
-    res.send("enviado")
-})
+new socketServer(httpServer)
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html")
 
 })
+
 
 app.post("/fakeNotifications", (req, res) => {
     //id, title, text, image, url, date, viewed
@@ -118,7 +89,3 @@ app.post("/fakeNotifications", (req, res) => {
         })
     }, 3000)
 })
-
-
-
-

@@ -11,7 +11,7 @@ const userSchema = Schema({
     lastname: String,
     age: Number,
     address: String,
-    urlImage:String,
+    profilePic:String,
     sex: String,
     birth: Date,
     adquisitions: [{ type: Schema.Types.ObjectId, ref: 'buy' }],

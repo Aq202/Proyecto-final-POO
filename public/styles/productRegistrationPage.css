@@ -151,6 +151,10 @@
     cursor: not-allowed;
 }
 
+#formSection .spinner{
+    display: none;
+}
+
 @media only screen and (max-width:1000px){
     #productRegistrationPage{
         grid-template-columns: 1fr auto;

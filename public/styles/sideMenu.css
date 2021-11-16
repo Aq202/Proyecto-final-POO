@@ -51,6 +51,10 @@ nav{
     left: 0px;
 }
 
+.side-nav.instant{
+    transition: none;
+}
+
 .side-nav .btn-close{
     font-size: 36px;
     color:white;
@@ -98,7 +102,7 @@ nav{
     transition: 0.3s;
 }
 
-#title {
+.side-nav .title {
     text-align: center;
     color: white;
 }

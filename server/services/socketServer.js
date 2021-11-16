@@ -1,12 +1,14 @@
 
 const jwt = require("jsonwebtoken")
-const key = require("./services/key")
+const key = require("./key")
 
 
 module.exports = class SocketServer {
 
+    static io;
+
     constructor(server) {
-        this.io = require("socket.io")(server);
+        SocketServer.io = require("socket.io")(server);
 
         this.executeMiddleWares()
         this.initServer()
@@ -17,7 +19,7 @@ module.exports = class SocketServer {
     executeMiddleWares() {
 
         //validar token
-        this.io.use((socket, next) => {
+        SocketServer.io.use((socket, next) => {
 
             const token = socket.handshake.auth.token;
             jwt.verify(token, key, (err, userInfo) => {
@@ -35,15 +37,10 @@ module.exports = class SocketServer {
 
     initServer() {
 
-        this.io.on("connection", socket => {
+        SocketServer.io.on("connection", socket => {
             console.log("Cliente conectado")
             
-            
-
-
-        })
-
-        
+        });
 
     }
 
