@@ -7,16 +7,16 @@ const mongoose = require('mongoose');
 
 function getRequest(req, res) {
     const params = req.body;
-    let requestID
+    let requestId
     try{
-        requestID = mongoose.Types.ObjectId(params.requestId);
+        requestId = mongoose.Types.ObjectId(params.requestId);
     }catch{
-        requestID = null;
+        requestId = null;
     }
-    if (requestID != null) {
-        Request.findById(requestID, (err, found) => {
+    if (requestId!= null) {
+        Request.findById(requestId, (err, found) => {
             if (err) {
-                console.log(err);
+
                 res.status(500).send({ error: 'Error interno del servidor' });
             } else if (found) {
                 if (req.user.sub == found.ownerId) {
@@ -26,14 +26,24 @@ function getRequest(req, res) {
                             console.log(err);
                             res.status(500).send({ error: 'Error interno del servidor' });
                         } else if (userFound) {
-                            res.send({
-                                "idRequest": found._id,
-                                "Petitioner": userFound._id,
-                                "Petitioner name": userFound.name + " " + userFound.lastname,
-                                "Profile picture": userFound.profilePic,
-                                "Requested Date": found.requestedDate,
-                                "Approved": (found.approved == true ? found.approved : false)
+                            let request = [];
+     
+                            request.push({
+                                idRequest: found._id,
+                                petitionerId: userFound._id,
+                                name: userFound.name + " "+userFound.lastname,
+                                profilePicture: userFound.profilePic,
+                                username: userFound.username,
+                                requestedDate: found.requestedDate,
+                                approved: (found.approved == true ? found.approved : false),
+                                email: userFound.email,
+                                dpi: userFound.dpi,
+                                sex: userFound.sex,
+                                age: userFound.age,
+                                documents: userFound.documents,
+                                message: found.message
                             });
+                            res.send({request});
                         } else {
                             cancelRequest(found, res, "El usuario que ha realizado la peticion no existe o ha eliminado su cuenta.", 404);
                         }

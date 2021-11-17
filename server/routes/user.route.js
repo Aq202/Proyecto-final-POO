@@ -7,7 +7,7 @@ var dp = require('../middlewares/definepath')
 var api = express.Router();
 const multer = require('../services/multer');
 
-api.use(dp.pathProfile);
+api.use(dp.pathUser);
 api.get('/getUser',mdAuth.ensureAuth, userController.getInfoUser);
 api.post('/addPicture', mdAuth.ensureAuth, multer.any(), userController.addProfilePicture);
 api.post('/signIn', userController.signIn);

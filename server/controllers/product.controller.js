@@ -26,36 +26,23 @@ function getCurrentRequests(req, res) {
                             console.log(err);
                             res.status(500).send({ error: "Error interno del servidor." });
                         } else if (foundR) {
-
                             let currentRequests = [];
-
                             for (let index in foundR) {
-
                                 const request = foundR[index];
-  
-
                                 try {
-
                                     User.findById(request.petitionerId, (err, foundU) => {
-
                                         if(err) throw "";
                                         if (foundU && foundU != null) {
-
                                             currentRequests.push({
                                                 request: request._id,
                                                 petitioner: (foundU.name + " " + foundU.lastname),
                                                 profilePicture: foundU.profilePic,
                                                 requestedDate: request.requestedDate
                                             });
-
                                         }
-                                    
-                                        if(index == (foundR.length - 1)){
-                                            
+                                        if(index == (foundR.length - 1)){   
                                             res.send({ currentRequests });
                                         }
-
-
                                     })
                                 }
                                 catch (ex) {
@@ -228,7 +215,6 @@ function updateOwner(product, user, res) {
         if (err) {
             cancelDonation(product, res, "Error interno del servidor", 500);
         } else if (updated) {
-            console.log("XD", updated)
             res.send({ message: 'Producto agregado con éxito.', data: updated });
         } else {
             cancelDonation(product, res, "Ha ocurrido un error al asignar la donación al usuario correspondiente.", 500);
