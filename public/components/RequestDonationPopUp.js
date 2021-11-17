@@ -87,6 +87,7 @@ export class RequestDonationPopUp extends PopUP {
                     });
 
                     if(this.resolve != undefined) this.resolve();
+                    this.close();
 
                 } catch (ex) {
                     this.showError("Ocurrió un error");
@@ -97,7 +98,7 @@ export class RequestDonationPopUp extends PopUP {
                     this.hideSpinner();
                 }
 
-                this.close();
+                
 
                 if (this.resolve != undefined) this.resolve();
             }

@@ -97,7 +97,7 @@ export class DonationRequest{
             console.log(obj)
             let reqObj;
 
-            fetch("/request/deleteRequest", {
+            fetch("/request/cancelRequest", {
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json",
@@ -114,7 +114,7 @@ export class DonationRequest{
                 if(reqObj.ok === true){
                     resolve(result)
                 }else{
-                    reject(result)
+                    reject(result.error)
                 }
             })
             .catch(err => reject(err));

@@ -116,8 +116,7 @@ function getProduct(req, res) {
                 }
                 if(found.ownerProfilePic && found.ownerProfilePic != null && found.ownerProfilePic != undefined)
                     message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
-                else
-                    message += '"OwnerProfilePicture": ' + found.ownerProfilePic + ',';
+
                 message += '"Owner": "' + found.owner + '",';
                 message += '"OwnerID": "' + found.ownerId + '",';
                 message += '"ProductName": "' + found.name + '",';
