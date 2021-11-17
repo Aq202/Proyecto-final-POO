@@ -204,17 +204,17 @@ export class DonationRequest{
 
     }
 
-    static getRequests(requestId){
+    static getRequests(productId){
 
         return new Promise((resolve, reject) => {
 
             const obj = {
-                requestId
+                productId
             }
 
             let reqObj;
 
-            fetch("/request/getRequest", {
+            fetch("/product/currentRequest", {
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json",

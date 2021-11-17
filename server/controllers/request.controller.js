@@ -20,7 +20,7 @@ function getRequest(req, res) {
                 res.status(500).send({ error: 'Error interno del servidor' });
             } else if (found) {
                 if (req.user.sub == found.ownerId) {
-                    console.log(req.user.sub);
+                
                     User.findById(found.petitionerId, (err, userFound) => {
                         if (err) {
                             console.log(err);
@@ -193,7 +193,6 @@ function rejectRequest(req, res) {
 
 function approveRequest(req, res) {
 
-    console.log(req)
     const params = req.body;
     const userId = req.user.sub;
     let requestID

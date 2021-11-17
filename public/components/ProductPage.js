@@ -121,7 +121,7 @@ export class ProductPage {
 
         if (this.isOwner === true) {
 
-           //const requests = await DonationRequest.getRequests(this.productId);
+           const requests = await DonationRequest.getRequests(this.productId);
 
             const donationRequests = new DonationRequestsContainer({
                 requests: [
