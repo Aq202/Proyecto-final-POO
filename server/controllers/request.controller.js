@@ -27,7 +27,6 @@ function getRequest(req, res) {
                             res.status(500).send({ error: 'Error interno del servidor' });
                         } else if (userFound) {
                             let request = [];
-                            console.log(userFound.documents)
                             request.push({
                                 idRequest: found._id,
                                 petitionerId: userFound._id,
