@@ -221,7 +221,6 @@ function filteredSearch(req, res) {
         
     }
     instruction += '}';
-    console.log(instruction)
     Product.find(JSON.parse(instruction), (err, found) => {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
