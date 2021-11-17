@@ -64,12 +64,13 @@ export class PageRouter {
 
             try {
                 let productData = await Product.getProductData(productId);
-
-                    
+          
+                    console.log(productData)
                     this.renderView(new ProductPage(productData).component);
     
             } catch (ex) {
                 //producto no encontrada
+                console.log(ex)
                 this.addNotFoundPage();
             }
         }

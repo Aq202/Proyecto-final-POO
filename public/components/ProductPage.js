@@ -17,10 +17,10 @@ export class ProductPage {
         this.municipality = municipality;
         this.title = title;
         this.description = description;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage || "images/profileImages/default.jpeg";;
         this.authorName = name;
         this.productImages = productImages;
-        this.isOwner = isOwner || true;
+        this.isOwner = isOwner || false;
         this.alreadyRequested = alreadyRequested || false;
         this.selectedAsBeneficiary = selectedAsBeneficiary || false;
         this.donationRequestAccepted = donationRequestAccepted || false;
@@ -101,7 +101,27 @@ export class ProductPage {
 
 
         //añadir seccion de solicitudes (si es el autor)
+        this.addDonationRequests();
+
+        //agregar eventos
+        $productPage.querySelector("button#deleteProduct-button").addEventListener("click", e => this.deleteProduct());
+        $productPage.querySelector("button#makeRequest-button").addEventListener("click", e => this.makeNewRequest());
+        $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
+        $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
+        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.rejectDonation());
+        $productPage.querySelector("#cathegory").addEventListener("click", e => this.searchSimilarCategories());
+        $productPage.querySelector("#place").addEventListener("click", e => this.searchSimilarMunicipalities());
+
+        document.addEventListener("requestAccepted", e => this.updateProductState());
+
+
+    }
+
+    async addDonationRequests(){
+        debugger
         if (this.isOwner === true) {
+
+           //const requests = await DonationRequest.getRequests(this.productId);
 
             const donationRequests = new DonationRequestsContainer({
                 requests: [
@@ -128,18 +148,6 @@ export class ProductPage {
 
 
         }
-
-        //agregar eventos
-        $productPage.querySelector("button#deleteProduct-button").addEventListener("click", e => this.deleteProduct());
-        $productPage.querySelector("button#makeRequest-button").addEventListener("click", e => this.makeNewRequest());
-        $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
-        $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
-        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.rejectDonation());
-        $productPage.querySelector("#cathegory").addEventListener("click", e => this.searchSimilarCategories());
-        $productPage.querySelector("#place").addEventListener("click", e => this.searchSimilarMunicipalities());
-
-        document.addEventListener("requestAccepted", e => this.updateProductState());
-
 
     }
 
