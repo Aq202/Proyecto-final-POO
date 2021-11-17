@@ -6,19 +6,19 @@ export class Banner {
         this.bannerData = [
             {
                 image: "images/banners/banner1.jpg",
-                title: "Nombre del proyecto",
-                subtitles: ["&nbsp;Conviértete en el cambio1.", "&nbsp;Ayuda a otras personas1.", "&nbsp;Reutiliza y sé amigable con el planeta1.",]
+                title: "MyTurn",
+                subtitles: ["&nbsp;Es tu turno de ayudar.", "&nbsp;Conviertete en el cambio.", "&nbsp;Reutiliza y sé amigable con el planeta.",]
             },
             {
                 image: "images/banners/banner2.jpg",
-                title: "Nombre del proyecto",
-                subtitles: ["&nbsp;Conviértete en el cambio2.", "&nbsp;Ayuda a otras personas2.", "&nbsp;Reutiliza y sé amigable con el planeta2.",]
+                title: "MyTurn",
+                subtitles: ["&nbsp;Es tu turno de agacharte y ayudar a alguien más.", "&nbsp;Conviertete en el cambio.", "&nbsp;Reutiliza y sé amigable con el planeta.",]
 
             },
             {
                 image: "images/banners/banner3.jpg",
-                title: "Nombre del proyecto",
-                subtitles: ["&nbsp;Conviértete en el cambio3.", "&nbsp;Ayuda a otras personas3.", "&nbsp;Reutiliza y sé amigable con el planeta3.",]
+                title: "MyTurn",
+                subtitles: ["&nbsp;Es tu turno de ayudar.", "&nbsp;Conviertete en el cambio.", "&nbsp;Reutiliza y sé amigable con el planeta.",]
 
             },
         ]
@@ -58,21 +58,37 @@ export class Banner {
 
         for (let index in this.bannerData) {
 
-            let { image, title } = this.bannerData[index];
+            let { image, title, subtitles } = this.bannerData[index];
 
             const $bannerScreen = document.createElement("li");
 
             $bannerScreen.innerHTML = `
-                <h3 class = "banSubtitle">&nbsp;Conviertete en el cambio.</h3>
+                <h3 class = "banSubtitle"></h3>
                 <h1 class = "banTitle">${title}</h1>
                 <div class = "banButtons">
-                    <a href="/" class="btn1">Donar</a>
-                    <a href="/" class="btn2">Explorar</a>
+                    <a href="#/registerProduct" class="btn1">Donar</a>
+                    <a href="#/" class="btn2">Explorar</a>
                 </div>
-            `
+            `;
 
             //agregando imagen
             $bannerScreen.style.backgroundImage = `url("${image}")`
+
+            //evento boton explorar
+            $bannerScreen.querySelector("a.btn2").addEventListener("click", e => {
+
+                e.preventDefault();
+
+                const productsContainer = document.querySelector(".products-container");
+
+                if(!productsContainer) return;
+
+                //scrollear a los productos
+                document.querySelector("body").scrollTo({
+                    top: productsContainer.offsetTop - 80,
+                    behavior: 'smooth'
+                  });
+            })
 
             fragment.appendChild($bannerScreen);
             this.bannerData[index].screen = $bannerScreen;
@@ -92,6 +108,9 @@ export class Banner {
         const $button1 = $screen.querySelector("a:nth-child(1)");
         const $button2 = $screen.querySelector("a:nth-child(2)");
 
+        //colocando primer subtitulo
+        $subtitle.innerHTML = currentBannerData.subtitles[0];
+
 
         const elementsAnimation = gsap.timeline();
 
@@ -102,6 +121,7 @@ export class Banner {
         elementsAnimation.fromTo($button2, { opacity: 0, y: 0 }, { opacity: 1, y: -25, duration: 1 }, 0.7)
 
         const addTypeAnimation = () =>{
+
 
                 //animación de escritura
                 this.typeAnimation = new Typed($subtitle, {

@@ -1,4 +1,4 @@
-import { Product } from "../scripts/Product.js";
+import { DonationRequest } from "../scripts/DonationRequest.js";
 import { Session } from "../scripts/Session.js";
 import { PopUP } from "./PopUp.js";
 
@@ -81,12 +81,13 @@ export class RequestDonationPopUp extends PopUP {
                 this.hideButton();
 
                 try {
-                    await Product.newRequestOfDonation({
-                        user: Session.id,
-                        productId: this.productId
+                    await DonationRequest.newRequestOfDonation({
+                        productId: this.productId,
+                        requestMessage:$requestMessage.value.trim()
                     });
 
                     if(this.resolve != undefined) this.resolve();
+                    this.close();
 
                 } catch (ex) {
                     this.showError("Ocurrió un error");
@@ -97,7 +98,7 @@ export class RequestDonationPopUp extends PopUP {
                     this.hideSpinner();
                 }
 
-                this.close();
+                
 
                 if (this.resolve != undefined) this.resolve();
             }

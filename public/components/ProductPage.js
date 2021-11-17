@@ -17,7 +17,7 @@ export class ProductPage {
         this.municipality = municipality;
         this.title = title;
         this.description = description;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage || "images/profileImages/default.jpeg";;
         this.authorName = name;
         this.productImages = productImages;
         this.isOwner = isOwner || false;
@@ -26,7 +26,7 @@ export class ProductPage {
         this.donationRequestAccepted = donationRequestAccepted || false;
         this.donationReceivedConfirmed = donationReceivedConfirmed || false;
         this.userRequestId = userRequestId || undefined;
-
+    
         if (!this.userRequestId) this.userRequestObject = new DonationRequest({ requestId: this.userRequestId });
 
         this.actionBlocked = false;
@@ -36,7 +36,7 @@ export class ProductPage {
     }
 
     initComponent() {
-
+        
         this.component = document.createElement("div");
         const $productPage = this.component;
 
@@ -101,7 +101,27 @@ export class ProductPage {
 
 
         //añadir seccion de solicitudes (si es el autor)
+        this.addDonationRequests();
+
+        //agregar eventos
+        $productPage.querySelector("button#deleteProduct-button").addEventListener("click", e => this.deleteProduct());
+        $productPage.querySelector("button#makeRequest-button").addEventListener("click", e => this.makeNewRequest());
+        $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
+        $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
+        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.rejectDonation());
+        $productPage.querySelector("#cathegory").addEventListener("click", e => this.searchSimilarCategories());
+        $productPage.querySelector("#place").addEventListener("click", e => this.searchSimilarMunicipalities());
+
+        document.addEventListener("requestAccepted", e => this.updateProductState());
+
+
+    }
+
+    async addDonationRequests(){
+
         if (this.isOwner === true) {
+
+           const requests = await DonationRequest.getRequests(this.productId);
 
             const donationRequests = new DonationRequestsContainer({
                 requests: [
@@ -128,18 +148,6 @@ export class ProductPage {
 
 
         }
-
-        //agregar eventos
-        $productPage.querySelector("button#deleteProduct-button").addEventListener("click", e => this.deleteProduct());
-        $productPage.querySelector("button#makeRequest-button").addEventListener("click", e => this.makeNewRequest());
-        $productPage.querySelector("button#deleteRequest-button").addEventListener("click", e => this.deleteRequest());
-        $productPage.querySelector("button#confirmOfReceived-button").addEventListener("click", e => this.confirmOfReceived());
-        $productPage.querySelector("button#rejectDonation-button").addEventListener("click", e => this.rejectDonation());
-        $productPage.querySelector("#cathegory").addEventListener("click", e => this.searchSimilarCategories());
-        $productPage.querySelector("#place").addEventListener("click", e => this.searchSimilarMunicipalities());
-
-        document.addEventListener("requestAccepted", e => this.updateProductState());
-
 
     }
 
@@ -305,7 +313,7 @@ export class ProductPage {
                     this.showSpinner();
                     this.hideButtons();
 
-                    await this.userRequestObject.deleteRequest();
+                    await this.userRequestObject.deleteRequest(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/working.svg",

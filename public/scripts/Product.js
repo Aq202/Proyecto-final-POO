@@ -86,6 +86,8 @@ export class Product {
                 console.log("INFORMACION PRODUCTO, ", result)
                 if(reqObj.ok === true){
 
+                    
+
                     resolve({
                         productId: result.ProductFoundId,
                         cathegory: result.Cathegory,
@@ -93,9 +95,12 @@ export class Product {
                         municipality: result.Municipality,
                         title: result.ProductName,
                         description: result.ProductDescription,
-                        profileImage: "images/profileImages/1.jpg",
+                        profileImage: result.OwnerProfilePicture,
                         name: result.Owner,
-                        productImages: result.Images
+                        productImages: result.Images,
+                        donationReceivedConfirmed: result.donationReceivedConfirmed,
+                        isOwner: result.isOwner,
+                        alreadyRequested: result.alreadyRequested
         
                     })
                     
@@ -108,16 +113,7 @@ export class Product {
         })
     }
 
-    static newRequestOfDonation({ user, productId }) {
-
-        return new Promise((resolve, reject) => {
-
-            setTimeout(() => {
-
-                resolve();
-            }, 5000);
-        })
-    }
+    
 
     static deleteProduct(productId) {
 
