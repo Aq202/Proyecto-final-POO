@@ -60,8 +60,7 @@ export class PageRouter {
             location.hash = "/login";
         }
         else if (hash.includes("/registration")){
-            this.component.appendChild(new RegistrationPage().component)
-            this.setCompleteWindow();
+            this.renderView(new RegistrationPage().component, true);
         }
         
         else if (hash.includes("/product")) {
