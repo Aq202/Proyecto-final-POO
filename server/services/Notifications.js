@@ -1,4 +1,5 @@
 const socket = require("./server/services/socketServer");
+const notificationController = require("../controllers/notification.controller");
 
 
 module.exports = class Notifications{
@@ -16,7 +17,7 @@ module.exports = class Notifications{
         // Guardar la información en la BD
         // obtener el ID generado
         
-        const id = "";// await saveNotification();
+        const id = ""; //await notificationController.saveNotification(notificationData);
         
         notificationData["id"] = id;
 

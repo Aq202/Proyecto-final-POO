@@ -17,10 +17,10 @@ export class ProductPage {
         this.municipality = municipality;
         this.title = title;
         this.description = description;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage || "images/profileImages/default.svg";;
         this.authorName = name;
         this.productImages = productImages;
-        this.isOwner = isOwner || true;
+        this.isOwner = isOwner || false;
         this.alreadyRequested = alreadyRequested || false;
         this.selectedAsBeneficiary = selectedAsBeneficiary || false;
         this.donationRequestAccepted = donationRequestAccepted || false;
@@ -101,33 +101,7 @@ export class ProductPage {
 
 
         //añadir seccion de solicitudes (si es el autor)
-        if (this.isOwner === true) {
-
-            const donationRequests = new DonationRequestsContainer({
-                requests: [
-                    {
-                        requestId: "a",
-                        userId: "b",
-                        userName: "Diego Morales",
-                        userAlias: "dgo202",
-                        profileImage: "images/profileImages/1.jpg",
-                        userEmail: "diegoguatedb2002@gmail.com",
-                        userDPI: "3943011290101",
-                        userGender: "Masculino",
-                        userAge: 18,
-                        requestMessage: "La verdad no lo quiero, lo necesito xd",
-                        documents: [
-                            "http://cdn.shopify.com/s/files/1/0101/2522/files/dslr-manual-focus_grande.jpg?3541"
-                        ],
-                        date: new Date(),
-                        selected: false
-                    }
-                ]
-            });
-            this.component.querySelector("#productInfo").appendChild(donationRequests.component);
-
-
-        }
+        this.addDonationRequests();
 
         //agregar eventos
         $productPage.querySelector("button#deleteProduct-button").addEventListener("click", e => this.deleteProduct());
@@ -140,6 +114,24 @@ export class ProductPage {
 
         document.addEventListener("requestAccepted", e => this.updateProductState());
 
+
+    }
+
+    async addDonationRequests() {
+
+        if (this.isOwner === true) {
+
+            const requests = await DonationRequest.getRequests(this.productId);
+
+            if (requests.length > 0) {
+
+                const donationRequests = new DonationRequestsContainer({requests});
+                this.component.querySelector("#productInfo").appendChild(donationRequests.component);
+
+            }
+
+
+        }
 
     }
 
@@ -305,7 +297,7 @@ export class ProductPage {
                     this.showSpinner();
                     this.hideButtons();
 
-                    await this.userRequestObject.deleteRequest();
+                    await this.userRequestObject.deleteRequest(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/working.svg",

@@ -1,0 +1,228 @@
+#profile-page {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1.2fr 2.8fr;
+    grid-template-rows: auto 1fr;
+
+    --margin: 5vw;
+}
+
+#profile-page .banner {
+    grid-column: 1 / span 2;
+    width: 100%;
+    height: 300px;
+    background-image: url(/images/banners/banner4.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position:relative;
+}
+
+#profile-page .banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(0,0,0,0.2);
+}
+
+
+#profile-page .profileDonations {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#profile-page .profileData{
+    width: 100%;
+    min-width: calc(300px + 2 * var(--margin));
+    height: fit-content;
+    margin: -100px 0 0 0;
+    z-index: 1;
+    position: sticky;
+    top: 20vh;
+} 
+
+#profile-page .dataContainer{
+    width: 300px;
+    height: fit-content;
+    margin: auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+    gap: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.1);
+}
+
+#profile-page .profileData .profilePicture{
+    width: 50%;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.2);
+}
+
+#profile-page .profileData .userName h3{
+    font-weight: bold;
+    font-family: 'Yanone Kaffeesatz';
+    font-size: 40px;
+    text-align: center;
+}
+
+#profile-page .profileData .userName h4{
+    font-weight: 300;
+    font-size: 18px;
+    text-align: center;
+}
+
+#profile-page .optionsMenu{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 60px;
+
+}
+
+#profile-page .optionsMenu > div{
+    border: 0;
+    border-bottom: 2px;
+    border-color: rgb(218, 218, 218);
+    border-style: solid;
+    color: #697477;
+    font-weight: bold;
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 2px;
+    user-select: none;
+    cursor: pointer;
+}
+
+#profile-page .optionsMenu > div:hover,
+#profile-page .optionsMenu > div.selected {
+    
+    border-bottom: 4px;
+    border-color: rgb(6, 114, 238);
+    border-style: solid;
+    color: rgb(6, 114, 238);
+    font-weight: bold;
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 0;
+}
+
+/*Donations container */
+
+#profile-page .donationsContainer{
+    padding: 25px var(--margin) 25px 0;
+    width: 100%;
+}
+
+#profile-page .donationsContainer .products-container{
+    grid-template-columns: repeat(5,1fr);
+}
+
+#profile-page .donationsContainer .products-container{
+    grid-template-columns: repeat(4,1fr);
+}
+
+
+@media only screen and (min-height:1500px){
+    #profile-page .profileData{
+        top: unset;
+    } 
+}
+
+@media only screen and (max-width:2400px){
+    #profile-page .donationsContainer .products-container{
+        grid-template-columns: repeat(4,1fr);
+    }
+}
+
+@media only screen and (max-width:1700px){
+
+    #profile-page .donationsContainer .products-container{
+        grid-template-columns: repeat(3,1fr);
+    }
+    
+    #profile-page .optionsMenur{
+        margin-top: 50px;
+        
+    }
+}
+
+
+@media only screen and (max-width:1400px){
+    #profile-page .donationsContainer .products-container{
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media only screen and (max-width:1050px){
+
+    #profile-page .donationsContainer .products-container{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    #profile-page {
+
+        grid-template-columns: 1fr;
+    }
+
+    #profile-page .banner {
+        grid-column: 1;
+    }
+    
+    
+    #profile-page .profileDonations {
+        grid-column: 1;
+    }
+
+    #profile-page .profileData{
+    
+        position: relative;
+        top: unset;
+    } 
+    
+    #profile-page .donationsContainer{
+        width: 75% !important;
+    }
+    
+    
+}
+
+
+@media only screen and (max-width:900px){
+    
+    #profile-page .donationsContainer{
+        width: 85% !important;
+    }
+}
+
+@media only screen and (max-width:700px){
+
+    #profile-page .donationsContainer .products-container{
+        grid-template-columns: repeat(1,1fr);
+    }
+    
+    #profile-page .donationsContainer{
+        width: 85% !important;
+    }
+}
+
+@media only screen and (max-width:400px){
+
+    #profile-page .profileData{
+        width: 100%;
+        min-width: unset;
+    } 
+
+    #profile-page .dataContainer{
+        width: 85%;
+    }
+}

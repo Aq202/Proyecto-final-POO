@@ -8,6 +8,7 @@ import { PageNotFound } from "./PageNotFound.js";
 import { LoadingView } from "./LoadingView.js";
 import { RegistrationPage } from "./RegistrationPage.js";
 import { User } from "../scripts/User.js";
+import { ProfilePage } from "./ProfilePage.js";
 
 
 export class PageRouter {
@@ -65,20 +66,24 @@ export class PageRouter {
 
             try {
                 let productData = await Product.getProductData(productId);
-
-                    
+          
+                    console.log(productData)
                     this.renderView(new ProductPage(productData).component);
     
             } catch (ex) {
                 //producto no encontrada
+                console.log(ex)
                 this.addNotFoundPage();
             }
         }
         else if (hash.includes("/registration")){
             this.renderView(new RegistrationPage().component, true);
         }
-        else{
-            location.hash = "";
+        else if (hash.includes("/profile")){
+            this.renderView(new ProfilePage().component);
+        }
+        else {
+            this.addNotFoundPage();
         }
     }
 

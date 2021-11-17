@@ -4,7 +4,7 @@ export class DonationItem {
 
         this.title = title;
         this.donationImage = donationImage;
-        this.ownerImage = ownerImage || "images/profileImages/default.jpeg";
+        this.ownerImage = ownerImage || "images/profileImages/default.svg";
         this.date = date;
         this.donationPath = donationPath;
 

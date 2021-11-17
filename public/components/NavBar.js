@@ -9,7 +9,7 @@ export class NavBar {
 
         this._userId = Session.id;
         this._userName = Session.name;
-        this._userImageUrl = Session?.profileImage || "images/profileImages/default.jpeg";
+        this._userImageUrl = Session?.profileImage || "images/profileImages/default.svg";
 
         this.initComponent();
     }

@@ -23,17 +23,18 @@ exports.ensureAuth = (req, res, next) => {
 }
 
 exports.choicelyAuth = (req, res, next) => {
-    if (!req.headers.authorization) {
+    if (!req.headers.authorization || req.headers.authorization == "" || req.headers.authorization == undefined || req.headers.authorization == null) {
         req.user = null;
+        next();
     } else {
         var token = req.headers.authorization.replace(/['"]+/g, '');
         try {
             var payload = jwt.decode(token, key);
             if (payload.exp <= moment().unix()) {
-                return res.status(401).send({ message: 'Token expirado' });
+                req.user = null;
             }
         } catch (ex) {
-            return res.status(401).send({ message: 'Token no válido.' });
+            req.user = null;
         }
         req.user = payload;
         next();

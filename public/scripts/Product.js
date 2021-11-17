@@ -86,6 +86,8 @@ export class Product {
                 console.log("INFORMACION PRODUCTO, ", result)
                 if(reqObj.ok === true){
 
+                    
+
                     resolve({
                         productId: result.ProductFoundId,
                         cathegory: result.Cathegory,
@@ -93,9 +95,12 @@ export class Product {
                         municipality: result.Municipality,
                         title: result.ProductName,
                         description: result.ProductDescription,
-                        profileImage: "images/profileImages/1.jpg",
+                        profileImage: result.OwnerProfilePicture,
                         name: result.Owner,
-                        productImages: result.Images
+                        productImages: result.Images,
+                        donationReceivedConfirmed: result.donationReceivedConfirmed,
+                        isOwner: result.isOwner,
+                        alreadyRequested: result.alreadyRequested
         
                     })
                     
@@ -105,30 +110,45 @@ export class Product {
 
             }).catch(err => reject(err));
 
-        })
+        });
     }
 
-    static newRequestOfDonation({ user, productId }) {
-
-        return new Promise((resolve, reject) => {
-
-            setTimeout(() => {
-
-                resolve();
-            }, 5000);
-        })
-    }
+    
 
     static deleteProduct(productId) {
 
         return new Promise((resolve, reject) => {
 
-            if (productId === undefined || productId === null) reject("Id invalido.");
+            const obj = {
+                productId
+            }
 
-            setTimeout(() => {
-                resolve();
-            }, 3000);
-        })
+            let reqObj;
+
+            fetch("/product/cancelDonation", {
+                method:"delete",
+                body:JSON.stringify(obj),
+                headers:{
+                    'Authorization': Session.token,
+                    "Content-Type": "application/json"
+                }
+            }).then(r => {
+                reqObj = r;
+                return r.json();
+
+            }).then(result => {
+
+               console.log(result)
+                if(reqObj.ok === true){
+
+                    resolve();
+                }else{
+                    reject(result.error);
+                }
+
+            }).catch(err => reject(err));
+
+        });
     }
 
 

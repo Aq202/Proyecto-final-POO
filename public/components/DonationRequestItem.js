@@ -7,12 +7,13 @@ export class DonationRequestItem {
         this.donationRequestObject = donationRequestObject || {};
         const { requestId, userId, userName, userAlias, profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents, date, selected } = this.donationRequestObject;
 
+        console.log("SELECTED")
         moment.locale('es');
 
         this.requestId = requestId;
         this.userId = userId;
         this.userName = userName;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage || "images/profileImages/default.svg";;
         this.date = moment(date).fromNow();
         this.selected = selected || false;
         this.actionBlocked = false;
@@ -41,8 +42,12 @@ export class DonationRequestItem {
 
     async showInfoPopUp() {
 
+        
+
         if(this.actionBlocked !== false) return;
 
+        if(this.donationRequestObject.loaded !== true) await this.donationRequestObject.getRequestFullData();
+        
         const popUp = new ManageRequestPopUp(this.donationRequestObject);
 
         try {

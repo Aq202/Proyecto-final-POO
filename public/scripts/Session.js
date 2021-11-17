@@ -239,4 +239,9 @@ export class Session {
         return name;
     }
 
+    static get profileImage(){
+
+        return Session.userData?.profilePic;
+    }
+
 }
