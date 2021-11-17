@@ -29,6 +29,26 @@ function signIn(req,res){
                 user.sex = params.sex;
                 user.birth = birth;
 
+                let profilePic = "";
+                let documents = [];
+                
+                let contador = 0;
+                req.imagesUrl.forEach(image=>{
+                    let imageArray = image.split('/');
+                    image = "";
+                    for(let i = 2; i<imageArray.length;i++){
+                        image += imageArray[i]
+                        if(o!== (imageArray.length -1)) image += "/";
+                    }
+                    if(contador == 0)
+                        profilePic = image;
+                    else
+                        documents.push(image);
+                    contador++;
+                })
+                user.profilePic = profilePic;
+                user.documents = documents;
+                
                 bcrypt.hash(params.password, null, null, (err, passwordEncripted)=>{
                     if(err)
                         res.status(500).send({ error: 'Error interno del servidor.', err });
@@ -47,6 +67,7 @@ function signIn(req,res){
                                 'Lastname': saved.lastname,
                                 'Age': saved.age,
                                 'Direction': saved.direccion,
+                                'Documents' : saved.documents,
                                 'profilePic': saved.profilePic,
                                 'Sex': saved.sex,
                                 'Birth': saved.birth
@@ -113,39 +134,6 @@ function calculateAge(birth,today){
     return age;
 }
 
-function addProfilePicture(req,res){
-    const userId = req.user.sub;
-    let image = "";
-    if(req.imagesUrl){
-        req.imagesUrl.forEach(i=>{
-            image = i;
-        });
-        User.findByIdAndUpdate(userId, {profilePic:image}, {new : true},(err, imageAdded)=>{
-            if (err) {
-                res.status(500).send({ message: 'Error interno del servidor', err });
-            } else if (imageAdded) {
-                res.send({
-                    'User updated': imageAdded._id,
-                    'DPI': imageAdded.dpi,
-                    'Username': imageAdded.username,
-                    'Email': imageAdded.email,
-                    'Name': imageAdded.name,
-                    'Lastname': imageAdded.lastname,
-                    'Age': imageAdded.age,
-                    'Direction': imageAdded.address,
-                    'profilePic': imageAdded.profilePic,
-                    'Sex': imageAdded.sex,
-                    'Birth': imageAdded.birth
-                });
-            } else {
-                cancelDonation(saved, res);
-            } 
-        });
-    }else{
-        req.status(400).send({message:"Debe ingresar la imagen que desea para su perfil"})
-    }
-}
-
 function getInfoUser(req,res){
     if(req.user.sub){
         let userId = req.user.sub;
@@ -179,6 +167,5 @@ function getInfoUser(req,res){
 module.exports={
     signIn,
     login,
-    addProfilePicture,
     getInfoUser
 }
