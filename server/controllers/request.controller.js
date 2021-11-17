@@ -26,9 +26,8 @@ function getRequest(req, res) {
                             console.log(err);
                             res.status(500).send({ error: 'Error interno del servidor' });
                         } else if (userFound) {
-                            let request = [];
-     
-                            request.push({
+         
+                            let request = {
                                 idRequest: found._id,
                                 petitionerId: userFound._id,
                                 name: userFound.name + " "+userFound.lastname,
@@ -42,8 +41,8 @@ function getRequest(req, res) {
                                 age: userFound.age,
                                 documents: userFound.documents,
                                 message: found.message
-                            });
-                            res.send({request});
+                            }
+                            res.send(request);
                         } else {
                             cancelRequest(found, res, "El usuario que ha realizado la peticion no existe o ha eliminado su cuenta.", 404);
                         }

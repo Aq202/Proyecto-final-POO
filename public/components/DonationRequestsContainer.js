@@ -44,7 +44,6 @@ export class DonationRequestsContainer {
         for (let request of this.requests) {
 
             const requestObject = new DonationRequest(request);
-            requestObject.getRequestFullData();
             this.requestsItems.push(new DonationRequestItem(requestObject));
         }
     }
@@ -65,7 +64,7 @@ export class DonationRequestsContainer {
         const fragment = document.createDocumentFragment();
 
         for (let requestItem of this.requestsItems) {
-
+           
             //Ya se aceptó una solicitud
             if (requestItem?.selected === true) { 
 

@@ -7,6 +7,7 @@ export class DonationRequestItem {
         this.donationRequestObject = donationRequestObject || {};
         const { requestId, userId, userName, userAlias, profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents, date, selected } = this.donationRequestObject;
 
+        console.log("SELECTED")
         moment.locale('es');
 
         this.requestId = requestId;
@@ -41,8 +42,12 @@ export class DonationRequestItem {
 
     async showInfoPopUp() {
 
+        
+
         if(this.actionBlocked !== false) return;
 
+        if(this.donationRequestObject.loaded !== true) await this.donationRequestObject.getRequestFullData();
+        
         const popUp = new ManageRequestPopUp(this.donationRequestObject);
 
         try {
