@@ -27,7 +27,7 @@ function getRequest(req, res) {
                             res.status(500).send({ error: 'Error interno del servidor' });
                         } else if (userFound) {
                             res.send({
-                                "Solicitud encontrada": found._id,
+                                "idRequest": found._id,
                                 "Petitioner": userFound._id,
                                 "Petitioner name": userFound.name + " " + userFound.lastname,
                                 "Profile picture": userFound.profilePic,
@@ -111,12 +111,12 @@ function newRequest(req, res) {
                                             cancelRequest(saved, res, "Error interno del servidor", 500);
                                         } else if (updated) {
                                             res.send({
-                                                "Solicitud realizada con exito": saved._id,
-                                                "Product requested": productId,
-                                                "User petitioner": petitioner,
-                                                "Requested Date": saved.requestedDate,
-                                                "Message sent": saved.message,
-                                                "Approved": (saved.approved == null || saved.approved == undefined) ? "Pendiente" : saved.approved
+                                                "idRequest": saved._id,
+                                                "productId": productId,
+                                                "petitionerId": petitioner,
+                                                "requestedDate": saved.requestedDate,
+                                                "messageSent": saved.message,
+                                                "approved": (saved.approved == null || saved.approved == undefined) ? "Pendiente" : saved.approved
                                             });
                                         } else {
                                             cancelRequest(saved, res, "Ha ocurrido un problema al agregar la solicitud al registro", 500);

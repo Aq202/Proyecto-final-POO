@@ -31,10 +31,10 @@ function getCurrentRequests(req, res) {
                                 User.findById(request.petitionerId,(err,foundU)=>{
                                     if(foundU && foundU != null){
                                         message += '{'
-                                        message += '"Request": "' + foundR._id + '",';
-                                        message += '"Petitioner": "' + (foundU.name + "" + foundU.lastname) + '",';
-                                        message += '"Profile Picture": "' + foundU.profilePic + '",';
-                                        message += '"Request Date": "' + found.requestedDate + '",';
+                                        message += '"request": "' + foundR._id + '",';
+                                        message += '"petitioner": "' + (foundU.name + "" + foundU.lastname) + '",';
+                                        message += '"profilePicture": "' + foundU.profilePic + '",';
+                                        message += '"requestedDate": "' + found.requestedDate + '",';
                                         message += '}'
                                     }
                                 })
@@ -114,18 +114,22 @@ function getProduct(req, res) {
                     });
                     message += '],';
                 }
+                if(found.ownerProfilePic && found.ownerProfilePic != null && found.ownerProfilePic != undefined)
+                    message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
+                else
+                    message += '"OwnerProfilePicture": ' + found.ownerProfilePic + ',';
                 message += '"Owner": "' + found.owner + '",';
                 message += '"OwnerID": "' + found.ownerId + '",';
                 message += '"ProductName": "' + found.name + '",';
                 message += '"ProductDescription": "' + found.description + '"';
                 if (req.user != null && found.ownerId == req.user.sub) {
-                    message += ',"isOwner": "' + true + '",';
-                    message += '"donationRequestAccepted": "' + (requestAccepted(found._id) == true ? true : false) + '",';
-                    message += '"donationReceivedConfirmed": "' + (found.available == false && requestAccepted(found._id)) + '"';
+                    message += ',"isOwner": ' + true + ',';
+                    message += '"donationRequestAccepted": ' + (requestAccepted(found._id) == true ? true : false) + ',';
+                    message += '"donationReceivedConfirmed": ' + (found.available == false && requestAccepted(found._id)) + '';
 
                 } else if (req.user != null && req.user != undefined) {
-                    message += ',"alreadyRequested": "' + found.interested.includes(req.user.sub) + '",';
-                    message += '"selectedAsBeneficiary": "' + (requestAccepted(found._id, req.user.sub) == true ? true : false) + '"';
+                    message += ',"alreadyRequested": ' + (found.interested.includes(req.user.sub)==true ? true : false) + ',';
+                    message += '"selectedAsBeneficiary": ' + (requestAccepted(found._id, req.user.sub) == true ? true : false) + '';
                 }
                 message += '}';
                 res.send(JSON.parse(message));
