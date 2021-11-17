@@ -7,7 +7,7 @@ function pathProducts(req,res,next){
 function pathUser(req,res,next){
     req.imagesPath = [];
     req.imagesPath[0] = "./public/resources/userImages/profileImages/";
-    req.imagesPath[1] = "./public/resources/userImages/dpiImages/";
+    req.imagesPath[1] = "./public/resources/userImages/documents/";
     req.contador = 0;
     next();
 }

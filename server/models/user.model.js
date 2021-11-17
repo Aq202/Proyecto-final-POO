@@ -12,7 +12,7 @@ const userSchema = Schema({
     age: Number,
     address: String,
     profilePic:String,
-    dpiPics: [],
+    documents: [],
     sex: String,
     birth: Date,
     adquisitions: [{ type: Schema.Types.ObjectId, ref: 'product' }],

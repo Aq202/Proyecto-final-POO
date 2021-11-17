@@ -215,7 +215,6 @@ function updateOwner(product, user, res) {
         if (err) {
             cancelDonation(product, res, "Error interno del servidor", 500);
         } else if (updated) {
-            console.log("XD", updated)
             res.send({ message: 'Producto agregado con éxito.', data: updated });
         } else {
             cancelDonation(product, res, "Ha ocurrido un error al asignar la donación al usuario correspondiente.", 500);
