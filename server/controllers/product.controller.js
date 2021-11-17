@@ -115,8 +115,6 @@ function getProduct(req, res) {
                 }
                 if(found.ownerProfilePic && found.ownerProfilePic != null && found.ownerProfilePic != undefined)
                     message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
-                else
-                    message += '"OwnerProfilePicture": ' + found.ownerProfilePic + ',';
                 message += '"Owner": "' + found.owner + '",';
                 message += '"OwnerID": "' + found.ownerId + '",';
                 message += '"ProductName": "' + found.name + '",';
@@ -131,6 +129,7 @@ function getProduct(req, res) {
                     message += '"selectedAsBeneficiary": ' + (requestAccepted(found._id, req.user.sub) == true ? true : false) + '';
                 }
                 message += '}';
+                console.log(message);
                 res.send(JSON.parse(message));
             } else {
                 res.status(404).send({ error: "No se han encontrado productos con el ID indcado" });
