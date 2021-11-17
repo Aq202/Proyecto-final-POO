@@ -14,5 +14,7 @@ api.post('/getProduct',mdAuth.choicelyAuth, productController.getProduct);
 api.post('/addProduct', mdAuth.ensureAuth, multer.any(), productController.addProduct);
 api.post('/listProducts', productController.listProducts);
 api.post('/filteredSearch', productController.filteredSearch);
+api.delete('/cancelDonation',mdAuth.ensureAuth, productController.deleteProduct);
+api.post('/currentRequest', mdAuth.ensureAuth, productController.getCurrentRequests);
 
 module.exports = api;

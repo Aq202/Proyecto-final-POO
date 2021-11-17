@@ -6,6 +6,7 @@ const requestSchema = Schema({
     productId: String,
     petitionerId: String,
     requestedDate:Date,
+    ownerId: String,
     message:String,
     approved: Boolean
 });

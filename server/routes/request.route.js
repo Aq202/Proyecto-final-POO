@@ -6,10 +6,12 @@ const mdAuth = require('../middlewares/authenticated');
 
 const api = express.Router();
 
-api.post('/newRequest',mdAuth.ensureAuth,requestController.newRequest);
 api.post('/getRequest',mdAuth.ensureAuth, requestController.getRequest);
+api.post('/newRequest',mdAuth.ensureAuth,requestController.newRequest);
 api.post('/rejectRequest',mdAuth.ensureAuth, requestController.rejectRequest);
 api.post('/approveRequest',mdAuth.ensureAuth, requestController.approveRequest);
-api.delete('/deleteRequest',mdAuth.ensureAuth, requestController.deleteRequest)
+api.post('/cancelRequest',mdAuth.ensureAuth, requestController.approveRequest);
+api.post('/confirmReceived',mdAuth.ensureAuth, requestController.approveRequest);
+api.post('/rejectDonation',mdAuth.ensureAuth, requestController.approveRequest);
 
 module.exports = api;
