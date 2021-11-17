@@ -9,27 +9,31 @@
     justify-content: center;
     align-items: center;
     background: url(../images/backgrounds/registration_bg.jpg) no-repeat center top;
-    height: 100vh;
+    height: fit-content;
     justify-content: center;
     align-items: center;
 }
 
-.container{
-    max-width: 700px;
+#registrationPage .container{
+    max-width: 1000px;
     width: 100%;
     background: #282c34;
     color: #fff;
     padding: 25px 30px;
     border-radius: 5px;
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 
-.container .title{
+#registrationPage .container .title{
     font-size: 25px;
     font-weight: 500;
+    font-weight: bold;
     position: relative;
+    text-align: center;
 }
 
-.container .title::before{
+/*#registrationPage .container .title::before{
     content: "";
     position: absolute;
     height: 3px;
@@ -37,26 +41,27 @@
     background: #fff;
     left: 0;
     bottom: 0;
-}
+}*/
 
-.container form .user-details{
+#registrationPage .container form .user-details{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-bottom: 25px;
 }
 
-form .user-details .input-box{
+#registrationPage form .user-details .input-box{
     margin: 20px 0 12px 0;
     width: calc(100% / 2 - 20px);
 }
 
-.user-details .input-box .details{
+#registrationPage .user-details .input-box .details{
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
-.user-details .input-box input{
+#registrationPage .user-details .input-box input{
     width: 100%;
     height: 45px;
     border: none;
@@ -67,23 +72,24 @@ form .user-details .input-box{
     font-size: 16px;
 }
 
-form .sex-details .gender-title{
+
+#registrationPage form .sex-details .gender-title{
     font-weight: bold;
 }
 
-form .sex-details .category{
+#registrationPage form .sex-details .category{
     display: flex;
     width: 80%;
     margin: 14px 0;
     justify-content: space-evenly;
 }
 
-form .sex-details .category label{
+#registrationPage form .sex-details .category label{
     display: flex;
     align-items: center;
 }
 
-form .sex-details .category .dot{
+#registrationPage form .sex-details .category .dot{
     height: 18px;
     width: 18px;
     border-radius: 50%;
@@ -99,16 +105,16 @@ form .sex-details .category .dot{
     background: #282c34;
 }
 
-form input[type="radio"]{
+#registrationPage form input[type="radio"]{
     display: none;
 }
 
-form .button{
+#registrationPage form .button{
     height: 40px;
     margin: 40px 0;
 }
 
-form .button input{
+#registrationPage form .button input{
     width: 100%;
     border: none;
     outline: none;
@@ -119,10 +125,44 @@ form .button input{
     border-radius: 20px;
 }
 
-form .errorMessage{
+#registrationPage form .errorMessage{
     font-weight: bold;
     color: red;
     width: 100%;
     text-align: center;
     display: none;
+}
+
+#registrationPage form .user-details .input-box-address{
+    width: 100%;
+}
+
+#registrationPage .user-details .input-box-address .details{
+    margin-top: 5px;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#registrationPage .user-details .input-box-address input{
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    color: #fff;
+    font-size: 16px;
+}
+
+#registrationPage .imagesSection{
+    color: #282c34;
+}
+
+#registrationPage .imagesSection .details{
+    color: #fff;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 25px;
+    margin-top: 25px;
 }

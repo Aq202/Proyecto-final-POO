@@ -18,7 +18,7 @@ export class User{
 
     }
 
-    static createNewUser({dpi, username, age, email, password, name, lastname, direction, sex, birtday}){
+    static createNewUser({dpi, username, age, email, password, name, lastname, address, sex, birthday}){
 
         return new Promise((resolve, reject) =>{
 
@@ -30,9 +30,9 @@ export class User{
                 password,
                 name, 
                 lastname, 
-                direction,
+                address,
                 sex, 
-                birth:birtday
+                birth:birthday
             }
 
             fetch("http://localhost:2004/user/signIn",{
