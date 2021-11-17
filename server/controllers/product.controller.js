@@ -26,21 +26,29 @@ function getCurrentRequests(req, res) {
                             console.log(err);
                             res.status(500).send({ error: "Error interno del servidor." });
                         }else if(foundR){
-                            let message = '{"Solicitudes actuales":[';
-                            found.forEach(request=>{
-                                User.findById(request.petitionerId,(err,foundU)=>{
-                                    if(foundU && foundU != null){
-                                        message += '{'
-                                        message += '"request": "' + foundR._id + '",';
-                                        message += '"petitioner": "' + (foundU.name + "" + foundU.lastname) + '",';
-                                        message += '"profilePicture": "' + foundU.profilePic + '",';
-                                        message += '"requestedDate": "' + found.requestedDate + '",';
-                                        message += '}'
-                                    }
-                                })
-                            });
-                            message += ']}';
-                            res.send(JSON.parse(message));
+                            let currentRequests = [];
+                            for(let index in foundR){
+                                const request = foundR[index];
+                                try{
+                                    User.findById(request.petitionerId,(err,foundU)=>{
+                                        if(err)throw "";
+                                        else if(foundU && foundU != null){
+                                            currentRequests.push({
+                                                request: request._id,
+                                                petitioner: foundU.name + " " + foundU.lastname,
+                                                profilePicture: foundU.profilePic,
+                                                requestedDate: request.requestedDate
+                                            });
+                                        }
+                                        if(index == (foundR.length -1 )){
+                                            res.send({currentRequests});
+                                        }
+                                    });
+                                }catch(ex){
+                                    console.log("ERROR MANUAL", ex);
+                                    res.status(500).send({message: "Ocurrió un error interno"});
+                                }
+                            }
                         }else{
                             res.status(404).send({message:"Actualmente no hay solicitudes para esta donacion"});
                         }

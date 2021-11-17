@@ -1,10 +1,14 @@
 function pathProducts(req,res,next){
     req.imagesPath = "./public/resources/productImages/";
+    console.log(req.imagesPath.length);
     next();
 }
 
-function pathProfile(req,res,next){
-    req.imagesPath = "./public/resources/userImages/profileImages/";
+function pathUser(req,res,next){
+    req.imagesPath = [];
+    req.imagesPath[0] = "./public/resources/userImages/profileImages/";
+    req.imagesPath[1] = "./public/resources/userImages/dpiImages/";
+    req.contador = 0;
     next();
 }
 
@@ -13,14 +17,8 @@ function pathNotifications(req,res,next){
     next();
 }
 
-function pathDPI(req,res,next){
-    req.imagesPath = "./public/resources/userImages/dpiImages/";
-    next();
-}
-
 module.exports = {
     pathProducts,
-    pathProfile,
+    pathUser,
     pathNotifications,
-    pathDPI
 }

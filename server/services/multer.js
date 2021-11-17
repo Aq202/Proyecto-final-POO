@@ -8,6 +8,7 @@ const storage = multer.diskStorage({
 
     filename: function (req, file, callback) {
         let newFilename = Date.now()+"-"+file.originalname;
+        let contador = 0;
         callback(null, newFilename);
         if(req.imagesUrl == undefined)
             req.imagesUrl = [];
