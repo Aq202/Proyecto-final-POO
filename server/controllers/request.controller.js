@@ -258,7 +258,15 @@ function deleteRequest(req, res) {
                                 res.status(500).send({ error: "Error interno del servidor" });
                                 console.log(err);
                             } else if (deleted) {
-                                res.send({ message: "Se ha cancelado la solicitud" });
+                                Product.findByIdAndUpdate(found.productId, { $pull: { interested: found.petitionerId } }, { new: true }, (err, updated) => {
+                                    if (err) {
+                                        res.status(500).send({ error: "Error interno del servidor", err });
+                                    } else if (updated) {
+                                        res.send({ message: "Se ha cancelado la solicitud" });
+                                    } else {
+                                        res.status(500).send({ message: "Ha ocurrido un error inesperado al eliminar la solicitud" });
+                                    }
+                                });
                             } else {
                                 res.status(500).send({ error: "Se ha producido un error inesperado al cancelar la solicitud" });
                             }
@@ -340,7 +348,15 @@ function rejectDonation(req, res) {
                             res.status(500).send({ error: "Error interno del servidor" });
                             console.log(err);
                         } else if (deleted) {
-                            res.send({ message: "Se ha rechazado la donacion" });
+                            Product.findByIdAndUpdate(found.productId, { $pull: { interested: found.petitionerId } }, { new: true }, (err, updated) => {
+                                if (err) {
+                                    res.status(500).send({ error: "Error interno del servidor", err });
+                                } else if (updated) {
+                                    res.send({ message: "Se ha rechazado la donacion" });
+                                } else {
+                                    res.status(500).send({ message: "Ha ocurrido un error inesperado al eliminar la solicitud" });
+                                }
+                            });
                         } else {
                             res.status(500).send({ error: "Se ha producido un error inesperado al rechazar la donacion" });
                         }
