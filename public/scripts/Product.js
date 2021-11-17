@@ -86,6 +86,8 @@ export class Product {
                 console.log("INFORMACION PRODUCTO, ", result)
                 if(reqObj.ok === true){
 
+                    
+
                     resolve({
                         productId: result.ProductFoundId,
                         cathegory: result.Cathegory,
@@ -93,7 +95,7 @@ export class Product {
                         municipality: result.Municipality,
                         title: result.ProductName,
                         description: result.ProductDescription,
-                        profileImage: result.OwnerProfilePicture,
+                        //profileImage: result.OwnerProfilePicture,
                         name: result.Owner,
                         productImages: result.Images,
                         donationReceivedConfirmed: result.donationReceivedConfirmed,

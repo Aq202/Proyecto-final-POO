@@ -87,14 +87,12 @@ export class DonationRequest{
      * Elimina la solicitud propia de un usuario
      * @returns Promise
      */
-    deleteRequest(){
+    deleteRequest(productId){
 
         return new Promise((resolve, reject) => {
 
-            if(this.requestId === null) reject("Id de solicitud rechazado.")
-
             const obj = {
-                requestId:this.requestId
+                productId
             }
             console.log(obj)
             let reqObj;

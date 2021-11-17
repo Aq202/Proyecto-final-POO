@@ -102,7 +102,7 @@ function getProduct(req, res) {
                 message += '"Department": "' + found.department + '",';
                 message += '"Municipality": "' + found.municipality + '",';
                 message += '"Images": "' + found.images + '",';
-                message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
+                if(found.ownerProfilePic) message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
                 message += '"Owner": "' + found.owner + '",';
                 message += '"OwnerID": "' + found.ownerId + '",';
                 message += '"ProductName": "' + found.name + '",';

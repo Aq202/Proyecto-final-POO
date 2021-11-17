@@ -192,6 +192,8 @@ function rejectRequest(req, res) {
 }
 
 function approveRequest(req, res) {
+
+    console.log(req)
     const params = req.body;
     const userId = req.user.sub;
     let requestID

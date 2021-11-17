@@ -26,7 +26,7 @@ export class ProductPage {
         this.donationRequestAccepted = donationRequestAccepted || false;
         this.donationReceivedConfirmed = donationReceivedConfirmed || false;
         this.userRequestId = userRequestId || undefined;
-
+    
         if (!this.userRequestId) this.userRequestObject = new DonationRequest({ requestId: this.userRequestId });
 
         this.actionBlocked = false;
@@ -36,7 +36,7 @@ export class ProductPage {
     }
 
     initComponent() {
-
+        debugger
         this.component = document.createElement("div");
         const $productPage = this.component;
 
@@ -118,7 +118,7 @@ export class ProductPage {
     }
 
     async addDonationRequests(){
-        debugger
+
         if (this.isOwner === true) {
 
            //const requests = await DonationRequest.getRequests(this.productId);
@@ -313,7 +313,7 @@ export class ProductPage {
                     this.showSpinner();
                     this.hideButtons();
 
-                    await this.userRequestObject.deleteRequest();
+                    await this.userRequestObject.deleteRequest(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/working.svg",
