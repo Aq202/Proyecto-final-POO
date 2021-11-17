@@ -18,6 +18,7 @@ export class RegistrationPage{
         this.address = "";
         this.profilePic = null;
         this.imageFiles = [];
+
     }
     initComponent(){
         this.component = document.createElement("div");
@@ -32,43 +33,43 @@ export class RegistrationPage{
                 <div class="user-details">
                     <div class="input-box">
                     <span class="details">Nombre</span>
-                    <input id="name-input" type="text" placeholder="Ingrese su primer nombre" required>
+                    <input id="name-input" type="text" placeholder="Ingrese su primer nombre" required autocomplete="off" value="asdf">
                     </div>
                     <div class="input-box">
                        <span class="details">Apellido</span>
-                        <input id="lastname-input" type="text" placeholder="Ingrese su apellido" required>
+                        <input id="lastname-input" type="text" placeholder="Ingrese su apellido" required autocomplete="off" value="sadf">
                     </div>
                     <div class="input-box">
                         <span class="details">Fecha de nacimiento</span>
-                        <input id="date-input" type="date" placeholder="Ingrese su fecha de nacimiento" required>
+                        <input id="date-input" type="date" placeholder="Ingrese su fecha de nacimiento" required autocomplete="off">
                     </div>
                     <div class="input-box">
                         <span class="details">DPI</span>
-                        <input id="dpi-input" type="text" placeholder="Ingrese su número de DPI" required>
+                        <input id="dpi-input" type="number" placeholder="Ingrese su número de DPI" required autocomplete="off" value="125425">
                     </div>
                     <div class="input-box-address">
                         <span class="details">Dirección</span>
-                        <input id="address-input" type="text" placeholder="Ingrese su dirección" required>
+                        <input id="address-input" type="text" placeholder="Ingrese su dirección" required autocomplete="off" value = "sadf">
                     </div>
                     <div class="input-box">
                         <span class="details">Correo electrónico</span>
-                        <input id="email-input" type="text" placeholder="Ingrese su correo electrónico" required>
+                        <input id="email-input" type="email" placeholder="Ingrese su correo electrónico" required autocomplete="off" value="diego@gmail.com">
                     </div>
                     <div class="input-box">
                         <span class="details">Nombre de usuario</span>
-                        <input id="username-input" type="text" placeholder="Ingrese un nombre de usuario" required>
+                        <input id="username-input" type="text" placeholder="Ingrese un nombre de usuario" required autocomplete="off" value="asdf">
                     </div>
                     <div class="input-box">
                         <span class="details">Contraseña</span>
-                        <input id="password-input" type="text" placeholder="Ingrese su contraseña" required>
+                        <input id="password-input" type="text" placeholder="Ingrese su contraseña" required autocomplete="off" value="fdasasfd">
                     </div>
                     <div class="input-box">
                         <span class="details">Confirmar contraseña</span>
-                        <input id="confirmPass-input" type="text" placeholder="Ingrese su contraseña nuevamente" required>
+                        <input id="confirmPass-input" type="text" placeholder="Ingrese su contraseña nuevamente" required autocomplete="off" value="fdasasfd">
                     </div>
                 </div>
                 <div class="sex-details">
-                    <input type="radio" name="sex" id="dot-1">
+                    <input type="radio" name="sex" id="dot-1" selected>
                     <input type="radio" name="sex" id="dot-2">
                     <span class="gender-title">Sexo</span>
                     <div class="category">
@@ -112,7 +113,7 @@ export class RegistrationPage{
             if (!files) return;
 
             let imageFiles = imagePickerProfilePic.files;
-            this.profilePic = imageFiles[0];
+            this.profilePic = imageFiles[0] || null; //si es undefined coloca null
         })
 
         //evento al cambiar los archivos seleccionados del selector de imagen de dpi
@@ -128,7 +129,7 @@ export class RegistrationPage{
         $dpiSection.appendChild(imagePickerDpi.component);
 
         //Evento enviar forumlario
-        this.component.querySelector("#sign-up-button").addEventListener("click", e => this.sendForm());
+        this.component.querySelector("#sign-up-button").addEventListener("click", e => this.sendForm(e));
     }
 
     //Seleccionar datos
@@ -159,64 +160,68 @@ export class RegistrationPage{
         this.age = age;*/
     }
 
-    selectDpi(){
+    selectDpi(){ 
+    
         const $inputDpi = this.component.querySelector("#dpi-input");
         if ($inputDpi === undefined) return;
-        this.dpi = $inputDpi;
+        this.dpi = $inputDpi.value.trim(); 
     }
 
     selectAddress(){
         const $inputAddress = this.component.querySelector("#address-input");
         if ($inputAddress === undefined) return;
-        this.address = $inputAddress;
+        this.address = $inputAddress.value.trim();
     }
 
     selectEmail(){
         const $inputEmail = this.component.querySelector("#email-input");
         if ($inputEmail === undefined) return;
-        this.email = $inputEmail;
+        this.email = $inputEmail.value.trim();
     }
 
     selectUsername(){
         const $inputUserName = this.component.querySelector("#username-input");
          if ($inputUserName === undefined) return;
-        this.username = $inputUserName;
+        this.username = $inputUserName.value.trim();
     }
 
     selectPassword(){
         const $inputPassword = this.component.querySelector("#password-input");
         if ($inputPassword === undefined) return;
-        this.password = $inputPassword;
+        this.password = $inputPassword.value.trim();
     }
 
     selectConfirmPass(){
         const $inputConfirmPass = this.component.querySelector("#confirmPass-input");
         if ($inputConfirmPass === undefined) return;
-        this.confirmPass = $inputConfirmPass;
+        this.confirmPass = $inputConfirmPass.value.trim();
     }
 
     selectSex(){
-        if(!this.component.getElementById("#dot-1").checked && !this.component.getElementById("#dot-2").checked) return;
-        if (this.component.getElementById("#dot-1").checked) this.sex = "Male";
-        if (this.component.getElementById("#dot-2").checked) this.sex = "Female";
+        if(!this.component.querySelector("#dot-1").checked && !this.component.querySelector("#dot-2").checked) return;
+        if (this.component.querySelector("#dot-1").checked) this.sex = "Male";
+        if (this.component.querySelector("#dot-2").checked) this.sex = "Female";
     }
 
 
     //Validaciones
     validateData(){
 
+
+
         if (!this.component) return false;
 
-        this.selectAddress();
-        this.selectBirthday();
-        this.selectConfirmPass();
-        this.selectDpi();
-        this.selectEmail();
         this.selectFirstName();
         this.selectLastName();
-        this.selectPassword();
-        this.selectSex();
+        this.selectBirthday();
+        this.selectDpi();
+        this.selectAddress();
+        this.selectEmail();
         this.selectUsername();
+        this.selectPassword();
+        this.selectConfirmPass();
+        this.selectSex();
+        
         
         //Validar nombre
         if (this.name === ""){
@@ -229,30 +234,37 @@ export class RegistrationPage{
             this.showError("El campo de apellido es obligatorio");
             return false;
         }
-
+        
         //Validar fecha de nacimiento
         if (this.birthday === ""){
             this.showError("El campo de fecha de nacimiento es obligatorio");
             return false;
         }
-
-        if (this.dpi === 0){
+     
+        if (this.dpi === 0 || isNaN(this.dpi)){
             this.showError("El campo de DPI es obligatorio");
             return false;
         }
 
         if (this.address === ""){
-            this.showError("El campo de fecha de dirección es obligatorio");
+            this.showError("El campo de dirección es obligatorio");
             return false;
         }
 
         if (this.email === ""){
             this.showError("El campo de correo electrónico es obligatorio");
             return false;
+        }else{
+
+            const regExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(!regExp.test(this.email)){
+                this.showError("El correo ingresado no es válido.");
+                return false;
+            }
         }
 
         if (this.username === ""){
-            this.showError("El campo de correo electrónico es obligatorio");
+            this.showError("El campo de nombre de usuario es obligatorio");
             return false;
         }
 
@@ -266,39 +278,32 @@ export class RegistrationPage{
             return false;
         }
 
+        if(this.password !== this.confirmPass){
+            this.showError("Las contraseñas ingresadas no coinciden");
+            return false;
+        }
+
         if (this.sex === ""){
             this.showError("Por favor, seleccione un sexo");
             return false;
         }
 
-        if(this.password != this.confirmPass){
-            this.showError("La contraseñas ingresadas no coinciden");
-            return false;
-        }
+
 
         //Validar imagenes
-
         if(this.profilePic === null){ //De perfil
             this.showError("Por favor, ingrese una fotografía de perfil");
             return false;
         }
 
-        if(this.dpiPics.length < 2){ //Del DPI
-            this.showError("Por favor, ingrese una fotografía de cada lado de su DPI");
+        if(!Array.isArray(this.dpiPics) || this.dpiPics.length < 1){ //Del DPI
+            this.showError("Por favor, ingrese un documento de identificación");
             return false;
         }
 
         //Ningún error, éxito
         this.showError("");
         return true;
-    }
-
-    async signUp(){
-        const $inputName = this.querySelector("#name-input");
-        const $inputUserName = this.querySelector("username-input");
-        const $inputEmail = this.querySelector("email-input");
-        const $inputPassword = this.querySelector("password-input");
-        const $inputConfirmPass = this.querySelector("confirmPass-input");
     }
 
     showError(errorMessage) {
@@ -319,13 +324,28 @@ export class RegistrationPage{
         $errorMessage.style.display = "none";
     }
 
-    sendForm(){
+    sendForm(e){
+
+        e.preventDefault();
+
         if (this.validateData() === true){
-            this.imageFiles[0] = this.profilePic;
-            this.imageFiles[1] = this.dpiPics[0];
-            this.imageFiles[2] = this.dpiPics[1];
+            
             let user = new User(this.username, this.name + " " + this.lastname, this.profilePic)
-            user.crateNewUser(this.dpi, this.username, this.age, this.email, this.password, this.address, this.name, this.lastname, this.address, this.sex, this.birthday, this.imageFiles);
+            //this.dpi, this.username, this.age, this.email, this.password, this.address, this.name, this.lastname, this.address, this.sex, this.birthday, this.profilePic, this.dpiPics
+            User.createNewUser({
+                dpi: this.dpi,
+                username: this.username,
+                email: this.email,
+                password: this.password,
+                name: this.name,
+                lastname: this.lastname,
+                address: this.address,
+                sex: this.sex,
+                birthday: this.birthday,
+                profilePic: this.profilePic,
+                documentsPics: this.dpiPics
+            })
+            alert("Enviando formulario");
         }
     }
 

@@ -1,3 +1,5 @@
+import { Session } from "./Session.js";
+
 export class User{
 
     constructor({userId, name, profileImage}){
@@ -18,35 +20,60 @@ export class User{
 
     }
 
-    static createNewUser({dpi, username, age, email, password, name, lastname, address, sex, birthday}){
+    static createNewUser({dpi, username, email, password, name, lastname, address, sex, birthday, profilePic, documentsPics}){
 
         return new Promise((resolve, reject) =>{
 
-            let data = {
-                dpi,
-                username,
-                age,
-                email,
-                password,
-                name, 
-                lastname, 
-                address,
-                sex, 
-                birth:birthday
+            const form = new FormData();
+
+            //agregar foto de perfil
+            form.append('files[]', profilePic, profilePic.name);
+
+            for (let file of documentsPics){
+                form.append('files[]', file, file.name)
             }
 
-            fetch("http://localhost:2004/user/signIn",{
-                method:"POST",
-                body:JSON.stringify(data),
-                headers:{
-                    "Content-Type":"application/json"
+            let reqObject;
+            form.append("dpi", dpi);
+            form.append("username", username);
+            form.append("email", email);
+            form.append("password", password);
+            form.append("name", name);
+            form.append("lastname", lastname);
+            form.append("address", address);
+            form.append("sex", sex);
+            form.append("birth", birthday);
+
+
+            fetch("/user/signIn", {
+                method: "POST",
+                body: form,
+                headers: {
+                    'Authorization': Session.token,
                 }
-            }).then(r => r.json())
-            .then(result =>{
-               
-                    resolve();
-            
-            }).catch(err => reject(err))
+            })
+                .then(r => {
+                    reqObject = r;
+                    return r.json();
+                })
+                .then(res => {
+
+                    console.log(res)
+                    if (reqObject.ok === true) resolve(res.data);
+                    else{ 
+
+                        if(reqObject.status === 401){//unauthorized
+                            Session.logout();
+                            reject(new Error("Unauthorized"));
+                            
+                        }else{
+                            reject()
+                        }
+
+                        
+                    }
+                })
+                .catch(err => reject());
         });
 
     }

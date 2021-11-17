@@ -9,6 +9,8 @@ function signIn(req,res){
     const user = new User();
     let today = Date.now();
 
+    console.log(req);
+
     if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth){
         User.findOne({$or: [{ username: params.username }, { email: params.email }, {dpi:params.dpi}] }, (err, found) => {
             if(err)
