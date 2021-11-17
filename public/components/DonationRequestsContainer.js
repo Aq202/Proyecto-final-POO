@@ -44,6 +44,7 @@ export class DonationRequestsContainer {
         for (let request of this.requests) {
 
             const requestObject = new DonationRequest(request);
+            requestObject.getRequestFullData();
             this.requestsItems.push(new DonationRequestItem(requestObject));
         }
     }

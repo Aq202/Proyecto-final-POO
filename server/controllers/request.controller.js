@@ -14,7 +14,7 @@ function getRequest(req, res) {
         requestID = null;
     }
     if (requestID != null) {
-        Request.findById(requestId, (err, found) => {
+        Request.findById(requestID, (err, found) => {
             if (err) {
                 console.log(err);
                 res.status(500).send({ error: 'Error interno del servidor' });

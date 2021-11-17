@@ -204,6 +204,46 @@ export class DonationRequest{
 
     }
 
+    getRequestFullData(){
+
+        return new Promise((resolve, reject) => {
+
+            if(this.requestId === null) reject("Id de solicitud rechazado.")
+
+            const obj = {
+                requestId:this.requestId
+            }
+
+            let reqObj;
+
+            fetch("/request/getRequest", {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization": Session.token
+                },
+                body:JSON.stringify(obj)
+            })
+            .then(r => {
+                reqObj = r;
+                return r.json();
+            })
+            .then(result => {
+
+                console.log(result)
+                if(reqObj.ok === true){
+                    resolve(result)
+                }else{
+                    reject(result)
+                }
+            })
+            .catch(err => reject(err));
+
+
+        });
+
+    }
+
     static getRequests(productId){
 
         return new Promise((resolve, reject) => {
@@ -227,10 +267,17 @@ export class DonationRequest{
                 return r.json();
             })
             .then(result => {
-                console.log(result)
-                
+                                
                 if(reqObj.ok === true){
-                    resolve(result)
+                    
+                    resolve(result.currentRequests.map( req => {
+                        return {
+                            requestId: req.request,
+                            userName: req.petitioner,
+                            date: req.requestedDate,
+                            profileImage: req.profilePicture
+                        }
+                    }))
                 }else{
                     reject(result)
                 }

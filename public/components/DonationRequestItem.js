@@ -12,7 +12,7 @@ export class DonationRequestItem {
         this.requestId = requestId;
         this.userId = userId;
         this.userName = userName;
-        this.profileImage = profileImage || "images/profileImages/default.jpeg";;
+        this.profileImage = profileImage || "images/profileImages/default.svg";;
         this.date = moment(date).fromNow();
         this.selected = selected || false;
         this.actionBlocked = false;

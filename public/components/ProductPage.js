@@ -17,7 +17,7 @@ export class ProductPage {
         this.municipality = municipality;
         this.title = title;
         this.description = description;
-        this.profileImage = profileImage || "images/profileImages/default.jpeg";;
+        this.profileImage = profileImage || "images/profileImages/default.svg";;
         this.authorName = name;
         this.productImages = productImages;
         this.isOwner = isOwner || false;
@@ -26,7 +26,7 @@ export class ProductPage {
         this.donationRequestAccepted = donationRequestAccepted || false;
         this.donationReceivedConfirmed = donationReceivedConfirmed || false;
         this.userRequestId = userRequestId || undefined;
-    
+
         if (!this.userRequestId) this.userRequestObject = new DonationRequest({ requestId: this.userRequestId });
 
         this.actionBlocked = false;
@@ -36,7 +36,7 @@ export class ProductPage {
     }
 
     initComponent() {
-        
+
         this.component = document.createElement("div");
         const $productPage = this.component;
 
@@ -117,34 +117,18 @@ export class ProductPage {
 
     }
 
-    async addDonationRequests(){
+    async addDonationRequests() {
 
         if (this.isOwner === true) {
 
-           const requests = await DonationRequest.getRequests(this.productId);
+            const requests = await DonationRequest.getRequests(this.productId);
 
-            const donationRequests = new DonationRequestsContainer({
-                requests: [
-                    {
-                        requestId: "a",
-                        userId: "b",
-                        userName: "Diego Morales",
-                        userAlias: "dgo202",
-                        profileImage: "images/profileImages/1.jpg",
-                        userEmail: "diegoguatedb2002@gmail.com",
-                        userDPI: "3943011290101",
-                        userGender: "Masculino",
-                        userAge: 18,
-                        requestMessage: "La verdad no lo quiero, lo necesito xd",
-                        documents: [
-                            "http://cdn.shopify.com/s/files/1/0101/2522/files/dslr-manual-focus_grande.jpg?3541"
-                        ],
-                        date: new Date(),
-                        selected: false
-                    }
-                ]
-            });
-            this.component.querySelector("#productInfo").appendChild(donationRequests.component);
+            if (requests.length > 0) {
+
+                const donationRequests = new DonationRequestsContainer({requests});
+                this.component.querySelector("#productInfo").appendChild(donationRequests.component);
+
+            }
 
 
         }

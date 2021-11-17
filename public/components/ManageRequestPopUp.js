@@ -19,7 +19,8 @@ export class ManageRequestPopUp extends PopUP {
     initComponent() {
         super.initComponent();
 
-        const { requestId, userName, userAlias, profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents } = this.donationRequestObject;
+        let { requestId, userName, userAlias, profileImage , userEmail, userDPI, userGender, userAge, requestMessage, documents } = this.donationRequestObject;
+        profileImage ||= "images/profileImages/default.svg";
 
         this.component.classList.add("manageRequest")
 
