@@ -31,10 +31,10 @@ function getCurrentRequests(req, res) {
                                 User.findById(request.petitionerId,(err,foundU)=>{
                                     if(foundU && foundU != null){
                                         message += '{'
-                                        message += '"Request": "' + foundR._id + '",';
-                                        message += '"Petitioner": "' + (foundU.name + "" + foundU.lastname) + '",';
-                                        message += '"Profile Picture": "' + foundU.profilePic + '",';
-                                        message += '"Request Date": "' + found.requestedDate + '",';
+                                        message += '"request": "' + foundR._id + '",';
+                                        message += '"petitioner": "' + (foundU.name + "" + foundU.lastname) + '",';
+                                        message += '"profilePicture": "' + foundU.profilePic + '",';
+                                        message += '"requestedDate": "' + found.requestedDate + '",';
                                         message += '}'
                                     }
                                 })

@@ -112,11 +112,11 @@ function newRequest(req, res) {
                                         } else if (updated) {
                                             res.send({
                                                 "idRequest": saved._id,
-                                                "Product requested": productId,
-                                                "User petitioner": petitioner,
-                                                "Requested Date": saved.requestedDate,
-                                                "Message sent": saved.message,
-                                                "Approved": (saved.approved == null || saved.approved == undefined) ? "Pendiente" : saved.approved
+                                                "productId": productId,
+                                                "petitionerId": petitioner,
+                                                "requestedDate": saved.requestedDate,
+                                                "messageSent": saved.message,
+                                                "approved": (saved.approved == null || saved.approved == undefined) ? "Pendiente" : saved.approved
                                             });
                                         } else {
                                             cancelRequest(saved, res, "Ha ocurrido un problema al agregar la solicitud al registro", 500);
