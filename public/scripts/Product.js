@@ -95,7 +95,7 @@ export class Product {
                         municipality: result.Municipality,
                         title: result.ProductName,
                         description: result.ProductDescription,
-                        //profileImage: result.OwnerProfilePicture,
+                        profileImage: result.OwnerProfilePicture,
                         name: result.Owner,
                         productImages: result.Images,
                         donationReceivedConfirmed: result.donationReceivedConfirmed,

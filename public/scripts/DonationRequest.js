@@ -228,7 +228,7 @@ export class DonationRequest{
             })
             .then(result => {
                 console.log(result)
-                debugger
+                
                 if(reqObj.ok === true){
                     resolve(result)
                 }else{

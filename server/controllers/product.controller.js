@@ -101,8 +101,19 @@ function getProduct(req, res) {
                 message += '"Cathegory": "' + found.cathegory + '",';
                 message += '"Department": "' + found.department + '",';
                 message += '"Municipality": "' + found.municipality + '",';
-                message += '"Images": "' + found.images + '",';
                 if(found.ownerProfilePic) message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
+                if(found.images && found.images != null && found.images != undefined && found.images.length>0){
+                    message += '"Images": [';
+                    let contador = 0
+                    found.images.forEach(image=>{
+                        if(contador == found.images.length-1)
+                            message += '"'+image+'"';
+                        else
+                            message += '"'+image+'",';
+                        contador ++;
+                    });
+                    message += '],';
+                }
                 message += '"Owner": "' + found.owner + '",';
                 message += '"OwnerID": "' + found.ownerId + '",';
                 message += '"ProductName": "' + found.name + '",';

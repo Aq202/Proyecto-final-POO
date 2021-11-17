@@ -36,7 +36,7 @@ export class ProductPage {
     }
 
     initComponent() {
-        debugger
+        
         this.component = document.createElement("div");
         const $productPage = this.component;
 
