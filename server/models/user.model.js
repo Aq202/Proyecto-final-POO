@@ -12,9 +12,10 @@ const userSchema = Schema({
     age: Number,
     address: String,
     profilePic:String,
+    dpiPics: [],
     sex: String,
     birth: Date,
-    adquisitions: [{ type: Schema.Types.ObjectId, ref: 'buy' }],
+    adquisitions: [{ type: Schema.Types.ObjectId, ref: 'product' }],
     donations: [{ type: Schema.Types.ObjectId, ref: 'product' }]
 });
 
