@@ -119,6 +119,7 @@ function getProduct(req, res) {
                             message += '"donationReceivedConfirmed": ' + false + '';
                         }
                         message += '}';
+                        console.log(message);
                         res.send(JSON.parse(message));
                     });
 
@@ -132,18 +133,36 @@ function getProduct(req, res) {
                         if(found.interested && found.interested != null && found.interested != undefined && found.interested.length>0)
                             message += ',"alreadyRequested": ' + (found.interested.includes(req.user.sub) == true ? true : false);
                         else
-                        message += ',"alreadyRequested": ' + false;
-                        message += '}';
-                        res.send(JSON.parse(message));
+                            message += ',"alreadyRequested": ' + false;
+                        User.findById(req.user.sub, (err,foundU)=>{
+                            if(foundU && foundU != null && foundU != undefined){
+                                if(foundU.adquisitions && foundU.adquisitions != null && foundU.adquisitions != undefined && foundU.adquisitions.length>0)
+                                    message += ',"donationReceivedConfirmed": ' + (foundU.adquisitions.includes(found._id) == true ? true : false);    
+                                else
+                                    message += ',"donationReceivedConfirmed": ' +  false;    
+                            }else if(err)
+                                console.log(err);
+                            Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
+                                if (foundR) {
+                                    message += ',"donationRequestAccepted": ' + true ;
+                                }else{
+                                    message += ',"donationRequestAccepted": ' + false ;
+                                }
+                                message += '}';
+                                console.log(message);
+                                res.send(JSON.parse(message));
+                            });
+                        })
                     });
                 }else{
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                         if (foundR) {
-                            message += ',"donationRequestAccepted": ' + true + ',';
+                            message += ',"donationRequestAccepted": ' + true ;
                         }else{
-                            message += ',"donationRequestAccepted": ' + false + ',';
+                            message += ',"donationRequestAccepted": ' + false ;
                         }
                         message += '}';
+                        console.log(message);
                         res.send(JSON.parse(message));
                     });
                 }
@@ -238,7 +257,7 @@ function cancelDonation(product, res, message, status) {
 }
 
 function listProducts(req, res) {
-    let params = req.body;
+    /*let params = req.body;
     let skipped = params.skip ? parseInt(params.skip) : 0;
     let quantity = params.quantity ? parseInt(params.quantity) : 10;
     let order = (params.ascending && params.ascending == "true") ? 1 : -1;
@@ -246,13 +265,21 @@ function listProducts(req, res) {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
         } else if (found && found.length > 0) {
-            let products;
-            if(found.donations && found.donations != null && found.donations != undefined){}
+            let products = [];
+            if(found.donations && found.donations != null && found.donations != undefined){
+                found.donations.foreach(donation=>{
+                    products.push({_id: donation});
+                })
+            if(found.donations && found.donations != null && found.donations != undefined){
+                found.donations.foreach(donation=>{
+                    products.push({_id: donation});
+                })
+            }
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }
     }).skip(skipped).limit(quantity).sort({ publishDate: order });
-}
+*/}
 
 function filteredSearch(req, res) {
     let params = req.body;
