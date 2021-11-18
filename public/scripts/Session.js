@@ -10,8 +10,10 @@ export class Session {
         this.birthday = birthday;
         this.sex = sex;
         this.imageUrl = imageUrl;
-        this._inSession = false;
+
     }
+
+    static _inSession = false;
 
     static async login({ user, email, password }) {
 
@@ -75,8 +77,7 @@ export class Session {
                         sessionStorage.setItem("userData", JSON.stringify(result));
 
                         resolve();
-                        this._inSession = true;
-
+        
                     } catch (ex) {
                         reject(ex);
                     }
@@ -112,7 +113,7 @@ export class Session {
 
             sessionStorage.setItem("userData", JSON.stringify(sessionObj));
             Session.sendSessionEvent();
-            this._inSession = true;
+            Session._inSession = true;
         } else {
             Session.logout();
         }
@@ -126,7 +127,7 @@ export class Session {
         sessionStorage.removeItem("userData");
         localStorage.removeItem("sessionToken");
         this.sendSessionEvent();
-        this._inSession = false;
+        Session._inSession = false;
     }
 
     static sendSessionEvent() {
@@ -149,15 +150,12 @@ export class Session {
     }
 
     static set token(token) {
-
         try {
             if (token !== undefined && token !== null && token.trim() != "") {
-                if (result.hasOwnProperty("Token")) {
-                    localStorage.setItem("sessionToken", result.Token);
-                    this._inSession = true;
-                }
-            }
+                localStorage.setItem("sessionToken", token);
+                Session._inSession = true;
 
+            }
         } catch (ex) {
 
         }
