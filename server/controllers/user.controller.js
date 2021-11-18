@@ -32,6 +32,7 @@ function signIn(req,res){
                     let documents = [];
                     let contador = 0;
                     req.imagesUrl.forEach(image=>{
+                        console.log(image);
                         let imageArray = image.split('/');
                         image = "";
                         for(let i = 2; i<imageArray.length;i++){
