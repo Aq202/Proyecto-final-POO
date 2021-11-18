@@ -10,7 +10,6 @@ function signIn(req,res){
     let today = Date.now();
 
     if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth ){
-        console.log("Entro a la funcion");
         User.findOne({$or: [{ username: params.username }, { email: params.email }, {dpi:params.dpi}] }, (err, found) => {
             if(err)
                 res.status(500).send({error: 'Error interno del servidor.', err});
@@ -29,7 +28,6 @@ function signIn(req,res){
                 user.birth = birth;
 
                 try{
-                    console.log(req.imagesUrl);
                     let profilePic = "";
                     let documents = [];
                     let contador = 0;
@@ -38,7 +36,7 @@ function signIn(req,res){
                         image = "";
                         for(let i = 2; i<imageArray.length;i++){
                             image += imageArray[i]
-                            if(o!== (imageArray.length -1)) image += "/";
+                            if(i!== (imageArray.length -1)) image += "/";
                         }
                         if(contador == 0)
                             profilePic = image;
