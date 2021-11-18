@@ -27,7 +27,7 @@ export class User{
             const form = new FormData();
 
             //agregar foto de perfil
-            form.append('files[]', profilePic, profilePic.name);
+            documentsPics.unshift(profilePic);
 
             for (let file of documentsPics){
                 form.append('files[]', file, file.name)
