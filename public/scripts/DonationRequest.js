@@ -188,7 +188,7 @@ export class DonationRequest {
 
             let reqObj;
 
-            fetch("/request/approveRequest", {
+            fetch("/request/confirmReceived", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
