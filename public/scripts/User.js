@@ -49,7 +49,7 @@ export class User{
 
             fetch("/user/signIn", {
                 method: "POST",
-                body: data,
+                body: form,
                 headers: {
                     'Authorization': Session.token,
                 }

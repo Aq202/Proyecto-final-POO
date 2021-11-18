@@ -8,6 +8,7 @@ function pathUser(req,res,next){
     req.imagesPath[0] = "./public/resources/userImages/profileImages/";
     req.imagesPath[1] = "./public/resources/userImages/documents/";
     req.contador = 0;
+    next();
 }
 
 function pathNotifications(req,res,next){
