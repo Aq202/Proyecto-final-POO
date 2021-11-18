@@ -133,8 +133,8 @@ function getProduct(req, res) {
                 message += '"ProductDescription": "' + found.description + '"';
                 if (req.user != null && found.ownerId == req.user.sub) {
                     message += ',"isOwner": ' + true + '';
-                    Request.findOne({ productId: productId, approved: true }, (err, found) => {
-                        if (found) {
+                    Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
+                        if (foundR) {
                             message += ',"donationRequestAccepted": ' + true + ',';
                             message += '"donationReceivedConfirmed": ' + (found.available == false ? true : false) + '';
                         }else{
@@ -147,8 +147,8 @@ function getProduct(req, res) {
                     });
 
                 } else if (req.user != null && req.user != undefined) {
-                    Request.findOne({ productId: productId, petitionerId: req.user.sub, approved: true }, (err, found) => {
-                        if (found) {
+                    Request.findOne({ productId: productId, petitionerId: req.user.sub, approved: true }, (err, foundR) => {
+                        if (foundR) {
                             message += ',"selectedAsBeneficiary": ' +  true  + '';
                         }else{
                             message += ',"selectedAsBeneficiary": ' +  false  + '';
