@@ -81,11 +81,11 @@ function newRequest(req, res) {
                 if (found.ownerId == petitioner) {
                     res.status(403).send({ message: "No puede solicitar su propia donacion." });
                 } else if (found.interested.includes(petitioner)) {
-                    Request.findOne({ petitionerId: userId, productId: found.id }, (err, found) => {
+                    Request.findOne({ petitionerId: userId, productId: found.id }, (err, foundR) => {
                         if (err) {
                             console.log(err);
                             res.status(500).send({ error: 'Error interno del servidor' });
-                        } else if (found) {
+                        } else if (foundR) {
                             res.status(403).send({ message: "Ya ha realizado una solicitud para esta donacion, con codigo " + found._id });
                         } else {
                             res.status(500).send({ error: "Ha ocurrido un error inesperado" });
@@ -94,11 +94,11 @@ function newRequest(req, res) {
                 } else if (found.available == false) {
                     res.status(403).send({ message: "La donacion a solicitar ya no se encuentra disponible" });
                 } else {
-                    Request.findOne({ productId: params.productId, approved: true }, (err, found2) => {
+                    Request.findOne({ productId: params.productId, approved: true }, (err, foundR) => {
                         if (err) {
                             console.log(err);
                             res.status(500).send({ error: 'Error interno del servidor' });
-                        } else if (found2) {
+                        } else if (foundR) {
                             res.status(403).send({ message: "Una solicitud para esta donacion ya se encuentra aprobada, no puede realizar otra solicitud." });
                         } else {
                             request.productId = found._id;
@@ -119,8 +119,13 @@ function newRequest(req, res) {
                                             cancelRequest(saved, res, "Error interno del servidor", 500);
                                         } else if (updated) {
                                             res.send({
-                                                "idRequest": saved._id,
-                                                "productId": productId,
+                                                "owner": updated.owner,
+                                                "email": updated.email,
+                                                "petitioner": req.user.name,
+                                                "product": updated.name,
+                                                "productId": updated._id,
+                                                "petitionerPic": req.user.profilePic,
+                                                "ownerId": updated.ownerId,
                                                 "petitionerId": petitioner,
                                                 "requestedDate": saved.requestedDate,
                                                 "messageSent": saved.message,

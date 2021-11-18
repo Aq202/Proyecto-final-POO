@@ -3,32 +3,41 @@
 const Notification = require("../models/notification.model");
 const mongoose = require("mongoose");
 
-function saveNotification(notificationData){
-    let notification = new Notification();
-    if(notificationData.userId && notificationData.title && notificationData.text && notificationData.image && notificationData.date && notificationData.viewed && notificationData.url){
-        notification.title = notificationData.title;
-        notification.text = notificationData.text;
-        notification.image = notificationData.image;
-        notification.date = notificationData.date;
-        notification.viewed = notificationData.viewed;
-        notification.url = notificationData.url;
-        notification.userId = notificationData.userId;
+async function saveNotification({userId, title, text, image, date, viewed, url}) {
+    console.log(notificationData);
 
-        notification.save((err,saved)=>{
-            if(err){
-                console.log(err);
-                return null;
-            }else if(saved)
-                return saved._id;
-            else
-                return null;
-        })
-    }else{
-        return null;
-    }
+    return new Promise((resolve, reject) => {
+        
+        let notification = new Notification();
+        if (userId) {
+           
+            notification.userId = userId
+            notification.title = title || "Nueva notificación.";
+            notification.text = text || "Nueva notificación.";
+            notification.image = image || null;
+            notification.date = date || new Date();
+            notification.viewed = viewed==true ? viewed : false;
+            notification.url = url || null;
+
+            notification.save((err, saved) => {
+                if (err) {
+                    reject(err);
+                } else if (saved)
+                    resolve(saved._id);
+                else{
+    
+                reject("Notificación no guardada");
+            }
+            })
+        } else {
+
+            reject("No se cuenta con el id de usuario");
+        }
+    })
+
 }
 
-function setAsViewed(req,res){
+function setAsViewed(req, res) {
     let params = req.body;
     let notificationId = null;
     let userId = req.user.sub;
@@ -82,7 +91,6 @@ function deleteAllNotifications(err,res){
         res.status(500).send({error:"Ha ocurrido un error inesperado"});
     }
 }
-
 function setAllNotificationsAsViewed(err,res){
     let params = req.body;
     let userId = req.user.sub;
@@ -135,7 +143,6 @@ function deleteNotification(req,res){
     }else{
         res.status(400).send({message: "Debe indicar el id de la notificacion que desea eliminar"});
     }
-    
 }
 
 module.exports = {
