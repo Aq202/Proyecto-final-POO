@@ -9,7 +9,7 @@ function signIn(req,res){
     const user = new User();
     let today = Date.now();
 
-    if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth && req.imagesUrl){
+    if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth ){
         User.findOne({$or: [{ username: params.username }, { email: params.email }, {dpi:params.dpi}] }, (err, found) => {
             if(err)
                 res.status(500).send({error: 'Error interno del servidor.', err});
@@ -31,19 +31,21 @@ function signIn(req,res){
                 let documents = [];
                 
                 let contador = 0;
-                req.imagesUrl.forEach(image=>{
-                    let imageArray = image.split('/');
-                    image = "";
-                    for(let i = 2; i<imageArray.length;i++){
-                        image += imageArray[i]
-                        if(o!== (imageArray.length -1)) image += "/";
-                    }
-                    if(contador == 0)
-                        profilePic = image;
-                    else
-                        documents.push(image);
-                    contador++;
-                })
+                if(req.imagesUrl){
+                    req.imagesUrl.forEach(image=>{
+                        let imageArray = image.split('/');
+                        image = "";
+                        for(let i = 2; i<imageArray.length;i++){
+                            image += imageArray[i]
+                            if(o!== (imageArray.length -1)) image += "/";
+                        }
+                        if(contador == 0)
+                            profilePic = image;
+                        else
+                            documents.push(image);
+                        contador++;
+                    })
+                }
                 user.profilePic = profilePic;
                 user.documents = documents;
                 
@@ -56,7 +58,7 @@ function signIn(req,res){
                             if(err)
                                 res.status(500).send({ error: 'Error interno del servidor.', err });
                             else if(saved){
-                            res.send({
+                            /*res.send({
                                 'Id': saved._id,
                                 'DPI': saved.dpi,
                                 'Username': saved.username,
@@ -69,7 +71,8 @@ function signIn(req,res){
                                 'profilePic': saved.profilePic,
                                 'Sex': saved.sex,
                                 'Birth': saved.birth
-                            });
+                            });*/
+                            login(req,res);
                             }else
                                 res.status(400).send({ error: 'Error de registro.' });
                         });

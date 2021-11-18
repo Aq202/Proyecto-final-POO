@@ -7,18 +7,29 @@ const storage = multer.diskStorage({
             callback(null, req.imagesPath[req.contador]);
             req.contador += 1;
         }else if(req.contador == undefined)
-            callback(null, req.imagesPath[req.contador]);
+            callback(null, req.imagesPath);
         else
-        callback(null, req.imagesPath[req.contador]);
+            callback(null, req.imagesPath[req.contador]);
     },
 
     filename: function (req, file, callback) {
         console.log(file);
         let newFilename = Date.now()+"-"+file.originalname;
         callback(null, newFilename);
-        if(req.imagesUrl == undefined)
-            req.imagesUrl = [];
-        req.imagesUrl.push(req.imagesPath + newFilename);
+        if(req.contador == 1){
+            if(req.imagesUrl == undefined)
+                req.imagesUrl = [];
+            req.imagesUrl.push(req.imagesPath[req.contador] + newFilename);
+            req.contador -= 1;
+        }else if(req.contador == undefined){
+            if(req.imagesUrl == undefined)
+                req.imagesUrl = [];
+            req.imagesUrl.push(req.imagesPath + newFilename);
+        }else{
+            if(req.imagesUrl == undefined)
+                req.imagesUrl = [];
+            req.imagesUrl.push(req.imagesPath[req.contador] + newFilename);  
+        }
     }
 });
 

@@ -17,7 +17,7 @@ module.exports = class Notifications{
         // Guardar la información en la BD
         // obtener el ID generado
         
-        const id = ""; //await notificationController.saveNotification(notificationData);
+        const id = await notificationController.saveNotification(notificationData);
         
         notificationData["id"] = id;
 
