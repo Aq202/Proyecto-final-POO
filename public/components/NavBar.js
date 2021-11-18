@@ -9,7 +9,7 @@ export class NavBar {
 
         this._userId = Session.id;
         this._userName = Session.name;
-        this._userImageUrl = Session?.profileImage || "images/profileImages/default.jpeg";
+        this._userImageUrl = Session?.profileImage || "images/profileImages/default.svg";
 
         this.initComponent();
     }
@@ -157,6 +157,14 @@ export class NavBar {
             $logInButton.addEventListener("click", e => {
 
                 location.hash = "/login";
+            })
+        }
+
+        const $signInButton = this.component.querySelector("#signInButton")
+        if ($signInButton){
+
+            $signInButton.addEventListener("click", e => {
+                location.hash = "/registration";
             })
         }
 

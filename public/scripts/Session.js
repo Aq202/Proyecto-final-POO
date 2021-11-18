@@ -64,10 +64,9 @@ export class Session {
                     try {
                         //almacenar datos
                         if (result.hasOwnProperty("Token")) {
-                            localStorage.setItem("sessionToken", result.Token)
+                            Session.token = result.Token;
                             delete result.Token;
 
-                            this._inSession = true;
                         } else {
                             reject("No token");
                             return
@@ -95,9 +94,9 @@ export class Session {
         if (Session.token === undefined) return;
 
         const tokenObj = parseJwt(Session.token);
-        if(tokenObj !== null){
+        if (tokenObj !== null) {
 
-            const {age, bith, dpi, email, sub, lastname, name, sex, username} = tokenObj;
+            const { age, bith, dpi, email, sub, lastname, name, sex, username } = tokenObj;
 
             const sessionObj = {
                 Age: age,
@@ -106,7 +105,7 @@ export class Session {
                 Email: email,
                 Id: sub,
                 Lastname: lastname,
-                Name:name,
+                Name: name,
                 Sex: sex,
                 Username: username
             }
@@ -114,13 +113,13 @@ export class Session {
             sessionStorage.setItem("userData", JSON.stringify(sessionObj));
             Session.sendSessionEvent();
             this._inSession = true;
-        }else{
+        } else {
             Session.logout();
         }
 
     }
 
-    
+
 
 
     static logout() {
@@ -149,8 +148,24 @@ export class Session {
         return token;
     }
 
-    static verifyToken(){
-        if(Session.token === undefined) sessionStorage.clear();
+    static set token(token) {
+
+        try {
+            if (token !== undefined && token !== null && token.trim() != "") {
+                if (result.hasOwnProperty("Token")) {
+                    localStorage.setItem("sessionToken", result.Token);
+                    this._inSession = true;
+                }
+            }
+
+        } catch (ex) {
+
+        }
+
+    }
+
+    static verifyToken() {
+        if (Session.token === undefined) sessionStorage.clear();
     }
 
     static get userInSession() {
@@ -161,8 +176,8 @@ export class Session {
     /**
      * Verifica si no se ha actualizado el estado de la sesión.
      */
-    static updateSessionState(){
-        if(Session.userInSession !== Session._inSession){
+    static updateSessionState() {
+        if (Session.userInSession !== Session._inSession) {
             Session._inSession = Session.userInSession;
             this.sendSessionEvent();
         }
@@ -237,6 +252,11 @@ export class Session {
 
         const name = Session.firstName + " " + Session.lastName;
         return name;
+    }
+
+    static get profileImage() {
+
+        return Session.userData?.profilePic;
     }
 
 }

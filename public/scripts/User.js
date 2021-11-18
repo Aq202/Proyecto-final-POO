@@ -1,3 +1,5 @@
+import { Session } from "./Session.js";
+
 export class User{
 
     constructor({userId, name, profileImage}){
@@ -18,35 +20,57 @@ export class User{
 
     }
 
-    static createNewUser({dpi, username, age, email, password, name, lastname, direction, sex, birtday}){
+    static createNewUser({dpi, username, email, password, name, lastname, address, sex, birthday, profilePic, documentsPics}){
 
         return new Promise((resolve, reject) =>{
 
-            let data = {
-                dpi,
-                username,
-                age,
-                email,
-                password,
-                name, 
-                lastname, 
-                direction,
-                sex, 
-                birth:birtday
+            const form = new FormData();
+
+            //agregar foto de perfil
+            documentsPics.unshift(profilePic);
+
+            for (let file of documentsPics){
+                form.append('files[]', file, file.name)
             }
 
-            fetch("http://localhost:2004/user/signIn",{
-                method:"POST",
-                body:JSON.stringify(data),
-                headers:{
-                    "Content-Type":"application/json"
-                }
-            }).then(r => r.json())
-            .then(result =>{
-               
-                    resolve();
+            let reqObject;
+            form.append("dpi", dpi);
+            form.append("username", username);
+            form.append("email", email);
+            form.append("password", password);
+            form.append("name", name);
+            form.append("lastname", lastname);
+            form.append("address", address);
+            form.append("sex", sex);
+            form.append("birth", birthday);
+
             
-            }).catch(err => reject(err))
+            const data = new URLSearchParams(form);
+
+            fetch("/user/signIn", {
+                method: "POST",
+                body: data,
+                headers: {
+                    'Authorization': Session.token,
+                }
+            })
+                .then(r => {
+                    reqObject = r;
+                    return r.json();
+                })
+                .then(res => {
+
+
+                    if (reqObject.ok === true){
+                        Session.token = res.Token;
+                        resolve();
+                    }
+                    else{ 
+
+                        reject();
+                    }
+                })
+                .catch(err => reject());
         });
 
     }

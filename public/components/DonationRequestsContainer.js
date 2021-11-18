@@ -64,7 +64,7 @@ export class DonationRequestsContainer {
         const fragment = document.createDocumentFragment();
 
         for (let requestItem of this.requestsItems) {
-
+           
             //Ya se aceptó una solicitud
             if (requestItem?.selected === true) { 
 

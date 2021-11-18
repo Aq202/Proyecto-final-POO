@@ -19,7 +19,8 @@ export class ManageRequestPopUp extends PopUP {
     initComponent() {
         super.initComponent();
 
-        const { requestId, userName, userAlias, profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents } = this.donationRequestObject;
+        let { requestId, userName, userAlias, profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents } = this.donationRequestObject;
+        profileImage ||= "images/profileImages/default.svg";
 
         this.component.classList.add("manageRequest")
 
@@ -156,12 +157,12 @@ export class ManageRequestPopUp extends PopUP {
                     });
 
                     try {
+                        this.close();
                         await alertPopUp.open();
                     } catch (ex) {
                         console.error(ex)
                     } finally {
-                        this.close();
-                        if (this.resolve !== undefined) this.resolve({requestAccepted:true}); //se devuelve la promesa inicial
+                        if (this.resolve !== undefined) this.resolve({ requestAccepted: true }); //se devuelve la promesa inicial
                     }
 
 
@@ -187,23 +188,35 @@ export class ManageRequestPopUp extends PopUP {
         const $check = this.component.querySelector(".giveEmailCheck input");
         if (!$check) return;
 
-            if (confirm("¿Deseas rechazar esta solicitud de donación? Recuerda que no podrás reestablecerla posteriormente.")) {
+        if (confirm("¿Deseas rechazar esta solicitud de donación? Recuerda que no podrás reestablecerla posteriormente.")) {
+
+            try {
+                this.actionBlocked = true;
+                this.hideManageElements();
+                this.showSpinner();
+                await this.donationRequestObject.rejectRequest();
+
+                //eliminada correctamente
+                const alertPopUp = new AlertPopUp({
+                    imgUrl: "../images/others/working.svg",
+                    title: "Solicitud rechazada con éxito",
+                    text: `Estamos seguros que podrás hallar a esa persona ideal, ¡sigue intentándolo!`
+                });
 
                 try {
-                    this.actionBlocked = true;
-                    this.hideManageElements();
-                    this.showSpinner();
-                    await this.donationRequestObject.rejectRequest();
-                    
-                    //eliminada correctamente
                     this.close();
-                    if(this.resolve !== undefined) this.resolve();
-
+                    await alertPopUp.open();
                 } catch (ex) {
-                    this.showError("Ocurrió un error.")
-                    this.showManageElements();
-                    this.actionBlocked = false;
+                    console.error(ex)
+                } finally {
+                    if (this.resolve !== undefined) this.resolve({ requestAccepted: false }); //se devuelve la promesa inicial
                 }
+
+            } catch (ex) {
+                this.showError("Ocurrió un error.")
+                this.showManageElements();
+                this.actionBlocked = false;
+            }
 
         }
 

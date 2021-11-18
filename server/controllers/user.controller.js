@@ -27,11 +27,11 @@ function signIn(req,res){
                 user.sex = params.sex;
                 user.birth = birth;
 
-                let profilePic = "";
-                let documents = [];
-                
-                let contador = 0;
-                if(req.imagesUrl){
+                try{
+                    console.log(req.imagesUrl);
+                    let profilePic = "";
+                    let documents = [];
+                    let contador = 0;
                     req.imagesUrl.forEach(image=>{
                         let imageArray = image.split('/');
                         image = "";
@@ -44,10 +44,12 @@ function signIn(req,res){
                         else
                             documents.push(image);
                         contador++;
-                    })
+                    });
+                    user.profilePic = profilePic;
+                    user.documents = documents;
+                }catch(ex){
+                    console.log("Error al guardar las imagenes", ex);
                 }
-                user.profilePic = profilePic;
-                user.documents = documents;
                 
                 bcrypt.hash(params.password, null, null, (err, passwordEncripted)=>{
                     if(err)

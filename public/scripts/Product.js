@@ -110,7 +110,7 @@ export class Product {
 
             }).catch(err => reject(err));
 
-        })
+        });
     }
 
     
@@ -119,12 +119,36 @@ export class Product {
 
         return new Promise((resolve, reject) => {
 
-            if (productId === undefined || productId === null) reject("Id invalido.");
+            const obj = {
+                productId
+            }
 
-            setTimeout(() => {
-                resolve();
-            }, 3000);
-        })
+            let reqObj;
+
+            fetch("/product/cancelDonation", {
+                method:"delete",
+                body:JSON.stringify(obj),
+                headers:{
+                    'Authorization': Session.token,
+                    "Content-Type": "application/json"
+                }
+            }).then(r => {
+                reqObj = r;
+                return r.json();
+
+            }).then(result => {
+
+               console.log(result)
+                if(reqObj.ok === true){
+
+                    resolve();
+                }else{
+                    reject(result.error);
+                }
+
+            }).catch(err => reject(err));
+
+        });
     }
 
 

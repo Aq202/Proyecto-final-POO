@@ -37,7 +37,8 @@ function getCurrentRequests(req, res) {
                                                 request: request._id,
                                                 petitioner: (foundU.name + " " + foundU.lastname),
                                                 profilePicture: foundU.profilePic,
-                                                requestedDate: request.requestedDate
+                                                requestedDate: request.requestedDate,
+                                                approved: (request.approved == true ? request.approved : false)
                                             });
                                         }
                                         if(index == (foundR.length - 1)){   

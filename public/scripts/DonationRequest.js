@@ -1,11 +1,10 @@
 import { Session } from "./Session.js";
 
-export class DonationRequest{
+export class DonationRequest {
 
-    constructor({requestId, userId, userName, userAlias,  profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents, date, selected}){
+    constructor({ requestId, userId, userName, userAlias, profileImage, userEmail, userDPI, userGender, userAge, requestMessage, documents, date, selected }) {
 
         this.requestId = requestId || null;
-        this.userId = userId;
         this.userName = userName;
         this.userAlias = userAlias;
         this.profileImage = profileImage;
@@ -17,66 +16,121 @@ export class DonationRequest{
         this.documents = documents || [];
         this.date = date || new Date();
         this.selected = selected || false;
-        
+        this.loaded = false; //si ya se cargo la info
+
     }
 
-    static newRequestOfDonation({productId, requestMessage }) {
+    static newRequestOfDonation({ productId, requestMessage }) {
 
         return new Promise((resolve, reject) => {
 
             const obj = {
-                message:requestMessage,
+                message: requestMessage,
                 productId
             }
 
             let reqObj;
 
             fetch("/request/newRequest", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": Session.token
                 },
-                body:JSON.stringify(obj)
+                body: JSON.stringify(obj)
             })
-            .then(r => {
-                reqObj = r;
-                return r.json();
-            })
-            .then(result => {
-                console.log(result)
-                if(reqObj.ok === true){
-                    resolve(result)
-                }else{
-                    reject(result)
-                }
-            })
-            .catch(err => reject(err));
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result)
+                    }
+                })
+                .catch(err => reject(err));
 
-            
+
         })
     }
 
-    acceptRequest(){
+    acceptRequest() {
 
         return new Promise((resolve, reject) => {
 
-            setTimeout(() =>{
-                resolve();
-            }, 500)
+            if (this.requestId === null) reject("Id de solicitud rechazado.")
+
+            const obj = {
+                requestId: this.requestId
+            }
+
+            let reqObj;
+
+            fetch("/request/approveRequest", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": Session.token
+                },
+                body: JSON.stringify(obj)
+            })
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result)
+                    }
+                })
+                .catch(err => reject(err));
 
 
         });
 
     }
 
-    rejectRequest(){
+    rejectRequest() {
 
         return new Promise((resolve, reject) => {
 
-            setTimeout(() =>{
-                resolve();
-            }, 5000)
+            if (this.requestId === null) reject("Id de solicitud rechazado.")
+
+            const obj = {
+                requestId: this.requestId
+            }
+
+            let reqObj;
+
+            fetch("/request/rejectRequest", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": Session.token
+                },
+                body: JSON.stringify(obj)
+            })
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result)
+                    }
+                })
+                .catch(err => reject(err));
 
 
         });
@@ -87,7 +141,7 @@ export class DonationRequest{
      * Elimina la solicitud propia de un usuario
      * @returns Promise
      */
-    deleteRequest(productId){
+    deleteRequest(productId) {
 
         return new Promise((resolve, reject) => {
 
@@ -98,113 +152,129 @@ export class DonationRequest{
             let reqObj;
 
             fetch("/request/cancelRequest", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": Session.token
                 },
-                body:JSON.stringify(obj)
+                body: JSON.stringify(obj)
             })
-            .then(r => {
-                reqObj = r;
-                return r.json();
-            })
-            .then(result => {
-                console.log(result)
-                if(reqObj.ok === true){
-                    resolve(result)
-                }else{
-                    reject(result.error)
-                }
-            })
-            .catch(err => reject(err));
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result.error)
+                    }
+                })
+                .catch(err => reject(err));
 
 
         });
 
     }
 
-    confirmOfReceived(){
+    confirmOfReceived() {
 
         return new Promise((resolve, reject) => {
 
-            if(this.requestId === null) reject("Id de solicitud rechazado.")
+            if (this.requestId === null) reject("Id de solicitud rechazado.")
 
             const obj = {
-                requestId:this.requestId
+                requestId: this.requestId
             }
 
             let reqObj;
 
             fetch("/request/approveRequest", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": Session.token
                 },
-                body:JSON.stringify(obj)
+                body: JSON.stringify(obj)
             })
-            .then(r => {
-                reqObj = r;
-                return r.json();
-            })
-            .then(result => {
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
 
-                console.log(result)
-                if(reqObj.ok === true){
-                    resolve(result)
-                }else{
-                    reject(result)
-                }
-            })
-            .catch(err => reject(err));
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result)
+                    }
+                })
+                .catch(err => reject(err));
 
 
         });
 
     }
 
-    rejectDonation(){
+
+    getRequestFullData() {
 
         return new Promise((resolve, reject) => {
 
-            if(this.requestId === null) reject("Id de solicitud rechazado.")
+            if (this.requestId === null) reject("Id de solicitud rechazado.")
 
             const obj = {
-                requestId:this.requestId
+                requestId: this.requestId
             }
 
             let reqObj;
 
-            fetch("/request/rejectRequest", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
+            fetch("/request/getRequest", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": Session.token
                 },
-                body:JSON.stringify(obj)
+                body: JSON.stringify(obj)
             })
-            .then(r => {
-                reqObj = r;
-                return r.json();
-            })
-            .then(result => {
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
 
-                console.log(result)
-                if(reqObj.ok === true){
-                    resolve(result)
-                }else{
-                    reject(result)
-                }
-            })
-            .catch(err => reject(err));
+                    console.log(result)
+                    if (reqObj.ok === true) {
+
+                        this.userName = result.name;
+                        this.userAlias = result.username;
+                        this.profileImage = result.profilePicture;
+                        this.userEmail = result.email;
+                        this.userDPI = result.dpi;
+                        this.userGender = result.sex;
+                        this.userAge = result.age;
+                        this.requestMessage = result.message;
+                        this.documents = result.documents;
+                        this.date = result.requestedDate;
+                        this.selected = result.approved;
+                        this.loaded = true;
+
+                        resolve();
+                    
+                    } else {
+                        reject(result)
+                    }
+                })
+                .catch(err => reject(err));
 
 
         });
 
     }
 
-    static getRequests(productId){
+    static getRequests(productId) {
 
         return new Promise((resolve, reject) => {
 
@@ -215,27 +285,36 @@ export class DonationRequest{
             let reqObj;
 
             fetch("/product/currentRequest", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": Session.token
                 },
-                body:JSON.stringify(obj)
+                body: JSON.stringify(obj)
             })
-            .then(r => {
-                reqObj = r;
-                return r.json();
-            })
-            .then(result => {
-                console.log(result)
-                
-                if(reqObj.ok === true){
-                    resolve(result)
-                }else{
-                    reject(result)
-                }
-            })
-            .catch(err => reject(err));
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+                    
+                    if (reqObj.ok === true) {
+
+                        resolve(result.currentRequests.map(req => {
+                            
+                            return {
+                                requestId: req.request,
+                                userName: req.petitioner,
+                                date: req.requestedDate,
+                                profileImage: req.profilePicture,
+                                selected: req.approved
+                            }
+                        }))
+                    } else {
+                        reject(result)
+                    }
+                })
+                .catch(err => reject(err));
 
 
         });

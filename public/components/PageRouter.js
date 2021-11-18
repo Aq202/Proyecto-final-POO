@@ -6,6 +6,8 @@ import { ProductPage } from "./ProductPage.js";
 import { Product } from "../scripts/Product.js";
 import { PageNotFound } from "./PageNotFound.js";
 import { LoadingView } from "./LoadingView.js";
+import { RegistrationPage } from "./RegistrationPage.js";
+import { User } from "../scripts/User.js";
 import { ProfilePage } from "./ProfilePage.js";
 
 
@@ -73,6 +75,9 @@ export class PageRouter {
                 console.log(ex)
                 this.addNotFoundPage();
             }
+        }
+        else if (hash.includes("/registration")){
+            this.renderView(new RegistrationPage().component, true);
         }
         else if (hash.includes("/profile")){
             this.renderView(new ProfilePage().component);
