@@ -308,8 +308,6 @@ function deleteRequest(req, res) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
             } else if (found) {
-                console.log(found.petitionerId);
-                console.log(userId);
                 if (found.petitionerId== userId) {
                     if (found.approved == true) {
                         res.status(403).send({ message: "La solicitud ya ha sido aceptada, no puede cancelarla." });
