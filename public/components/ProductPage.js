@@ -9,7 +9,7 @@ import { AlertPopUp } from "./alertPopUp.js";
 import { Filter } from "../scripts/Filter.js";
 export class ProductPage {
 
-    constructor({ productId, cathegory, department, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed, userRequestId }) {
+    constructor({ productId, cathegory, department, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed, userRequestId, available }) {
 
         this.productId = productId || null;
         this.category = cathegory;
@@ -26,6 +26,7 @@ export class ProductPage {
         this.donationRequestAccepted = donationRequestAccepted || false;
         this.donationReceivedConfirmed = donationReceivedConfirmed || false;
         this.userRequestId = userRequestId || undefined;
+        this.available = available ?? true;
 
         if (!this.userRequestId) this.userRequestObject = new DonationRequest({ requestId: this.userRequestId });
 
@@ -162,11 +163,14 @@ export class ProductPage {
             //no es el autor
             else {
 
-                if (this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //estado inicial
+                
+               
+
+                if (this.available !== false && this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //estado inicial
 
                     $(this.component.querySelector("#makeRequest-button")).show();
 
-                } else if (this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //solicitud realizada
+                } else if (this.available !== false && this.alreadyRequested === true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //solicitud realizada
 
                     $(this.component.querySelector("#deleteRequest-button")).show();
 
@@ -181,10 +185,11 @@ export class ProductPage {
 
                     this.addMessage({ message: "¡Donación recibida correctamente!", green: true })
 
-                } else if (this.selectedAsBeneficiary !== true && this.donationRequestAccepted === true) { //donacion no disponible
+                } else if (this.available === false || (this.selectedAsBeneficiary !== true && this.donationRequestAccepted === true)) { //donacion no disponible
 
                     this.addMessage({ message: "Esta donación ya no se encuentra disponible.", red: true })
                 }
+           
 
             }
         } catch (ex) {
@@ -343,7 +348,7 @@ export class ProductPage {
                     this.showSpinner();
                     this.hideButtons();
 
-                    await this.userRequestObject.confirmOfReceived();
+                    await DonationRequest.confirmOfReceived(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/celebration.svg",
@@ -358,7 +363,7 @@ export class ProductPage {
                     await alertPopUp.open();
 
                 } catch (ex) {
-
+                    ex ||= "Ocurrió un error.";
                     this.hideSpinner();
                     this.selectActionElements();
                     this.showError(ex);
@@ -385,8 +390,8 @@ export class ProductPage {
                     this.actionBlocked = true;
                     this.showSpinner();
                     this.hideButtons();
-
-                    await this.userRequestObject.rejectDonation();
+               
+                    await DonationRequest.rejectDonation(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/working.svg",
@@ -398,6 +403,7 @@ export class ProductPage {
                     this.selectedAsBeneficiary = false;
                     this.donationRequestAccepted = false;
                     this.donationReceivedConfirmed = false;
+                    this.available = true;
                     this.userRequestId = undefined;
                     this.userRequestObject = undefined;
 
@@ -407,7 +413,7 @@ export class ProductPage {
                     await alertPopUp.open();
 
                 } catch (ex) {
-
+                    ex ||= "Ocurrió un error.";
                     this.hideSpinner();
                     this.selectActionElements();
                     this.showError(ex);
@@ -415,6 +421,8 @@ export class ProductPage {
                 } finally {
                     this.actionBlocked = false;
                 }
+
+                let array1 = [1,2,3,4]
 
             }
         }

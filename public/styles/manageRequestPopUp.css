@@ -21,9 +21,7 @@
 }
 
 .popUp.manageRequest .applicant-info .profilePicture{
-    width: 50%;
-    border-radius: 50%;
-    box-shadow: 0px 0px 3px 1px rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 .popUp.manageRequest .applicant-info .userName h3{

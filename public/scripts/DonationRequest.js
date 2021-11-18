@@ -178,19 +178,17 @@ export class DonationRequest {
 
     }
 
-    confirmOfReceived() {
+    static confirmOfReceived(productId) {
 
         return new Promise((resolve, reject) => {
 
-            if (this.requestId === null) reject("Id de solicitud rechazado.")
-
             const obj = {
-                requestId: this.requestId
+                productId
             }
 
             let reqObj;
 
-            fetch("/request/approveRequest", {
+            fetch("/request/confirmReceived", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -208,7 +206,49 @@ export class DonationRequest {
                     if (reqObj.ok === true) {
                         resolve(result)
                     } else {
-                        reject(result)
+                        reject(result.message)
+                    }
+                })
+                .catch(err => reject(err));
+
+
+        });
+
+    }
+
+    /**
+     * Acción que realiza el beneficiario de la donación
+     * @returns 
+     */
+     static rejectDonation(productId) {
+
+        return new Promise((resolve, reject) => {
+
+            const obj = {
+                productId
+            }
+
+            let reqObj;
+
+            fetch("/request/rejectDonation", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": Session.token
+                },
+                body: JSON.stringify(obj)
+            })
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result.error)
                     }
                 })
                 .catch(err => reject(err));

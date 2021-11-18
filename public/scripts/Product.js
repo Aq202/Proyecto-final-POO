@@ -86,7 +86,7 @@ export class Product {
                 console.log("INFORMACION PRODUCTO, ", result)
                 if(reqObj.ok === true){
 
-                    
+                   
 
                     resolve({
                         productId: result.ProductFoundId,
@@ -100,7 +100,10 @@ export class Product {
                         productImages: result.Images,
                         donationReceivedConfirmed: result.donationReceivedConfirmed,
                         isOwner: result.isOwner,
-                        alreadyRequested: result.alreadyRequested
+                        alreadyRequested: result.alreadyRequested,
+                        selectedAsBeneficiary:result.selectedAsBeneficiary,
+                        donationRequestAccepted:result.donationRequestAccepted,
+                        available:result.Available
         
                     })
                     

@@ -88,7 +88,7 @@ export class RegistrationPage {
                 <div class="imagesSection">
                     <span class="details">Selecciona una imagen para tu fotografía de perfil</span>
                     <div class="profilePicPicker"></div>
-                    <span class="details">Sube una fotografía de cada lado de tu DPI</span>
+                    <span class="details">Sube una fotografía de tu documento de identificación</span>
                     <div class="dpiPicker"></div>
                 </div>
                 <div class="button">
@@ -332,11 +332,10 @@ export class RegistrationPage {
 
         if (this.locked === false) {
 
-            this.locked = true;
-
+            
             if (this.validateData() === true) {
 
-                let user = new User(this.username, this.name + " " + this.lastname, this.profilePic)
+                this.locked = true;
 
                 try {
                     await User.createNewUser({
@@ -369,11 +368,11 @@ export class RegistrationPage {
 
 
                 } catch (ex) {
-                    this.showError("Ocurrió un error en el servidor");
+                    ex ||= "Ocurrió un error.";
+                    this.showError(ex);
                     this.locked  = false;
                 }
 
-                alert("Enviando formulario");
             }
         }
     }
