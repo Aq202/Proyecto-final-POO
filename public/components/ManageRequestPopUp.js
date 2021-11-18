@@ -32,7 +32,9 @@ export class ManageRequestPopUp extends PopUP {
         $popUpBodyContainer.innerHTML = `
         <div class="applicant-info">
 
-            <img src="${profileImage}" alt="profile" class="profilePicture">
+            <div class="profileImageStyle">
+                <img src="${profileImage}" alt="profile" class="profilePicture">
+            </div>
 
             <div class="userName">
                 <h3>${userName}</h3>

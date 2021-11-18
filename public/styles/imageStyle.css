@@ -1,0 +1,18 @@
+.profileImageStyle {
+    width: 50%;
+    border-radius: 50%;
+    height: 0;
+    padding-bottom: 50%;
+    position:relative;
+}
+
+.profileImageStyle > img {
+    width: 100%;
+    border-radius: 50%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

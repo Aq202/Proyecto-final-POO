@@ -31,7 +31,7 @@ function getCurrentRequests(req, res) {
                                 const request = foundR[index];
                                 try {
                                     User.findById(request.petitionerId, (err, foundU) => {
-                                        if(err) throw "";
+                                        if (err) throw "";
                                         if (foundU && foundU != null) {
                                             currentRequests.push({
                                                 request: request._id,
@@ -41,19 +41,19 @@ function getCurrentRequests(req, res) {
                                                 approved: (request.approved == true ? request.approved : false)
                                             });
                                         }
-                                        if(index == (foundR.length - 1)){   
+                                        if (index == (foundR.length - 1)) {
                                             res.send({ currentRequests });
                                         }
                                     })
                                 }
                                 catch (ex) {
-                                    console.log("ERROR MANUAL ",ex);
-                                    res.send(500).send({message:"Ocurrió un error interno"});
+                                    console.log("ERROR MANUAL ", ex);
+                                    res.send(500).send({ message: "Ocurrió un error interno" });
 
                                 }
                             }
 
-                            
+
                         } else {
                             res.status(404).send({ message: "Actualmente no hay solicitudes para esta donacion" });
                         }
@@ -70,35 +70,35 @@ function getCurrentRequests(req, res) {
     }
 }
 
-function getProfileData(req,res){
+ function getProfileData(req, res) {
     let params = req.body;
     let userId = null;
-    try{
+    try {
         userId = mongoose.Types.ObjectId(params.userId);
-    }catch{
+    } catch {
         userId = null
     }
-    if(userId!=null){
-        User.findById(params.userId,(err,found)=>{
-            if(err){
+    if (userId != null) {
+        User.findById(params.userId, async (err, found) => {
+            if (err) {
                 console.log(err);
-                res.status(500).send({error:"Error interno del servidor"});
-            }else if(found){
+                res.status(500).send({ error: "Error interno del servidor" });
+            } else if (found) {
                 let products = {
                     _id: found._id,
-                    nme: found.name + " "+found.lastname,
+                    nme: found.name + " " + found.lastname,
                     username: found.username,
                     profilePic: found.profilePic,
                     donations: [],
                     adquisitions: [],
                 }
-                let data=[];
+                let data = [];
                 let donations = 0;
-                if(found.donations && found.donations != null && found.donations != undefined && found.donations.length>0){
+                if (found.donations && found.donations != null && found.donations != undefined && found.donations.length > 0) {
                     data.push(...found.donations);
                     donations = found.donations.length;
                 }
-                if(found.adquisitions && found.adquisitions != null && found.adquisitions != undefined && found.adquisitions.length>0){
+                if (found.adquisitions && found.adquisitions != null && found.adquisitions != undefined && found.adquisitions.length > 0) {
                     data.push(...found.adquisitions);
                 }
 
@@ -106,32 +106,36 @@ function getProfileData(req,res){
                 for (let index in data) {
                     const product = data[index];
                     try {
-                        Product.findById(product._id, (err, found) => {
-                            if(err) throw "";
-                            if (found && found != null) {
-                                if(index<donations){
-                                    products.donations.push(found);
-                                }else{
-                                    products.adquisitions.push(found);
+
+                        await new Promise((resolve, reject) => {
+                            Product.findById(product._id, (err, found) => {
+                                if (err) throw "";
+                                if (found && found != null) {
+                                    if (index < donations) {
+                                        products.donations.push(found);
+                                    } else {
+                                        products.adquisitions.push(found);
+                                    }
                                 }
-                            }
-                            if(index == (data.length - 1)){   
-                                res.send(products);
-                            }
+                                resolve();
+
+                            })
                         })
                     }
                     catch (ex) {
-                        console.log("ERROR MANUAL ",ex);
-                        res.send(500).send({message:"Ocurrió un error interno"});
+                        console.log("ERROR MANUAL ", ex);
+                        res.send(500).send({ message: "Ocurrió un error interno" });
 
                     }
                 }
-            }else{
-                res.status(404).send({message:"No se han encontrado usuarios con el ID indicado"});
+
+                res.send(products);
+            } else {
+                res.status(404).send({ message: "No se han encontrado usuarios con el ID indicado" });
             }
         })
-    }else{
-        res.status(400).send({message:"Indique el ID del usuario del que desea obtener los productos"});
+    } else {
+        res.status(400).send({ message: "Indique el ID del usuario del que desea obtener los productos" });
     }
 }
 
@@ -179,7 +183,7 @@ function getProduct(req, res) {
                         if (foundR) {
                             message += ',"donationRequestAccepted": ' + true + ',';
                             message += '"donationReceivedConfirmed": ' + (found.available == false ? true : false) + '';
-                        }else{
+                        } else {
                             message += ',"donationRequestAccepted": ' + false + ',';
                             message += '"donationReceivedConfirmed": ' + false + '';
                         }
@@ -191,27 +195,27 @@ function getProduct(req, res) {
                 } else if (req.user != null && req.user != undefined) {
                     Request.findOne({ productId: productId, petitionerId: req.user.sub, approved: true }, (err, foundR) => {
                         if (foundR) {
-                            message += ',"selectedAsBeneficiary": ' +  true  + '';
-                        }else{
-                            message += ',"selectedAsBeneficiary": ' +  false  + '';
+                            message += ',"selectedAsBeneficiary": ' + true + '';
+                        } else {
+                            message += ',"selectedAsBeneficiary": ' + false + '';
                         }
-                        if(found.interested && found.interested != null && found.interested != undefined && found.interested.length>0)
+                        if (found.interested && found.interested != null && found.interested != undefined && found.interested.length > 0)
                             message += ',"alreadyRequested": ' + (found.interested.includes(req.user.sub) == true ? true : false);
                         else
                             message += ',"alreadyRequested": ' + false;
-                        User.findById(req.user.sub, (err,foundU)=>{
-                            if(foundU && foundU != null && foundU != undefined){
-                                if(foundU.adquisitions && foundU.adquisitions != null && foundU.adquisitions != undefined && foundU.adquisitions.length>0)
-                                    message += ',"donationReceivedConfirmed": ' + (foundU.adquisitions.includes(found._id) == true ? true : false);    
+                        User.findById(req.user.sub, (err, foundU) => {
+                            if (foundU && foundU != null && foundU != undefined) {
+                                if (foundU.adquisitions && foundU.adquisitions != null && foundU.adquisitions != undefined && foundU.adquisitions.length > 0)
+                                    message += ',"donationReceivedConfirmed": ' + (foundU.adquisitions.includes(found._id) == true ? true : false);
                                 else
-                                    message += ',"donationReceivedConfirmed": ' +  false;    
-                            }else if(err)
+                                    message += ',"donationReceivedConfirmed": ' + false;
+                            } else if (err)
                                 console.log(err);
                             Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                                 if (foundR) {
-                                    message += ',"donationRequestAccepted": ' + true ;
-                                }else{
-                                    message += ',"donationRequestAccepted": ' + false ;
+                                    message += ',"donationRequestAccepted": ' + true;
+                                } else {
+                                    message += ',"donationRequestAccepted": ' + false;
                                 }
                                 message += '}';
                                 console.log(message);
@@ -219,12 +223,12 @@ function getProduct(req, res) {
                             });
                         })
                     });
-                }else{
+                } else {
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                         if (foundR) {
-                            message += ',"donationRequestAccepted": ' + true ;
-                        }else{
-                            message += ',"donationRequestAccepted": ' + false ;
+                            message += ',"donationRequestAccepted": ' + true;
+                        } else {
+                            message += ',"donationRequestAccepted": ' + false;
                         }
                         message += '}';
                         console.log(message);
@@ -330,7 +334,7 @@ function listProducts(req, res) {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
         } else if (found && found.length > 0) {
-            req.send({products: found});
+            req.send({ products: found });
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }
@@ -406,12 +410,12 @@ function deleteProduct(req, res) {
             } else if (found && found != null && found != undefined) {
                 if (found.ownerId == userId) {
 
-                    Request.findOne({productId : found._id, approved: true},(err, foundR)=>{
-                        if(err){
+                    Request.findOne({ productId: found._id, approved: true }, (err, foundR) => {
+                        if (err) {
                             res.status(500).send({ error: 'Error interno del servidor', err });
-                        }else if(foundR){
-                            res.status(403).send({message:"Ya ha aceptado una solicitud para donar este producto, por lo tanto no puede eliminarlo"});
-                        }else{
+                        } else if (foundR) {
+                            res.status(403).send({ message: "Ya ha aceptado una solicitud para donar este producto, por lo tanto no puede eliminarlo" });
+                        } else {
                             Product.findByIdAndDelete(found._id, (err, deleted) => {
                                 if (err) {
                                     res.status(500).send({ error: 'Error interno del servidor', err });

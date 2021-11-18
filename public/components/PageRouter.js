@@ -87,7 +87,7 @@ export class PageRouter {
 
             const profileData = await User.getProfileData(userId);
 
-            this.renderView(new ProfilePage({}).component);
+            this.renderView(new ProfilePage(profileData).component);
             }catch(ex){
                 console.log(ex);
                 this.addNotFoundPage();

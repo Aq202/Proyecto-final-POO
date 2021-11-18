@@ -2,10 +2,10 @@ import { DonationsContainer } from "./DonationsContainer.js";
 import { Product } from "../scripts/Product.js";
 import { Filter } from "../scripts/Filter.js";
 
-export class ProfilePage{
+export class ProfilePage {
 
 
-    constructor({userName, userAlias, profilePicture, donationsMade, donationsReceived}){
+    constructor({ userName, userAlias, profilePicture, donationsMade, donationsReceived }) {
 
         this.userName = userName;
         this.userAlias = userAlias;
@@ -17,7 +17,7 @@ export class ProfilePage{
         this.initComponent();
     }
 
-    async initComponent(){
+    async initComponent() {
 
         this.component = document.createElement("div");
         const $profilePage = this.component;
@@ -31,7 +31,9 @@ export class ProfilePage{
 
                 <div class="dataContainer">
 
-                    <img src="${this.profilePicture}" alt="profile" class="profilePicture">
+                    <div class="profilePicture-container profileImageStyle">
+                        <img src="${this.profilePicture}" alt="profile" class="profilePicture">
+                    </div>
 
                     <div class="userName">
                         <h3>${this.userName}</h3>
@@ -54,31 +56,57 @@ export class ProfilePage{
         this.donationsContainer = new DonationsContainer({});
         $profilePage.querySelector(".profileDonations").appendChild(this.donationsContainer.component)
 
-        this.loadDonations(); //notificaciones hechas
+        this.loadDonationsMade(); //notificaciones hechas
 
         //agregar eventos
-        this.component.querySelector(".donationsMade").addEventListener(e => this.loadDonations());
-        this.component.querySelector(".donationsReceived").addEventListener(e => this.loadDonations(true));
+        this.component.querySelector(".donationsMade").addEventListener("click", e => this.loadDonationsMade(e));
+        this.component.querySelector(".donationsReceived").addEventListener("click", e => this.loadDonationsReceived(e));
 
 
     }
 
-    loadDonations(donationsReceived){
-        
-        if(donationsReceived === true){ //agregar donaciones recibidas
-            if(this.donationsReceived.length > 0){
-                this.donationsContainer.addContent(...this.donationsReceived);
-            }else{
-                this.donationsContainer.addNoResultsStyle();
-            }
-        }else{ //notificaciones hechas
-            if(this.donationsMade.length > 0){
-                this.donationsContainer.addContent(...this.donationsMade);
-            }else{
-                this.donationsContainer.addNoResultsStyle();
-            }
+    loadDonationsMade() {
 
+        const button = this.component.querySelector(".donationsMade");
+        this.removeSelectedStyle();
+        if (button) button.classList.add("selected");
+
+        this.donationsContainer.removeNoResultsStyle();
+        this.donationsContainer.clear();
+
+        if (this.donationsMade.length > 0) {
+            this.donationsContainer.addContent(...this.donationsMade);
+        } else {
+            this.donationsContainer.addNoResultsStyle();
         }
 
     }
+
+    loadDonationsReceived() {
+
+        const button = this.component.querySelector(".donationsReceived");
+        this.removeSelectedStyle();
+        if (button) button.classList.add("selected");
+
+        this.donationsContainer.removeNoResultsStyle();
+        this.donationsContainer.clear();
+
+        if (this.donationsReceived.length > 0) {
+
+            this.donationsContainer.addContent(...this.donationsReceived);
+        } else {
+            this.donationsContainer.addNoResultsStyle();
+        }
+
+    }
+
+    removeSelectedStyle() {
+
+        const options = this.component.querySelectorAll(".optionsMenu > div");
+
+        for (let option of options) {
+            option.classList.remove("selected");
+        }
+    }
+
 }

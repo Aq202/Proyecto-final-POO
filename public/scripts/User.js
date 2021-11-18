@@ -1,24 +1,24 @@
 import { Session } from "./Session.js";
 
-export class User{
+export class User {
 
-    constructor({userId, name, profileImage}){
+    constructor({ userId, name, profileImage }) {
         this.userId = userId;
         this.name = name;
         this.profileImage = profileImage;
     }
 
 
-    static createNewUser({dpi, username, email, password, name, lastname, address, sex, birthday, profilePic, documentsPics}){
+    static createNewUser({ dpi, username, email, password, name, lastname, address, sex, birthday, profilePic, documentsPics }) {
 
-        return new Promise((resolve, reject) =>{
+        return new Promise((resolve, reject) => {
 
             const form = new FormData();
 
             //agregar foto de perfil
             documentsPics.unshift(profilePic);
 
-            for (let file of documentsPics){
+            for (let file of documentsPics) {
                 form.append('files[]', file, file.name)
             }
 
@@ -49,20 +49,20 @@ export class User{
 
                     console.log(res)
 
-                    if (reqObject.ok === true){
+                    if (reqObject.ok === true) {
                         Session.token = res.Token;
                         resolve();
-                    }else{
+                    } else {
                         reject(res.message);
                     }
-                    
+
                 })
                 .catch(err => reject());
         });
 
     }
 
-    static getProfileData(userId){
+    static getProfileData(userId) {
 
         return new Promise((resolve, reject) => {
 
@@ -72,7 +72,7 @@ export class User{
 
             let reqObj;
 
-            fetch("/request/getProfileData", {
+            fetch("/product/getProfileData", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,7 +88,13 @@ export class User{
 
                     console.log(result)
                     if (reqObj.ok === true) {
-                        resolve(result)
+                        resolve({
+                            userName: result.nme,
+                            userAlias: result.username,
+                            profilePicture: result.profilePic,
+                            donationsMade: result.donations,
+                            donationsReceived: result.adquisitions
+                        })
                     } else {
                         reject(result.error)
                     }
@@ -98,5 +104,5 @@ export class User{
         });
     }
 
-    
+
 }
