@@ -1,50 +1,58 @@
-const socket = require("./server/services/socketServer");
+const socket = require("./socketServer");
 const notificationController = require("../controllers/notification.controller");
 
 
-module.exports = class Notifications{
+module.exports = class Notifications {
 
-    async static sendWelcomeNotification({userName}){
+    static async sendWelcomeNotification({ userId, userName }) {
 
         const notificationData = {
+            userId: userId,
             title: `¡Bienvenido ${userName}!`,
             text: `Estamos muy felices  de tenerte con nosotros`,
             image: null,
             date: new Date(),
-            viewed:false
+            viewed: false,
+            url: `#/profile?id=${userId}`
         };
 
         // Guardar la información en la BD
-        // obtener el ID generado
-        
-        const id = await notificationController.saveNotification(notificationData);
-        
-        notificationData["id"] = id;
+        try {
+            const id = await notificationController.saveNotification(notificationData);
 
-        socket.io.emit("global-notification", notificationData);
+            notificationData["id"] = id;
+
+            socket.io.emit(`${userId}-notification`, notificationData);
+        } catch (ex) {
+
+        }
 
     }
 
-    async static sendNewRquestNotification({applicantName, productName, productId, applicantProfileImage, ownerId }){
+    static async sendNewRequestNotification({ applicantName, productName, productId, applicantProfileImage, ownerId }) {
 
         const notificationData = {
+            userId: ownerId,
             title: `Nueva solicitud de donación`,
             text: `${applicantName} te ha enviado una solicitud de donación para tu tu producto "${productName}".`,
             image: applicantProfileImage,
             date: new Date(),
-            viewed:false,
+            viewed: false,
             url: `/product?productId=${productId}`
         };
 
-        // Guardar la información en la BD
-        // obtener el ID generado
-        
-        const id = "";// await saveNotification(notificationData);
-        
+   
+        try{
+        const id = await notificationController.saveNotification(notificationData);
+
         notificationData["id"] = id;
 
         socket.io.emit(`${ownerId}-notification`, notificationData);
-        
+
+        }catch(ex){
+            console.log("Error al enviar notificacion de nueva solicitud.");
+        }
+
     }
 
 
