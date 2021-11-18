@@ -118,14 +118,33 @@ function newRequest(req, res) {
                                             console.log(err);
                                             cancelRequest(saved, res, "Error interno del servidor", 500);
                                         } else if (updated) {
+                                            User.findById(updated.ownerId,(err,foundOwner)=>{
+                                                if(err){
+                                                    console.log("error del servidor");
+                                                }else if(foundOwner){
+
+                                                    //INFORMACION PARA CORREOS Y NOTIFICACIONES
+                                                    /*
+                                                    dueno: foundOwner.name + " " + foundOwner.lastname,
+                                                    email: foundOwner.email,
+                                                    petitioner: req.user.name + " " + req.user.lastname,
+                                                    product: updated.name,
+                                                    productId: updated._id,
+                                                    petitionerPic: req.user.profilePic,
+                                                    ownerId: foundOwner._id,
+                                                    */
+
+
+                                                }else{
+                                                    console.log("No hay informacion para el correo");
+                                                }
+                                            })
+
+
+
                                             res.send({
-                                                "owner": updated.owner,
-                                                "email": updated.email,
-                                                "petitioner": req.user.name,
-                                                "product": updated.name,
-                                                "productId": updated._id,
-                                                "petitionerPic": req.user.profilePic,
-                                                "ownerId": updated.ownerId,
+                                                "idRequest": saved._id,
+                                                "productId": productId,
                                                 "petitionerId": petitioner,
                                                 "requestedDate": saved.requestedDate,
                                                 "messageSent": saved.message,
@@ -182,6 +201,26 @@ function rejectRequest(req, res) {
                                     if (err) {
                                         res.status(500).send({ error: "Error interno del servidor", err });
                                     } else if (updated) {
+                                        User.findById(deleted.petitionerId,(err,petitioner)=>{
+                                            if(err){
+                                                console.log("Error del servidor\n",err)
+                                            }else if(petitioner){
+
+                                                //INFORMACION PARA CORREOS Y NOTIFICACIONES
+
+                                                /*
+                                                    petitioner: petitioner.name + " " + petitioner.lastname,
+                                                    petitionerId: petitioner._id,
+                                                    email: petitioner.email,
+                                                    product: updated.name,
+                                                    productId: updated._id,
+                                                    productImages: updated.images
+                                                    */
+
+                                            }else{
+                                                console.log("Sin informacion para el correo");
+                                            }
+                                        })
                                         res.send({ message: "Solicitud eliminada" });
                                     } else {
                                         res.status(500).send({ message: "Ha ocurrido un error inesperado al eliminar la solicitud" });

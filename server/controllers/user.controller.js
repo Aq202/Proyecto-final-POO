@@ -91,21 +91,6 @@ function signIn(req, res) {
                             if (err)
                                 res.status(500).send({ error: 'Error interno del servidor.', err });
                             else if (saved) {
-                                /*res.send({
-                                    'Id': saved._id,
-                                    'DPI': saved.dpi,
-                                    'Username': saved.username,
-                                    'Email': saved.email,
-                                    'Name': saved.name,
-                                    'Lastname': saved.lastname,
-                                    'Age': saved.age,
-                                    'Direction': saved.direccion,
-                                    'Documents' : saved.documents,
-                                    'profilePic': saved.profilePic,
-                                    'Sex': saved.sex,
-                                    'Birth': saved.birth
-                                });*/
-
                                 try {
 
                                     //enviar correo de Bienvenida
