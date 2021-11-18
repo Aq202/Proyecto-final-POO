@@ -74,7 +74,6 @@ function requestAccepted(productId, userId = null) {
     if (userId != null) {
         Request.findOne({ productId: productId, petitionerId: userId, approved: true }, (err, found) => {
             if (err) {
-                console.log(err);
                 return false;
             } else if (found) {
                 return true;
@@ -83,9 +82,8 @@ function requestAccepted(productId, userId = null) {
             }
         });
     } else {
-        Request.findOne({ productId: productId, approved: true }, (err, found) => {
+        Request.findOne({ productId: productId, petitionerId: userId, approved: true }, (err, found) => {
             if (err) {
-                console.log(err);
                 return false;
             } else if (found) {
                 return true;
@@ -134,16 +132,40 @@ function getProduct(req, res) {
                 message += '"ProductName": "' + found.name + '",';
                 message += '"ProductDescription": "' + found.description + '"';
                 if (req.user != null && found.ownerId == req.user.sub) {
-                    message += ',"isOwner": ' + true + ',';
-                    message += '"donationRequestAccepted": ' + (requestAccepted(found._id) == true ? true : false) + ',';
-                    message += '"donationReceivedConfirmed": ' + (found.available == false && requestAccepted(found._id)) + '';
+                    message += ',"isOwner": ' + true + '';
+                    Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
+                        if (foundR) {
+                            message += ',"donationRequestAccepted": ' + true + ',';
+                            message += '"donationReceivedConfirmed": ' + (found.available == false ? true : false) + '';
+                        }else{
+                            message += ',"donationRequestAccepted": ' + false + ',';
+                            message += '"donationReceivedConfirmed": ' + false + '';
+                        }
+                        message += '}';
+                        console.log(message);
+                        res.send(JSON.parse(message));
+                    });
 
                 } else if (req.user != null && req.user != undefined) {
-                    message += ',"alreadyRequested": ' + (found.interested.includes(req.user.sub) == true ? true : false) + ',';
-                    message += '"selectedAsBeneficiary": ' + (requestAccepted(found._id, req.user.sub) == true ? true : false) + '';
+                    Request.findOne({ productId: productId, petitionerId: req.user.sub, approved: true }, (err, foundR) => {
+                        if (foundR) {
+                            message += ',"selectedAsBeneficiary": ' +  true  + '';
+                        }else{
+                            message += ',"selectedAsBeneficiary": ' +  false  + '';
+                        }
+                        if(found.interested && found.interested != null && found.interested != undefined && found.interested.length>0)
+                            message += ',"alreadyRequested": ' + (found.interested.includes(req.user.sub) == true ? true : false);
+                        else
+                        message += ',"alreadyRequested": ' + false;
+                        message += '}';
+                        console.log(message);
+                        res.send(JSON.parse(message));
+                    });
+                }else{
+                    message += '}';
+                    console.log(message);
+                    res.send(JSON.parse(message));
                 }
-                message += '}';
-                res.send(JSON.parse(message));
             } else {
                 res.status(404).send({ error: "No se han encontrado productos con el ID indcado" });
             }
@@ -158,7 +180,6 @@ function addProduct(req, res) {
     var product = new Product();
     var params = req.body;
     const date = new Date();
-    date.setTime(date.getTime() - (6 * 60 * 60 * 1000));
 
     if (params.name && params.cathegory && params.department && params.municipality && params.description && req.imagesUrl) {
         product.name = params.name;

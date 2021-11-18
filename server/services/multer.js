@@ -14,10 +14,10 @@ const storage = multer.diskStorage({
     filename: function (req, file, callback) {
         let newFilename = Date.now()+"-"+file.originalname;
         callback(null, newFilename);
-        if(req.contador == 1){
+        if(req.contador == 0){
             if(req.imagesUrl == undefined)
                 req.imagesUrl = [];
-            req.imagesUrl.push(req.imagesPath[1] + newFilename);
+            req.imagesUrl.push(req.imagesPath[0] + newFilename);
             req.contador = 2;
         }else if(req.contador == undefined){
             if(req.imagesUrl == undefined)
@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
         }else{
             if(req.imagesUrl == undefined)
                 req.imagesUrl = [];
-            req.imagesUrl.push(req.imagesPath[0] + newFilename);  
+            req.imagesUrl.push(req.imagesPath[1] + newFilename);  
         }
     }
 });

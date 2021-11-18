@@ -3,6 +3,36 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
+const mongoose = require('mongoose');
+
+function getUserProducts(req,res){
+    const params = req.body;
+    let userId = null;
+    try{
+        userId = mongoose.Types.ObjectId(params.userId);
+    }catch(ex){
+        userId = null;
+        console.log(ex);
+    }
+    if (userId!=null) {
+        User.findById(userId,(err,found)=>{
+            if(err){
+                res.status(500).send({error:"Error interno del servidor"});
+            }else if(found){
+                res.send({
+                    profilePic: found.profilePic,
+                    name: found.name + " " + found.lastname,
+                    username: found.username,
+                    donations: found.donations,
+                    adquisitions: found.adquisitions
+                });
+            }else
+                res.status(404).send({message: "No se han encontrado usuarios con el ID especificado"});
+        })
+    }else{
+        res.status(400).send({message: "Debe indicar un ID de usuario válido."});
+    }
+}
 
 function signIn(req,res){
     const params = req.body;
@@ -169,5 +199,6 @@ function getInfoUser(req,res){
 module.exports={
     signIn,
     login,
-    getInfoUser
+    getInfoUser,
+    getUserProducts
 }
