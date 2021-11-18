@@ -10,6 +10,7 @@ function signIn(req,res){
     let today = Date.now();
 
     if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth ){
+        console.log("Entro a la funcion");
         User.findOne({$or: [{ username: params.username }, { email: params.email }, {dpi:params.dpi}] }, (err, found) => {
             if(err)
                 res.status(500).send({error: 'Error interno del servidor.', err});
