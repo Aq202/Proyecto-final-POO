@@ -223,7 +223,15 @@ function approveRequest(req, res) {
                             if (err) {
                                 res.status(500).send({ error: "Error interno del servidor", err });
                             } else if (updated) {
-                                rejectOtherRequests(updated, res);
+                                Product.findByIdAndUpdate(found.productId, { available: false }, { new: true }, (err, found) => {
+                                    if (err) {
+                                        res.status(500).send({ error: "Error interno del servidor", err });
+                                    } else if (found) {
+                                        rejectOtherRequests(updated, res);
+                                    } else {
+                                        res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la solicitud" });
+                                    }
+                                });
                             } else {
                                 res.status(500).send({ message: "Ha ocurrido un error inesperado al aceptar la solicitud" });
                             }
@@ -244,7 +252,7 @@ function approveRequest(req, res) {
 function deleteRequest(req, res) {
     let params = req.body;
     let userId = req.user.sub;
-    let productId
+    let productId = null;
     try{
         productId = mongoose.Types.ObjectId(params.productId);
     }catch{
@@ -282,80 +290,73 @@ function deleteRequest(req, res) {
                 } else
                     res.status(403).send({ message: "No tiene permitido realizar esta acción" });
             } else {
-                res.status(500).send({ error: "No se han encontrado solicitudes con el ID especificado." });
+                res.status(500).send({ error: "No se han encontrado solicitudes al producto con el ID especificado." });
             }
         })
     } else {
-        res.status(400).send({ message: "Debe ingresar el id de la solicitud a confirmar." });
+        res.status(400).send({ message: "Debe ingresar el id del producto que desea cancelar." });
     }
 }
 
 function confirmReceived(req, res) {
     let params = req.body;
     let userId = req.user.sub;
-    let requestID
+    let productId = null;
     try{
-        requestID = mongoose.Types.ObjectId(params.requestId);
+        productId = mongoose.Types.ObjectId(params.productId);
     }catch{
-        requestID = null;
+        productId = null;
     }
-    if (requestID != null) {
-        Request.findById(params.requestId, (err, found) => {
+    if (productId != null) {
+        Request.findOne({productId:params.productId}, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
             } else if (found) {
                 if (userId == found.petitionerId) {
-                    Product.findByIdAndUpdate(found.productId, { available: false }, { new: true }, (err, found) => {
+                    User.findByIdAndUpdate(userId, { $push: { adquisitions: found.productId } }, { new: true }, (err, updatedU) => {
                         if (err) {
                             res.status(500).send({ error: "Error interno del servidor", err });
-                        } else if (found) {
-                            User.findByIdAndUpdate(userId, { $push: { adquisitions: found._id } }, { new: true }, (err, updatedU) => {
-                                if (err) {
-                                    res.status(500).send({ error: "Error interno del servidor", err });
-                                } else if (updatedU) {
-                                    res.send({ message: "Se ha informado al dueño que ha aceptado la solicitud. Donación agregada a su registro." });
-                                } else {
-                                    res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la solicitud" });
-                                }
-                            })
+                        } else if (updatedU) {
+                            res.send({ message: "Se ha informado al dueño que ha aceptado la donación. Producto agregado a su registro." });
                         } else {
-                            res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la solicitud" });
+                            res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la donación" });
                         }
-                    });
+                    })
                 } else
                     res.status(403).send({ message: "No tiene permitido realizar esta acción" });
             } else {
-                res.status(500).send({ error: "No se han encontrado solicitudes con el ID especificado" });
+                res.status(500).send({ error: "No se han encontrado solicitudes realizadas al producto con el ID especificado" });
             }
         })
     } else {
-        res.status(400).send({ message: "Debe ingresar el id de la solicitud a confirmar." });
+        res.status(400).send({ message: "Debe ingresar el id de la donación a confirmar." });
     }
 }
 
 function rejectDonation(req, res) {
     let params = req.body;
     let userId = req.user.sub;
-    let requestID
+    let productId = null;
     try{
-        requestID = mongoose.Types.ObjectId(params.requestId);
+        productId = mongoose.Types.ObjectId(params.productId);
     }catch{
-        requestID = null;
+        productId = null;
     }
-    if (requestID != null) {
-        Request.findById(params.requestId, (err, found) => {
+    if (productId != null) {
+        Request.findOne({productId: params.productId}, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
             } else if (found) {
                 if (userId == found.petitionerId) {
+
                     Request.findByIdAndDelete(found._id, (err, deleted) => {
                         if (err) {
                             res.status(500).send({ error: "Error interno del servidor" });
                             console.log(err);
                         } else if (deleted) {
-                            Product.findByIdAndUpdate(found.productId, { $pull: { interested: found.petitionerId } }, { new: true }, (err, updated) => {
+                            Product.findByIdAndUpdate(found.productId, { available: true, $pull: { interested: found.petitionerId } }, { new: true }, (err, updated) => {
                                 if (err) {
                                     res.status(500).send({ error: "Error interno del servidor", err });
                                 } else if (updated) {
@@ -371,11 +372,11 @@ function rejectDonation(req, res) {
                 } else
                     res.status(403).send({ message: "No tiene permitido realizar esta acción" });
             } else {
-                res.status(500).send({ error: "No se han encontrado solicitudes con el ID especificado" });
+                res.status(500).send({ error: "No se han encontrado solicitudes realizadas al producto con el ID especificado" });
             }
         })
     } else {
-        res.status(400).send({ message: "Debe ingresar el id de la solicitud a confirmar." });
+        res.status(400).send({ message: "Debe ingresar el id de la donación que desea rechazar." });
     }
 }
 

@@ -16,5 +16,6 @@ api.post('/listProducts', productController.listProducts);
 api.post('/filteredSearch', productController.filteredSearch);
 api.delete('/cancelDonation',mdAuth.ensureAuth, productController.deleteProduct);
 api.post('/currentRequest', mdAuth.ensureAuth, productController.getCurrentRequests);
+api.post('/deleteProduct', mdAuth.ensureAuth, productController.deleteProduct);
 
 module.exports = api;
