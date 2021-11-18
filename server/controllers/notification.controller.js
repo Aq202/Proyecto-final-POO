@@ -4,7 +4,7 @@ const Notification = require("../models/notification.model");
 
 function saveNotification(notificationData){
     let notification = new Notification();
-    if(notificationData.title && notificationData.text && notificationData.image && notificationData.date && notificationData.viewed && notificationData.url){
+    if(notificationData.userId && notificationData.title && notificationData.text && notificationData.image && notificationData.date && notificationData.viewed && notificationData.url){
         notification.title = notificationData.title;
         notification.text = notificationData.text;
         notification.image = notificationData.image;
@@ -27,6 +27,10 @@ function saveNotification(notificationData){
 }
 
 function setAsViewed(req,res){
+    let params = req.body;
+    let notificationId = null;
+    let userId = null;
+
     
 }
 
