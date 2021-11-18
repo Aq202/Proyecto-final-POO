@@ -142,7 +142,6 @@ function getProduct(req, res) {
                             message += '"donationReceivedConfirmed": ' + false + '';
                         }
                         message += '}';
-                        console.log(message);
                         res.send(JSON.parse(message));
                     });
 
@@ -158,12 +157,10 @@ function getProduct(req, res) {
                         else
                         message += ',"alreadyRequested": ' + false;
                         message += '}';
-                        console.log(message);
                         res.send(JSON.parse(message));
                     });
                 }else{
                     message += '}';
-                    console.log(message);
                     res.send(JSON.parse(message));
                 }
             } else {
@@ -340,22 +337,31 @@ function deleteProduct(req, res) {
                 res.status(500).send({ error: 'Error interno del servidor', err });
             } else if (found && found != null && found != undefined) {
                 if (found.ownerId == userId) {
-                    Product.findByIdAndDelete(found._id, (err, deleted) => {
-                        if (err) {
+
+                    Request.findOne({productId : found._id, approved: true},(err, foundR)=>{
+                        if(err){
                             res.status(500).send({ error: 'Error interno del servidor', err });
-                        } else if (deleted) {
-                            User.findByIdAndUpdate(userId, { $pull: { donations: deleted._id } }, { new: true }, (err, updated) => {
+                        }else if(foundR){
+                            res.status(403).send({message:"Ya ha aceptado una solicitud para donar este producto, por lo tanto no puede eliminarlo"});
+                        }else{
+                            Product.findByIdAndDelete(found._id, (err, deleted) => {
                                 if (err) {
-                                    console.log(err);
                                     res.status(500).send({ error: 'Error interno del servidor', err });
-                                } else if (updated) {
-                                    res.send({ message: "Producto eliminado con exito." });
+                                } else if (deleted) {
+                                    User.findByIdAndUpdate(userId, { $pull: { donations: deleted._id } }, { new: true }, (err, updated) => {
+                                        if (err) {
+                                            console.log(err);
+                                            res.status(500).send({ error: 'Error interno del servidor', err });
+                                        } else if (updated) {
+                                            res.send({ message: "Producto eliminado con exito." });
+                                        } else {
+                                            res.status(500).send({ error: "Se ha producido un error al eliminar el producto" });
+                                        }
+                                    })
                                 } else {
-                                    res.status(500).send({ error: "Se ha producido un error al eliminar el producto" });
+                                    res.status(500).send({ error: "Ha ocurrido un error al eliminar el producto indicado" });
                                 }
                             })
-                        } else {
-                            res.status(500).send({ error: "Ha ocurrido un error al eliminar el producto indicado" });
                         }
                     })
                 } else {
