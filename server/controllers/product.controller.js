@@ -86,14 +86,14 @@ function getProfileData(req,res){
             }else if(found){
                 let products = {
                     _id: found._id,
-                    nme: found.name + " "+found.lastname,
+                    name: found.name + " "+found.lastname,
                     username: found.username,
                     profilePic: found.profilePic,
                     donations: [],
                     adquisitions: [],
                 }
                 let data=[];
-                let donations = 0;
+                let donations = null;
                 if(found.donations && found.donations != null && found.donations != undefined && found.donations.length>0){
                     data.push(...found.donations);
                     donations = found.donations.length;
@@ -102,29 +102,44 @@ function getProfileData(req,res){
                     data.push(...found.adquisitions);
                 }
 
-
-                for (let index in data) {
-                    const product = data[index];
+                //console.log(data);
+                let index = 0;
+                while (index < data.length) {
+                    let product = data[index];
                     try {
                         Product.findById(product._id, (err, found) => {
                             if(err) throw "";
-                            if (found && found != null) {
-                                if(index<donations){
+                            if (found && found != null && found != undefined && found != "") {
+                                console.log(donations, index);
+                                if(donations!=null && index<donations){
                                     products.donations.push(found);
+                                    //console.log(1,products);
                                 }else{
                                     products.adquisitions.push(found);
                                 }
-                            }
+                            }else
+                                console.log(404);
                             if(index == (data.length - 1)){   
-                                res.send(products);
+                                //console.log(2,products);
+                                console.log(products.donations.length);
+                                console.log(products.adquisitions.length);
+                                if((products.donations.length + products.adquisitions.length) == data.length)
+                                    res.send(products);
+                                else{
+                                    index = -1;
+                                    products.donations = [];
+                                    products.adquisitions = [];
+                                }
                             }
-                        })
+                        });
                     }
                     catch (ex) {
                         console.log("ERROR MANUAL ",ex);
                         res.send(500).send({message:"Ocurrió un error interno"});
 
                     }
+                    index++;
+                    console.log(index, data.length, index < data.length);
                 }
             }else{
                 res.status(404).send({message:"No se han encontrado usuarios con el ID indicado"});
