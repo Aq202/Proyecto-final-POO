@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
             callback(null, req.imagesPath[req.contador]);
             req.contador += 1;
         }else if(req.contador == undefined)
-            callback(null, req.imagesPath);
+            callback(null, req.imagesPath[req.contador]);
         else
         callback(null, req.imagesPath[req.contador]);
     },
