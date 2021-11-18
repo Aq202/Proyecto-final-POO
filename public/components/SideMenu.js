@@ -31,7 +31,7 @@ export class SideMenu{
        
             <li class="">
                 <img src="../images/icons/profileLogo.svg" alt = "profile">
-                <a href="#">Mi perfil</a>
+                <a href="#/profile">Mi perfil</a>
             </li>
         
             <li class="">

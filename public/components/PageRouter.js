@@ -80,6 +80,12 @@ export class PageRouter {
             this.renderView(new RegistrationPage().component, true);
         }
         else if (hash.includes("/profile")){
+
+            let userId = this.getParameters(hash)?.user;
+            userId ||= Session.id;
+
+            if(userId === undefined) return location.hash = "#/";
+
             this.renderView(new ProfilePage().component);
         }
         else {
