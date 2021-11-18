@@ -70,6 +70,71 @@ function getCurrentRequests(req, res) {
     }
 }
 
+function getProfileData(req,res){
+    let params = req.body;
+    let userId = null;
+    try{
+        userId = mongoose.Types.ObjectId(params.userId);
+    }catch{
+        userId = null
+    }
+    if(userId!=null){
+        User.findById(params.userId,(err,found)=>{
+            if(err){
+                console.log(err);
+                res.status(500).send({error:"Error interno del servidor"});
+            }else if(found){
+                let products = {
+                    _id: found._id,
+                    nme: found.name + " "+found.lastname,
+                    username: found.username,
+                    profilePic: found.profilePic,
+                    donations: [],
+                    adquisitions: [],
+                }
+                let data=[];
+                let donations = 0;
+                if(found.donations && found.donations != null && found.donations != undefined && found.donations.length>0){
+                    data.push(...found.donations);
+                    donations = found.donations.length;
+                }
+                if(found.adquisitions && found.adquisitions != null && found.adquisitions != undefined && found.adquisitions.length>0){
+                    data.push(...found.adquisitions);
+                }
+
+
+                for (let index in data) {
+                    const product = data[index];
+                    try {
+                        Product.findById(product._id, (err, found) => {
+                            if(err) throw "";
+                            if (found && found != null) {
+                                if(index<donations){
+                                    products.donations.push(found);
+                                }else{
+                                    products.adquisitions.push(found);
+                                }
+                            }
+                            if(index == (data.length - 1)){   
+                                res.send(products);
+                            }
+                        })
+                    }
+                    catch (ex) {
+                        console.log("ERROR MANUAL ",ex);
+                        res.send(500).send({message:"Ocurrió un error interno"});
+
+                    }
+                }
+            }else{
+                res.status(404).send({message:"No se han encontrado usuarios con el ID indicado"});
+            }
+        })
+    }else{
+        res.status(400).send({message:"Indique el ID del usuario del que desea obtener los productos"});
+    }
+}
+
 function getProduct(req, res) {
     const params = req.body;
     let productId
@@ -257,7 +322,7 @@ function cancelDonation(product, res, message, status) {
 }
 
 function listProducts(req, res) {
-    /*let params = req.body;
+    let params = req.body;
     let skipped = params.skip ? parseInt(params.skip) : 0;
     let quantity = params.quantity ? parseInt(params.quantity) : 10;
     let order = (params.ascending && params.ascending == "true") ? 1 : -1;
@@ -265,21 +330,12 @@ function listProducts(req, res) {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
         } else if (found && found.length > 0) {
-            let products = [];
-            if(found.donations && found.donations != null && found.donations != undefined){
-                found.donations.foreach(donation=>{
-                    products.push({_id: donation});
-                })
-            if(found.donations && found.donations != null && found.donations != undefined){
-                found.donations.foreach(donation=>{
-                    products.push({_id: donation});
-                })
-            }
+            req.send({products: found});
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }
     }).skip(skipped).limit(quantity).sort({ publishDate: order });
-*/}
+}
 
 function filteredSearch(req, res) {
     let params = req.body;
@@ -394,5 +450,6 @@ module.exports = {
     filteredSearch,
     getProduct,
     deleteProduct,
-    getCurrentRequests
+    getCurrentRequests,
+    getProfileData
 }
