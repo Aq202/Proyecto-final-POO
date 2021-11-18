@@ -15,6 +15,7 @@ const RequestApprovedEmail = require('./server/services/RequestApprovedEmail');
 const RequestRejectedEmail = require('./server/services/RequestRejectedEmail');
 const NewRequestEmail = require('./server/services/NewRequestEmail');
 const DonationConfirmedAsReceived = require('./server/services/DonationConfirmedAsReceived');
+const Notifications = require('./server/services/Notifications');
 
 
 const app = express();
@@ -57,6 +58,19 @@ new socketServer(httpServer)
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html")
+
+
+})
+
+app.get("/hola", (req, res) => {
+    
+    console.log(Notifications)
+
+    Notifications.sendWelcomeNotification({
+        userName:"El jajas",
+    });
+    res.send("Notificacion enviada");
+
 
 })
 

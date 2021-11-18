@@ -36,7 +36,7 @@ export class SocketClient {
     }
 
     static startListening() {
-
+        
         if(SocketClient.socketIo === undefined) return;
 
         SocketClient.socketIo.on("connect_error", err => {
@@ -51,7 +51,15 @@ export class SocketClient {
 
             const notificationEvent = new CustomEvent("newNotification", { detail: msg });
             document.dispatchEvent(notificationEvent);
-            console.warn("evento enviado")
+            console.warn("Nueva notificación global")
+        })
+
+        //notification personal
+        SocketClient.socketIo.on(`${Session.id}-notification`, msg => {
+
+            const notificationEvent = new CustomEvent("newNotification", { detail: msg });
+            document.dispatchEvent(notificationEvent);
+            console.warn("Nueva notificación privada")
         })
     }
 

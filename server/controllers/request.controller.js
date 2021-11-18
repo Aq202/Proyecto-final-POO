@@ -118,6 +118,9 @@ function newRequest(req, res) {
                                             console.log(err);
                                             cancelRequest(saved, res, "Error interno del servidor", 500);
                                         } else if (updated) {
+
+                                            
+
                                             res.send({
                                                 "idRequest": saved._id,
                                                 "productId": productId,

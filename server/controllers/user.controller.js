@@ -3,22 +3,24 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
+const WelcomeEmail = require('../services/WelcomeEmail');
 const mongoose = require('mongoose');
+const Notifications = require('../services/Notifications');
 
-function getUserProducts(req,res){
+function getUserProducts(req, res) {
     const params = req.body;
     let userId = null;
-    try{
+    try {
         userId = mongoose.Types.ObjectId(params.userId);
-    }catch(ex){
+    } catch (ex) {
         userId = null;
         console.log(ex);
     }
-    if (userId!=null) {
-        User.findById(userId,(err,found)=>{
-            if(err){
-                res.status(500).send({error:"Error interno del servidor"});
-            }else if(found){
+    if (userId != null) {
+        User.findById(userId, (err, found) => {
+            if (err) {
+                res.status(500).send({ error: "Error interno del servidor" });
+            } else if (found) {
                 res.send({
                     profilePic: found.profilePic,
                     name: found.name + " " + found.lastname,
@@ -26,26 +28,26 @@ function getUserProducts(req,res){
                     donations: found.donations,
                     adquisitions: found.adquisitions
                 });
-            }else
-                res.status(404).send({message: "No se han encontrado usuarios con el ID especificado"});
+            } else
+                res.status(404).send({ message: "No se han encontrado usuarios con el ID especificado" });
         })
-    }else{
-        res.status(400).send({message: "Debe indicar un ID de usuario válido."});
+    } else {
+        res.status(400).send({ message: "Debe indicar un ID de usuario válido." });
     }
 }
 
-function signIn(req,res){
+function signIn(req, res) {
     const params = req.body;
     const user = new User();
     let today = Date.now();
 
-    if(params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth ){
-        User.findOne({$or: [{ username: params.username }, { email: params.email }, {dpi:params.dpi}] }, (err, found) => {
-            if(err)
-                res.status(500).send({error: 'Error interno del servidor.', err});
-            else if(found)
+    if (params.dpi && params.username && params.email && params.password && params.name && params.lastname && params.address && params.sex && params.birth) {
+        User.findOne({ $or: [{ username: params.username }, { email: params.email }, { dpi: params.dpi }] }, (err, found) => {
+            if (err)
+                res.status(500).send({ error: 'Error interno del servidor.', err });
+            else if (found)
                 res.status(403).send({ message: 'El dpi, nombre de usuario o correo electrónico ingresado ya está en uso.' });
-            else{
+            else {
                 let birth = new Date(params.birth);
                 user.dpi = params.dpi;
                 user.username = params.username;
@@ -57,18 +59,18 @@ function signIn(req,res){
                 user.sex = params.sex;
                 user.birth = birth;
 
-                try{
+                try {
                     let profilePic = "";
                     let documents = [];
                     let contador = 0;
-                    req.imagesUrl.forEach(image=>{
+                    req.imagesUrl.forEach(image => {
                         let imageArray = image.split('/');
                         image = "";
-                        for(let i = 2; i<imageArray.length;i++){
+                        for (let i = 2; i < imageArray.length; i++) {
                             image += imageArray[i]
-                            if(i!== (imageArray.length -1)) image += "/";
+                            if (i !== (imageArray.length - 1)) image += "/";
                         }
-                        if(contador == 0)
+                        if (contador == 0)
                             profilePic = image;
                         else
                             documents.push(image);
@@ -76,61 +78,81 @@ function signIn(req,res){
                     });
                     user.profilePic = profilePic;
                     user.documents = documents;
-                }catch(ex){
+                } catch (ex) {
                     console.log("Error al guardar las imagenes", ex);
                 }
-                
-                bcrypt.hash(params.password, null, null, (err, passwordEncripted)=>{
-                    if(err)
+
+                bcrypt.hash(params.password, null, null, (err, passwordEncripted) => {
+                    if (err)
                         res.status(500).send({ error: 'Error interno del servidor.', err });
-                    else if(passwordEncripted){
+                    else if (passwordEncripted) {
                         user.password = passwordEncripted;
-                        user.save((err, saved)=>{
-                            if(err)
+                        user.save((err, saved) => {
+                            if (err)
                                 res.status(500).send({ error: 'Error interno del servidor.', err });
-                            else if(saved){
-                            /*res.send({
-                                'Id': saved._id,
-                                'DPI': saved.dpi,
-                                'Username': saved.username,
-                                'Email': saved.email,
-                                'Name': saved.name,
-                                'Lastname': saved.lastname,
-                                'Age': saved.age,
-                                'Direction': saved.direccion,
-                                'Documents' : saved.documents,
-                                'profilePic': saved.profilePic,
-                                'Sex': saved.sex,
-                                'Birth': saved.birth
-                            });*/
-                            login(req,res);
-                            }else
+                            else if (saved) {
+                                /*res.send({
+                                    'Id': saved._id,
+                                    'DPI': saved.dpi,
+                                    'Username': saved.username,
+                                    'Email': saved.email,
+                                    'Name': saved.name,
+                                    'Lastname': saved.lastname,
+                                    'Age': saved.age,
+                                    'Direction': saved.direccion,
+                                    'Documents' : saved.documents,
+                                    'profilePic': saved.profilePic,
+                                    'Sex': saved.sex,
+                                    'Birth': saved.birth
+                                });*/
+
+                                try {
+
+                                    //enviar correo de Bienvenida
+                                    const email = new WelcomeEmail({
+                                        userName: params.name,
+                                        userEmail: params.email
+                                    });
+                                    email.sendEmail();
+
+                                    //enviar notificacion de bienvenida
+                                    Notifications.sendWelcomeNotification({
+                                        userId: saved._id,
+                                        userName: params.name
+                                    })
+
+                                } catch (ex) {
+
+                                }
+
+                                login(req, res);
+                            } else
                                 res.status(400).send({ error: 'Error de registro.' });
                         });
-                    }else
-                    res.status(400).send({ error: 'Error de encriptación.' });
+                    } else
+                        res.status(400).send({ error: 'Error de encriptación.' });
                 });
             }
         });
-    }else
-    res.status(400).send({ mensaje: 'Debe ingresar todos los parámetros requeridos.' });
+    } else
+        res.status(400).send({ mensaje: 'Debe ingresar todos los parámetros requeridos.' });
 }
 
-function login(req,res){
+function login(req, res) {
 
     const params = req.body;
 
-    if(params.username || params.email){
-        if(params.password){
-            User.findOne({ $or: [{ username: params.username }, { email: params.email }] }, (err, found) =>{
-                if(err)
+    if (params.username || params.email) {
+        if (params.password) {
+            User.findOne({ $or: [{ username: params.username }, { email: params.email }] }, (err, found) => {
+                if (err)
                     res.status(500).send({ error: 'Error interno del servidor.' });
-                else if(found){
-                    bcrypt.compare(params.password, found.password, (err, matched)=>{
-                        if(err)
+                else if (found) {
+                    bcrypt.compare(params.password, found.password, (err, matched) => {
+                        if (err)
                             res.status(500).send({ error: 'Error interno del servidor.' });
-                        else if(matched){
-                            if(params.gettoken = true){
+                        else if (matched) {
+                            if (params.gettoken = true) {
                                 res.send({
                                     'Id': found._id,
                                     'DPI': found.dpi,
@@ -145,35 +167,35 @@ function login(req,res){
                                     'Birth': found.birth,
                                     'Token': jwt.createToken(found)
                                 });
-                            }else
+                            } else
                                 res.status(500).send({ error: 'Error al autenticar.' });
-                        }else
+                        } else
                             res.status(403).send({ message: 'Contraseña incorrecta.' });
                     });
-                }else
+                } else
                     res.status(500).send({ message: 'Nombre de usuario o correo electrónico incorrectos.' });
             });
-        }else
+        } else
             res.status(400).send({ message: 'Ingrese su contraseña.' });
-    }else
+    } else
         res.status(400).send({ message: 'Ingrese su correo electrónico o nombre de usuario.' });
 }
 
-function calculateAge(birth,today){
-    let diffMonths = today-birth.getTime();
+function calculateAge(birth, today) {
+    let diffMonths = today - birth.getTime();
     let ageDate = new Date(diffMonths);
-    let age = Math.abs(ageDate.getUTCFullYear()-1970);
+    let age = Math.abs(ageDate.getUTCFullYear() - 1970);
     return age;
 }
 
-function getInfoUser(req,res){
-    if(req.user.sub){
+function getInfoUser(req, res) {
+    if (req.user.sub) {
         let userId = req.user.sub;
-        User.findById(userId,(err,found)=>{
-            if(err){
+        User.findById(userId, (err, found) => {
+            if (err) {
                 console.log(err);
-                res.status(500).send({error: "Error interno del servidor."});
-            }else if(found){
+                res.status(500).send({ error: "Error interno del servidor." });
+            } else if (found) {
                 res.send({
                     'Id': found._id,
                     'DPI': found.dpi,
@@ -187,16 +209,16 @@ function getInfoUser(req,res){
                     'Sex': found.sex,
                     'Birth': found.birth
                 });
-            }else{
-                res.status(404).send({message:"No se han encontrado usuarios con el ID indicado."});
+            } else {
+                res.status(404).send({ message: "No se han encontrado usuarios con el ID indicado." });
             }
         })
-    }else{
-        res.status(400).send({message:"Debe iniciar sesión para acceder a esta función."});
+    } else {
+        res.status(400).send({ message: "Debe iniciar sesión para acceder a esta función." });
     }
 }
 
-module.exports={
+module.exports = {
     signIn,
     login,
     getInfoUser,
