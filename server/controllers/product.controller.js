@@ -70,30 +70,6 @@ function getCurrentRequests(req, res) {
     }
 }
 
-function requestAccepted(productId, userId = null) {
-    if (userId != null) {
-        Request.findOne({ productId: productId, petitionerId: userId, approved: true }, (err, found) => {
-            if (err) {
-                return false;
-            } else if (found) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-    } else {
-        Request.findOne({ productId: productId, petitionerId: userId, approved: true }, (err, found) => {
-            if (err) {
-                return false;
-            } else if (found) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-    }
-}
-
 function getProduct(req, res) {
     const params = req.body;
     let productId
@@ -130,7 +106,8 @@ function getProduct(req, res) {
                 message += '"Owner": "' + found.owner + '",';
                 message += '"OwnerID": "' + found.ownerId + '",';
                 message += '"ProductName": "' + found.name + '",';
-                message += '"ProductDescription": "' + found.description + '"';
+                message += '"ProductDescription": "' + found.description + '",';
+                message += '"Available": ' + found.available + '';
                 if (req.user != null && found.ownerId == req.user.sub) {
                     message += ',"isOwner": ' + true + '';
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
@@ -160,8 +137,15 @@ function getProduct(req, res) {
                         res.send(JSON.parse(message));
                     });
                 }else{
-                    message += '}';
-                    res.send(JSON.parse(message));
+                    Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
+                        if (foundR) {
+                            message += ',"donationRequestAccepted": ' + true + ',';
+                        }else{
+                            message += ',"donationRequestAccepted": ' + false + ',';
+                        }
+                        message += '}';
+                        res.send(JSON.parse(message));
+                    });
                 }
             } else {
                 res.status(404).send({ error: "No se han encontrado productos con el ID indcado" });
@@ -262,7 +246,8 @@ function listProducts(req, res) {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
         } else if (found && found.length > 0) {
-            res.send({ 'Productos disponibles': found });
+            let products;
+            if(found.donations && found.donations != null && found.donations != undefined){}
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }
