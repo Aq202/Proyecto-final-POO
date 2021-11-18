@@ -64,7 +64,6 @@ function newRequest(req, res) {
     const params = req.body;
     const date = new Date();
     const userId = req.user.sub;
-    date.setTime(date.getTime() - (6 * 60 * 60 * 1000))
 
     let productId
     try{
