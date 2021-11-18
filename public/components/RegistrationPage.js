@@ -88,7 +88,7 @@ export class RegistrationPage {
                 <div class="imagesSection">
                     <span class="details">Selecciona una imagen para tu fotografía de perfil</span>
                     <div class="profilePicPicker"></div>
-                    <span class="details">Sube una fotografía de cada lado de tu DPI</span>
+                    <span class="details">Sube una fotografía de tu documento de identificación</span>
                     <div class="dpiPicker"></div>
                 </div>
                 <div class="button">
