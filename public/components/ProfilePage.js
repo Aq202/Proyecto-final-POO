@@ -5,7 +5,15 @@ import { Filter } from "../scripts/Filter.js";
 export class ProfilePage{
 
 
-    constructor(){
+    constructor({userName, userAlias, profilePicture, donationsMade, donationsReceived}){
+
+        this.userName = userName;
+        this.userAlias = userAlias;
+        this.profilePicture = profilePicture || "images/profileImages/default.svg";
+        this.donationsMade = (Array.isArray(donationsMade)) ? donationsMade : [];
+        this.donationsReceived = (Array.isArray(donationsReceived)) ? donationsReceived : [];
+
+
         this.initComponent();
     }
 
@@ -23,11 +31,11 @@ export class ProfilePage{
 
                 <div class="dataContainer">
 
-                    <img src="images/profileImages/1.jpg" alt="profile" class="profilePicture">
+                    <img src="${this.profilePicture}" alt="profile" class="profilePicture">
 
                     <div class="userName">
-                        <h3>Diego Morales</h3>
-                        <h4>@Aq202</h4>
+                        <h3>${this.userName}</h3>
+                        <h4>${this.userAlias}</h4>
                     </div>
                 </div>
 
@@ -43,21 +51,34 @@ export class ProfilePage{
             </div>
         `;
 
-        const donationsContainer = new DonationsContainer({});
-        $profilePage.querySelector(".profileDonations").appendChild(donationsContainer.component)
+        this.donationsContainer = new DonationsContainer({});
+        $profilePage.querySelector(".profileDonations").appendChild(this.donationsContainer.component)
 
+        this.loadDonations(); //notificaciones hechas
+
+        //agregar eventos
+        this.component.querySelector(".donationsMade").addEventListener(e => this.loadDonations());
+        this.component.querySelector(".donationsReceived").addEventListener(e => this.loadDonations(true));
+
+
+    }
+
+    loadDonations(donationsReceived){
         
+        if(donationsReceived === true){ //agregar donaciones recibidas
+            if(this.donationsReceived.length > 0){
+                this.donationsContainer.addContent(...this.donationsReceived);
+            }else{
+                this.donationsContainer.addNoResultsStyle();
+            }
+        }else{ //notificaciones hechas
+            if(this.donationsMade.length > 0){
+                this.donationsContainer.addContent(...this.donationsMade);
+            }else{
+                this.donationsContainer.addNoResultsStyle();
+            }
 
-        const { department, municipality, search, category } = Filter.filters;
-
-        const productList = await Product.getProducts({ department, municipality, search, category });
-            console.log(productList)
-            if (productList.length > 0)
-               donationsContainer.addContent(...productList);
-            else
-                donationsContainer.addNoResultsStyle();
-
-
+        }
 
     }
 }

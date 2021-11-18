@@ -403,6 +403,7 @@ export class ProductPage {
                     this.selectedAsBeneficiary = false;
                     this.donationRequestAccepted = false;
                     this.donationReceivedConfirmed = false;
+                    this.available = true;
                     this.userRequestId = undefined;
                     this.userRequestObject = undefined;
 
@@ -420,6 +421,8 @@ export class ProductPage {
                 } finally {
                     this.actionBlocked = false;
                 }
+
+                let array1 = [1,2,3,4]
 
             }
         }

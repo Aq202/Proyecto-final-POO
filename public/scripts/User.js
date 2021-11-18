@@ -8,17 +8,6 @@ export class User{
         this.profileImage = profileImage;
     }
 
-    static getUserData(userId){
-
-        return new Promise((resolve, reject) => {
-
-            resolve({
-                profileImage:"images/profileImages/1.jpg",
-                name:"Diego Morales"
-            })
-        });
-
-    }
 
     static createNewUser({dpi, username, email, password, name, lastname, address, sex, birthday, profilePic, documentsPics}){
 
@@ -71,6 +60,42 @@ export class User{
                 .catch(err => reject());
         });
 
+    }
+
+    static getProfileData(userId){
+
+        return new Promise((resolve, reject) => {
+
+            const obj = {
+                userId
+            }
+
+            let reqObj;
+
+            fetch("/request/getProfileData", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": Session.token
+                },
+                body: JSON.stringify(obj)
+            })
+                .then(r => {
+                    reqObj = r;
+                    return r.json();
+                })
+                .then(result => {
+
+                    console.log(result)
+                    if (reqObj.ok === true) {
+                        resolve(result)
+                    } else {
+                        reject(result.error)
+                    }
+                })
+                .catch(err => reject(err));
+
+        });
     }
 
     

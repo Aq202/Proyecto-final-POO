@@ -81,12 +81,17 @@ export class PageRouter {
         }
         else if (hash.includes("/profile")){
 
+            try{
             let userId = this.getParameters(hash)?.user;
             userId ||= Session.id;
 
-            if(userId === undefined) return location.hash = "#/";
+            const profileData = await User.getProfileData(userId);
 
-            this.renderView(new ProfilePage().component);
+            this.renderView(new ProfilePage({}).component);
+            }catch(ex){
+                console.log(ex);
+                this.addNotFoundPage();
+            }
         }
         else {
             this.addNotFoundPage();
