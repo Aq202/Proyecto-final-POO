@@ -44,10 +44,12 @@ export class User{
             form.append("sex", sex);
             form.append("birth", birthday);
 
+            
+            const data = new URLSearchParams(form);
 
             fetch("/user/signIn", {
                 method: "POST",
-                body: form,
+                body: data,
                 headers: {
                     'Authorization': Session.token,
                 }
@@ -58,19 +60,14 @@ export class User{
                 })
                 .then(res => {
 
-                    console.log(res)
-                    if (reqObject.ok === true) resolve(res.data);
+
+                    if (reqObject.ok === true){
+                        Session.token = res.Token;
+                        resolve();
+                    }
                     else{ 
 
-                        if(reqObject.status === 401){//unauthorized
-                            Session.logout();
-                            reject(new Error("Unauthorized"));
-                            
-                        }else{
-                            reject()
-                        }
-
-                        
+                        reject();
                     }
                 })
                 .catch(err => reject());

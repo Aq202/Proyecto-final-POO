@@ -1,8 +1,9 @@
 import { User } from "../scripts/User.js";
 import { ImagePicker } from "./ImagePicker.js";
+import { AlertPopUp } from "./alertPopUp.js";
 
-export class RegistrationPage{
-    constructor(){
+export class RegistrationPage {
+    constructor() {
 
         this.initComponent();
         this.name = "";
@@ -18,9 +19,10 @@ export class RegistrationPage{
         this.address = "";
         this.profilePic = null;
         this.imageFiles = [];
+        this.locked = false;
 
     }
-    initComponent(){
+    initComponent() {
         this.component = document.createElement("div");
         const $registrationPage = this.component;
 
@@ -61,11 +63,11 @@ export class RegistrationPage{
                     </div>
                     <div class="input-box">
                         <span class="details">Contraseña</span>
-                        <input id="password-input" type="text" placeholder="Ingrese su contraseña" required autocomplete="off" value="fdasasfd">
+                        <input id="password-input" type="password" placeholder="Ingrese su contraseña" required autocomplete="off" value="fdasasfd">
                     </div>
                     <div class="input-box">
                         <span class="details">Confirmar contraseña</span>
-                        <input id="confirmPass-input" type="text" placeholder="Ingrese su contraseña nuevamente" required autocomplete="off" value="fdasasfd">
+                        <input id="confirmPass-input" type="password" placeholder="Ingrese su contraseña nuevamente" required autocomplete="off" value="fdasasfd">
                     </div>
                 </div>
                 <div class="sex-details">
@@ -106,7 +108,7 @@ export class RegistrationPage{
 
         this.dpiImageInput = imagePickerDpi.component.querySelector(".inputFile");
         this.profilePicInput = imagePickerProfilePic.component.querySelector(".inputFile");
-        
+
         //evento al cambiar los archivos seleccionados del selector de imagen de perfil
         imagePickerProfilePic.component.addEventListener("changeFile", e => {
             const files = e.detail;
@@ -117,7 +119,7 @@ export class RegistrationPage{
         })
 
         //evento al cambiar los archivos seleccionados del selector de imagen de dpi
-        imagePickerDpi.component.addEventListener("changeFile", e=> {
+        imagePickerDpi.component.addEventListener("changeFile", e => {
             const files = e.detail;
             if (!files) return;
 
@@ -134,20 +136,20 @@ export class RegistrationPage{
 
     //Seleccionar datos
 
-    selectFirstName(){ //Primer nombre
+    selectFirstName() { //Primer nombre
         const $inputName = this.component.querySelector("#name-input");
         if ($inputName === undefined) return;
         this.name = $inputName.value.trim();
     }
 
-    selectLastName(){ //Apellido
+    selectLastName() { //Apellido
         const $inputLastName = this.component.querySelector("#lastname-input");
         if ($inputLastName === undefined) return;
         this.lastname = $inputLastName.value.trim();
-        
+
     }
 
-    selectBirthday(){ //Fecha de nacimiento
+    selectBirthday() { //Fecha de nacimiento
         const $inputBirthday = this.component.querySelector("#date-input");
         if ($inputBirthday === undefined) return;
         this.birthday = $inputBirthday.value;
@@ -160,52 +162,52 @@ export class RegistrationPage{
         this.age = age;*/
     }
 
-    selectDpi(){ 
-    
+    selectDpi() {
+
         const $inputDpi = this.component.querySelector("#dpi-input");
         if ($inputDpi === undefined) return;
-        this.dpi = $inputDpi.value.trim(); 
+        this.dpi = $inputDpi.value.trim();
     }
 
-    selectAddress(){
+    selectAddress() {
         const $inputAddress = this.component.querySelector("#address-input");
         if ($inputAddress === undefined) return;
         this.address = $inputAddress.value.trim();
     }
 
-    selectEmail(){
+    selectEmail() {
         const $inputEmail = this.component.querySelector("#email-input");
         if ($inputEmail === undefined) return;
         this.email = $inputEmail.value.trim();
     }
 
-    selectUsername(){
+    selectUsername() {
         const $inputUserName = this.component.querySelector("#username-input");
-         if ($inputUserName === undefined) return;
+        if ($inputUserName === undefined) return;
         this.username = $inputUserName.value.trim();
     }
 
-    selectPassword(){
+    selectPassword() {
         const $inputPassword = this.component.querySelector("#password-input");
         if ($inputPassword === undefined) return;
         this.password = $inputPassword.value.trim();
     }
 
-    selectConfirmPass(){
+    selectConfirmPass() {
         const $inputConfirmPass = this.component.querySelector("#confirmPass-input");
         if ($inputConfirmPass === undefined) return;
         this.confirmPass = $inputConfirmPass.value.trim();
     }
 
-    selectSex(){
-        if(!this.component.querySelector("#dot-1").checked && !this.component.querySelector("#dot-2").checked) return;
+    selectSex() {
+        if (!this.component.querySelector("#dot-1").checked && !this.component.querySelector("#dot-2").checked) return;
         if (this.component.querySelector("#dot-1").checked) this.sex = "Male";
         if (this.component.querySelector("#dot-2").checked) this.sex = "Female";
     }
 
 
     //Validaciones
-    validateData(){
+    validateData() {
 
 
 
@@ -221,69 +223,69 @@ export class RegistrationPage{
         this.selectPassword();
         this.selectConfirmPass();
         this.selectSex();
-        
-        
+
+
         //Validar nombre
-        if (this.name === ""){
+        if (this.name === "") {
             this.showError("El campo de nombre es obligatorio");
             return false;
         }
 
         //Validar apellido
-        if (this.lastname === ""){
+        if (this.lastname === "") {
             this.showError("El campo de apellido es obligatorio");
             return false;
         }
-        
+
         //Validar fecha de nacimiento
-        if (this.birthday === ""){
+        if (this.birthday === "") {
             this.showError("El campo de fecha de nacimiento es obligatorio");
             return false;
         }
-     
-        if (this.dpi === 0 || isNaN(this.dpi)){
+
+        if (this.dpi === 0 || isNaN(this.dpi)) {
             this.showError("El campo de DPI es obligatorio");
             return false;
         }
 
-        if (this.address === ""){
+        if (this.address === "") {
             this.showError("El campo de dirección es obligatorio");
             return false;
         }
 
-        if (this.email === ""){
+        if (this.email === "") {
             this.showError("El campo de correo electrónico es obligatorio");
             return false;
-        }else{
+        } else {
 
             const regExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(!regExp.test(this.email)){
+            if (!regExp.test(this.email)) {
                 this.showError("El correo ingresado no es válido.");
                 return false;
             }
         }
 
-        if (this.username === ""){
+        if (this.username === "") {
             this.showError("El campo de nombre de usuario es obligatorio");
             return false;
         }
 
-        if (this.password === ""){
+        if (this.password === "") {
             this.showError("El campo de contraseña es obligatorio");
             return false;
         }
 
-        if (this.confirmPass === ""){
+        if (this.confirmPass === "") {
             this.showError("Debe confirmar su contraseña");
             return false;
         }
 
-        if(this.password !== this.confirmPass){
+        if (this.password !== this.confirmPass) {
             this.showError("Las contraseñas ingresadas no coinciden");
             return false;
         }
 
-        if (this.sex === ""){
+        if (this.sex === "") {
             this.showError("Por favor, seleccione un sexo");
             return false;
         }
@@ -291,12 +293,12 @@ export class RegistrationPage{
 
 
         //Validar imagenes
-        if(this.profilePic === null){ //De perfil
+        if (this.profilePic === null) { //De perfil
             this.showError("Por favor, ingrese una fotografía de perfil");
             return false;
         }
 
-        if(!Array.isArray(this.dpiPics) || this.dpiPics.length < 1){ //Del DPI
+        if (!Array.isArray(this.dpiPics) || this.dpiPics.length < 1) { //Del DPI
             this.showError("Por favor, ingrese un documento de identificación");
             return false;
         }
@@ -317,35 +319,62 @@ export class RegistrationPage{
         $errorElement.innerText = errorMessage.trim();
     }
 
-    hideError(){
+    hideError() {
         const $errorMessage = this.component.querySelector(".error");
-        if(!$errorMessage) return;
-        
+        if (!$errorMessage) return;
+
         $errorMessage.style.display = "none";
     }
 
-    sendForm(e){
+    async sendForm(e) {
 
         e.preventDefault();
 
-        if (this.validateData() === true){
-            
-            let user = new User(this.username, this.name + " " + this.lastname, this.profilePic)
-            //this.dpi, this.username, this.age, this.email, this.password, this.address, this.name, this.lastname, this.address, this.sex, this.birthday, this.profilePic, this.dpiPics
-            User.createNewUser({
-                dpi: this.dpi,
-                username: this.username,
-                email: this.email,
-                password: this.password,
-                name: this.name,
-                lastname: this.lastname,
-                address: this.address,
-                sex: this.sex,
-                birthday: this.birthday,
-                profilePic: this.profilePic,
-                documentsPics: this.dpiPics
-            })
-            alert("Enviando formulario");
+        if (this.locked === false) {
+
+            this.locked = true;
+
+            if (this.validateData() === true) {
+
+                let user = new User(this.username, this.name + " " + this.lastname, this.profilePic)
+
+                try {
+                    await User.createNewUser({
+                        dpi: this.dpi,
+                        username: this.username,
+                        email: this.email,
+                        password: this.password,
+                        name: this.name,
+                        lastname: this.lastname,
+                        address: this.address,
+                        sex: this.sex,
+                        birthday: this.birthday,
+                        profilePic: this.profilePic,
+                        documentsPics: this.dpiPics
+                    });
+
+                    const alertPopUp = new AlertPopUp({
+                        imgUrl: "images/others/registerUser.svg",
+                        title: "¡Bienvenido a MyTurn!",
+                        text: "Tu cuenta ha sido creada correctamente. Haz dado el primer paso para ayudar a otros, te invitamos a explorar y descubrir todas las opciones que tenemos disponibles para tí."
+                    });
+
+                    try{
+                        await alertPopUp.open();
+                    }catch(ex){
+
+                    }finally{
+                        location.hash = "#/";
+                    }
+
+
+                } catch (ex) {
+                    this.showError("Ocurrió un error en el servidor");
+                    this.locked  = false;
+                }
+
+                alert("Enviando formulario");
+            }
         }
     }
 
