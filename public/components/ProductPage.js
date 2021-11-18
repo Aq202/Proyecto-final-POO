@@ -343,7 +343,7 @@ export class ProductPage {
                     this.showSpinner();
                     this.hideButtons();
 
-                    await this.userRequestObject.confirmOfReceived();
+                    await DonationRequest.confirmOfReceived(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/celebration.svg",
@@ -358,7 +358,7 @@ export class ProductPage {
                     await alertPopUp.open();
 
                 } catch (ex) {
-
+                    ex ||= "Ocurrió un error.";
                     this.hideSpinner();
                     this.selectActionElements();
                     this.showError(ex);
@@ -385,8 +385,8 @@ export class ProductPage {
                     this.actionBlocked = true;
                     this.showSpinner();
                     this.hideButtons();
-
-                    await this.userRequestObject.rejectDonation();
+               
+                    await DonationRequest.rejectDonation(this.productId);
 
                     const alertPopUp = new AlertPopUp({
                         imgUrl: "../images/others/working.svg",
@@ -407,7 +407,7 @@ export class ProductPage {
                     await alertPopUp.open();
 
                 } catch (ex) {
-
+                    ex ||= "Ocurrió un error.";
                     this.hideSpinner();
                     this.selectActionElements();
                     this.showError(ex);
