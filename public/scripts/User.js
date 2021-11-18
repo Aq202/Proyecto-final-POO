@@ -44,12 +44,10 @@ export class User{
             form.append("sex", sex);
             form.append("birth", birthday);
 
-            
-            const data = new URLSearchParams(form);
 
             fetch("/user/signIn", {
                 method: "POST",
-                body: data,
+                body: form,
                 headers: {
                     'Authorization': Session.token,
                 }
@@ -60,15 +58,15 @@ export class User{
                 })
                 .then(res => {
 
+                    console.log(res)
 
                     if (reqObject.ok === true){
                         Session.token = res.Token;
                         resolve();
+                    }else{
+                        reject(res.message);
                     }
-                    else{ 
-
-                        reject();
-                    }
+                    
                 })
                 .catch(err => reject());
         });

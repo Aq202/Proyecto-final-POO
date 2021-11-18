@@ -332,11 +332,10 @@ export class RegistrationPage {
 
         if (this.locked === false) {
 
-            this.locked = true;
-
+            
             if (this.validateData() === true) {
 
-                let user = new User(this.username, this.name + " " + this.lastname, this.profilePic)
+                this.locked = true;
 
                 try {
                     await User.createNewUser({
@@ -369,11 +368,11 @@ export class RegistrationPage {
 
 
                 } catch (ex) {
-                    this.showError("Ocurrió un error en el servidor");
+                    ex ||= "Ocurrió un error.";
+                    this.showError(ex);
                     this.locked  = false;
                 }
 
-                alert("Enviando formulario");
             }
         }
     }
