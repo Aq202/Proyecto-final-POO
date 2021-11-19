@@ -35,11 +35,11 @@ export class RegistrationPage {
                 <div class="user-details">
                     <div class="input-box">
                     <span class="details">Nombre</span>
-                    <input id="name-input" type="text" placeholder="Ingrese su primer nombre" required autocomplete="off" value="asdf">
+                    <input id="name-input" type="text" placeholder="Ingrese su primer nombre" required autocomplete="off">
                     </div>
                     <div class="input-box">
                        <span class="details">Apellido</span>
-                        <input id="lastname-input" type="text" placeholder="Ingrese su apellido" required autocomplete="off" value="sadf">
+                        <input id="lastname-input" type="text" placeholder="Ingrese su apellido" required autocomplete="off" >
                     </div>
                     <div class="input-box">
                         <span class="details">Fecha de nacimiento</span>
@@ -47,31 +47,31 @@ export class RegistrationPage {
                     </div>
                     <div class="input-box">
                         <span class="details">DPI</span>
-                        <input id="dpi-input" type="number" placeholder="Ingrese su número de DPI" required autocomplete="off" value="125425">
+                        <input id="dpi-input" type="number" placeholder="Ingrese su número de DPI" required autocomplete="off" >
                     </div>
                     <div class="input-box-address">
                         <span class="details">Dirección</span>
-                        <input id="address-input" type="text" placeholder="Ingrese su dirección" required autocomplete="off" value = "sadf">
+                        <input id="address-input" type="text" placeholder="Ingrese su dirección" required autocomplete="off" >
                     </div>
                     <div class="input-box">
                         <span class="details">Correo electrónico</span>
-                        <input id="email-input" type="email" placeholder="Ingrese su correo electrónico" required autocomplete="off" value="diego@gmail.com">
+                        <input id="email-input" type="email" placeholder="Ingrese su correo electrónico" required autocomplete="off" >
                     </div>
                     <div class="input-box">
                         <span class="details">Nombre de usuario</span>
-                        <input id="username-input" type="text" placeholder="Ingrese un nombre de usuario" required autocomplete="off" value="asdf">
+                        <input id="username-input" type="text" placeholder="Ingrese un nombre de usuario" required autocomplete="off">
                     </div>
                     <div class="input-box">
                         <span class="details">Contraseña</span>
-                        <input id="password-input" type="password" placeholder="Ingrese su contraseña" required autocomplete="off" value="fdasasfd">
+                        <input id="password-input" type="password" placeholder="Ingrese su contraseña" required autocomplete="off" >
                     </div>
                     <div class="input-box">
                         <span class="details">Confirmar contraseña</span>
-                        <input id="confirmPass-input" type="password" placeholder="Ingrese su contraseña nuevamente" required autocomplete="off" value="fdasasfd">
+                        <input id="confirmPass-input" type="password" placeholder="Ingrese su contraseña nuevamente" required autocomplete="off">
                     </div>
                 </div>
                 <div class="sex-details">
-                    <input type="radio" name="sex" id="dot-1" selected>
+                    <input type="radio" name="sex" id="dot-1" checked>
                     <input type="radio" name="sex" id="dot-2">
                     <span class="gender-title">Sexo</span>
                     <div class="category">
