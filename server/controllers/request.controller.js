@@ -349,22 +349,20 @@ function approveRequest(req, res) {
 
 function deleteRequest(req, res) {
     let params = req.body;
-    let userId = req.user.sub;
     let productId = null;
-
+    let userId = req.user.sub;
     try{
         productId = mongoose.Types.ObjectId(params.productId);
     }catch{
         productId = null;
     }
     if (productId != null) {
-        Request.findOne({ productId: params.productId, petitioner: userId }, (err, found) => {
-
+        Request.findOne({$and:[{ petitionerId: userId}, {productId: params.productId }]}, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
             } else if (found) {
-                if (userId == found.petitionerId) {
+                if (found.petitionerId== userId) {
                     if (found.approved == true) {
                         res.status(403).send({ message: "La solicitud ya ha sido aceptada, no puede cancelarla." });
                     } else {
@@ -400,15 +398,16 @@ function deleteRequest(req, res) {
 
 function confirmReceived(req, res) {
     let params = req.body;
-    let userId = req.user.sub;
     let productId = null;
+    let userId = req.user.sub;
     try{
         productId = mongoose.Types.ObjectId(params.productId);
     }catch{
         productId = null;
     }
     if (productId != null) {
-        Request.findOne({productId:params.productId}, (err, found) => {
+        console.log(userId);
+        Request.findOne({$and:[{productId:params.productId}, {petitionerId: userId}]}, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
@@ -444,7 +443,7 @@ function rejectDonation(req, res) {
         productId = null;
     }
     if (productId != null) {
-        Request.findOne({productId: params.productId}, (err, found) => {
+        Request.findOne({$and: [{productId: params.productId}, {petitionerId: userId}]}, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
