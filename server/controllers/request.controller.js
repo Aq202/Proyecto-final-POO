@@ -4,6 +4,9 @@ const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Request = require('../models/request.model');
 const mongoose = require('mongoose');
+const NewRequestEmail = require('../services/NewRequestEmail');
+const Notifications = require('../services/Notifications');
+const RequestRejectedEmail = require('../services/RequestRejectedEmail');
 
 function getRequest(req, res) {
     const params = req.body;
@@ -134,6 +137,31 @@ function newRequest(req, res) {
                                                     ownerId: foundOwner._id,
                                                     */
 
+                                                    try{
+
+                                                        const email = new NewRequestEmail({
+                                                            ownerName: foundOwner.name + " " + foundOwner.lastname,
+                                                            ownerEmail: foundOwner.email,
+                                                            applicantName: req.user.name + " " + req.user.lastname,
+                                                            productName: updated.name
+                                                        });
+                                                        email.sendEmail();
+
+                                                        Notifications.sendNewRequestNotification({
+                                                            applicantName: req.user.name + " " + req.user.lastname,
+                                                            productName: updated.name,
+                                                            productId: updated._id,
+                                                            applicantProfileImage: req.user.profilePic,
+                                                            ownerId: foundOwner._id,
+
+                                                        });
+
+                                                        console.log("Notificacion enviada");
+
+                                                    }catch(ex){
+                                                        console.log("Error al enviar notif nueva solicitud")
+                                                    }
+
 
                                                 }else{
                                                     console.log("No hay informacion para el correo");
@@ -217,6 +245,32 @@ function rejectRequest(req, res) {
                                                     productImages: updated.images
                                                     */
 
+
+                                                try{
+
+                                                    const email = new RequestRejectedEmail({
+                                                        userName: petitioner.name,
+                                                        userEmail: petitioner.email,
+                                                        productName: updated.name
+                                                    });
+                                                    email.sendEmail();
+
+                                                    Notifications.sendRequestRejectedNotification({
+                                                        productName: updated.name,
+                                                        productId: updated._id,
+                                                        productImages: updated.images,
+                                                        applicantId: petitioner._id
+                                                    })
+
+
+
+                                                }catch(ex){
+
+                                                }
+
+
+
+
                                             }else{
                                                 console.log("Sin informacion para el correo");
                                             }
@@ -297,6 +351,7 @@ function deleteRequest(req, res) {
     let params = req.body;
     let userId = req.user.sub;
     let productId = null;
+
     try{
         productId = mongoose.Types.ObjectId(params.productId);
     }catch{
@@ -304,6 +359,7 @@ function deleteRequest(req, res) {
     }
     if (productId != null) {
         Request.findOne({ productId: params.productId, petitioner: userId }, (err, found) => {
+
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);

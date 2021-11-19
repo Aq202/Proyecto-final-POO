@@ -14,7 +14,7 @@ const requestRoutes = require('./server/routes/request.route');
 const RequestApprovedEmail = require('./server/services/RequestApprovedEmail');
 const RequestRejectedEmail = require('./server/services/RequestRejectedEmail');
 const NewRequestEmail = require('./server/services/NewRequestEmail');
-const DonationConfirmedAsReceived = require('./server/services/DonationConfirmedAsReceived');
+const DonationConfirmedAsReceived = require('./server/services/DonationConfirmedAsReceivedEmail');
 const Notifications = require('./server/services/Notifications');
 
 

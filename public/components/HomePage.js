@@ -89,7 +89,6 @@ export class HomePage {
         try {
 
             const productList = await Product.getProducts({ department, municipality, search, category, max });
-            console.log(productList)
             if (productList.length > 0)
                 this.donationsContainer.addContent(...productList);
             else

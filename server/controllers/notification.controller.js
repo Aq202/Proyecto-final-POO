@@ -4,7 +4,6 @@ const Notification = require("../models/notification.model");
 const mongoose = require("mongoose");
 
 async function saveNotification({userId, title, text, image, date, viewed, url}) {
-    console.log(notificationData);
 
     return new Promise((resolve, reject) => {
         

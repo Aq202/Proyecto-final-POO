@@ -30,7 +30,7 @@ export class NotificationItem {
         this.component.innerHTML = `<img src="${this.image}">
                                 <div class="texto">
                                     <div class="tit-noti">${this.title}</div>
-                                    ${this.text}
+                                    <div class="body-noti">${this.text}</div>
                                 </div>
                                 `;
 

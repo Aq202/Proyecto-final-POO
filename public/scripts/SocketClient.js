@@ -54,6 +54,7 @@ export class SocketClient {
             console.warn("Nueva notificación global")
         })
 
+        console.log("socket direction:::",`${Session.id}-notification`)
         //notification personal
         SocketClient.socketIo.on(`${Session.id}-notification`, msg => {
 

@@ -208,7 +208,6 @@ function getProduct(req, res) {
                             message += '"donationReceivedConfirmed": ' + false + '';
                         }
                         message += '}';
-                        console.log(message);
                         res.send(JSON.parse(message));
                     });
 
@@ -238,7 +237,6 @@ function getProduct(req, res) {
                                     message += ',"donationRequestAccepted": ' + false;
                                 }
                                 message += '}';
-                                console.log(message);
                                 res.send(JSON.parse(message));
                             });
                         })
@@ -251,7 +249,6 @@ function getProduct(req, res) {
                             message += ',"donationRequestAccepted": ' + false;
                         }
                         message += '}';
-                        console.log(message);
                         res.send(JSON.parse(message));
                     });
                 }

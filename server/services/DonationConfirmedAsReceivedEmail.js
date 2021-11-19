@@ -1,6 +1,6 @@
 const Email = require("./Email");
 
-module.exports = class DonationConfirmedAsReceived extends Email{
+module.exports = class DonationConfirmedAsReceivedEmail extends Email{
 
     constructor({ownerName, ownerEmail, beneficiaryName, productName}){
 

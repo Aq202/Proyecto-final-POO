@@ -38,7 +38,84 @@ module.exports = class Notifications {
             image: applicantProfileImage,
             date: new Date(),
             viewed: false,
-            url: `/product?productId=${productId}`
+            url: `#/product?productId=${productId}`
+        };
+
+   
+        try{
+        const id = await notificationController.saveNotification(notificationData);
+
+        notificationData["id"] = id;
+            console.log("Ruta socket::",`${ownerId}-notification`)
+        socket.io.emit(`${ownerId}-notification`, notificationData);
+
+        }catch(ex){
+            console.log("Error al enviar notificacion de nueva solicitud. ", ex);
+        }
+
+    }
+
+    static async sendRequestRejectedNotification({  productName, productId, productImages, applicantId }) {
+
+        const notificationData = {
+            userId: applicantId,
+            title: `Solicitud de donación rechazada`,
+            text: `Tu solicitud para el producto ${productName} ha sido rechazada.`,
+            image: (Array.isArray(productImages) && productImages.length > 0) ? productImages[0] : null,
+            date: new Date(),
+            viewed: false,
+            url: `#/product?productId=${productId}`
+        };
+
+   
+        try{
+        const id = await notificationController.saveNotification(notificationData);
+
+        notificationData["id"] = id;
+
+        socket.io.emit(`${applicantId}-notification`, notificationData);
+
+        }catch(ex){
+            console.log("Error al enviar notificacion de solicitud rechazada . ", ex);
+        }
+    }
+
+
+    static async sendRequestApprovedEmail({  productName, productId, productImages, applicantId }) {
+
+        const notificationData = {
+            userId: applicantId,
+            title: `Solicitud de donación aprobada.`,
+            text: `Tu solicitud para el producto ${productName} ha sido aprobada.`,
+            image: (Array.isArray(productImages) && productImages.length > 0) ? productImages[0] : null,
+            date: new Date(),
+            viewed: false,
+            url: `#/product?productId=${productId}`
+        };
+
+   
+        try{
+        const id = await notificationController.saveNotification(notificationData);
+
+        notificationData["id"] = id;
+
+        socket.io.emit(`${applicantId}-notification`, notificationData);
+
+        }catch(ex){
+            console.log("Error al enviar notificacion de solicitud rechazada . ", ex);
+        }
+    }
+
+    static async sendDonationConfirmedAsReceivedNotification({  productName, productId, productImages, ownerId, applicantName }) {
+
+        const notificationData = {
+            userId: ownerId,
+            title: `Donación confirmada de recibida.`,
+            text: `${applicantName} ha confirmado de recibida la donación de ${productName}`,
+            image: (Array.isArray(productImages) && productImages.length > 0) ? productImages[0] : null,
+            date: new Date(),
+            viewed: false,
+            url: `#/product?productId=${productId}`
         };
 
    
@@ -50,12 +127,33 @@ module.exports = class Notifications {
         socket.io.emit(`${ownerId}-notification`, notificationData);
 
         }catch(ex){
-            console.log("Error al enviar notificacion de nueva solicitud.");
+            console.log("Error al enviar notificacion de solicitud rechazada . ", ex);
         }
-
     }
 
+    static async sendDonationRejectedByBeneficiaryNotification({  productName, productId, productImages, ownerId, applicantName }) {
 
+        const notificationData = {
+            userId: ownerId,
+            title: `Donación rechazada`,
+            text: `${applicantName} ha rechazado la donación de ${productName}`,
+            image: (Array.isArray(productImages) && productImages.length > 0) ? productImages[0] : null,
+            date: new Date(),
+            viewed: false,
+            url: `#/product?productId=${productId}`
+        };
 
+   
+        try{
+        const id = await notificationController.saveNotification(notificationData);
+
+        notificationData["id"] = id;
+
+        socket.io.emit(`${ownerId}-notification`, notificationData);
+
+        }catch(ex){
+            console.log("Error al enviar notificacion de solicitud rechazada . ", ex);
+        }
+    }
 
 }
