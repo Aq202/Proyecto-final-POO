@@ -144,10 +144,27 @@ function deleteNotification(req,res){
     }
 }
 
+function getNotifications(req, res) {
+    let params = req.body;
+    let skipped = params.skip ? parseInt(params.skip) : 0;
+    let quantity = params.quantity ? parseInt(params.quantity) : 10;
+    let order = (params.ascending && params.ascending == "true") ? 1 : -1;
+    Notification.find({userId: req.user.sub}, (err, found) => {
+        if (err) {
+            res.status(500).send({ error: 'Error interno del servidor', err });
+        } else if (found && found.length > 0) {
+            req.send({ notifications: found });
+        } else {
+            res.status(404).send({ message: 'No hay datos para mostrar' });
+        }
+    }).skip(skipped).limit(quantity).sort({ publishDate: order });
+}
+
 module.exports = {
     saveNotification,
     setAsViewed,
     deleteNotification,
     setAllNotificationsAsViewed,
-    deleteAllNotifications
+    deleteAllNotifications,
+    getNotifications
 }

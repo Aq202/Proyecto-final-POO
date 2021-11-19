@@ -15,5 +15,6 @@ api.post('/setAsViewed', mdAuth.ensureAuth, notificationController.setAsViewed);
 api.delete('/deleteNotification', mdAuth.ensureAuth, notificationController.deleteNotification);
 api.post('/setAllAsViewed', mdAuth.ensureAuth, notificationController.setAllNotificationsAsViewed);
 api.delete('/deleteAllNotifications',mdAuth.ensureAuth, notificationController.deleteAllNotifications);
+api.post('/getNotifications', mdAuth.ensureAuth, notificationController.getNotifications);
 
 module.exports = api;

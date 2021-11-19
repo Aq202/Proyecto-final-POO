@@ -106,7 +106,7 @@ function getCurrentRequests(req, res) {
                 while (index < data.length) {
                     let product = data[index];
                     try {
-                        Product.findById(product._id, (err, found) => {
+                        /*Product.findById(product._id, (err, found) => {
                             if(err) throw "";
                             if (found && found != null && found != undefined && found != "") {
                                 if(donations!=null && index<donations){
@@ -125,7 +125,7 @@ function getCurrentRequests(req, res) {
                                     products.adquisitions = [];
                                 }
                             }
-                        });
+                        });*/
                         await new Promise((resolve, reject) => {
                             Product.findById(product._id, (err, found) => {
                                 if (err) throw "";
@@ -159,6 +159,8 @@ function getCurrentRequests(req, res) {
     }
 }
 
+
+
 function getProduct(req, res) {
     const params = req.body;
     let productId
@@ -173,83 +175,87 @@ function getProduct(req, res) {
                 console.log(err);
                 res.status(500).send({ error: 'Error interno del servidor', err });
             } else if (found) {
-                let message = '{"ProductFoundId": "' + found._id + '",';
-                message += '"Cathegory": "' + found.cathegory + '",';
-                message += '"Department": "' + found.department + '",';
-                message += '"Municipality": "' + found.municipality + '",';
-                if (found.ownerProfilePic) message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
+
+                let message = {
+                    ProductFoundId: found._id,
+                    Cathegory: found.cathegory,
+                    Department: found.department,
+                    Municipality: found.municipality,
+                    Owner: found.owner,
+                    OwnerID: found.ownerId,
+                    ProductName: found.name,
+                    ProductDescription: found.description,
+                    Available: found.available
+                }
+
+                if (found.ownerProfilePic) message = {...message, OwnerProfilePicure: found.ownerProfilePic};
                 if (found.images && found.images != null && found.images != undefined && found.images.length > 0) {
-                    message += '"Images": [';
-                    let contador = 0
+                    message = {...message, Images: []};
                     found.images.forEach(image => {
-                        if (contador == found.images.length - 1)
-                            message += '"' + image + '"';
-                        else
-                            message += '"' + image + '",';
-                        contador++;
+                        message.Images.push(image);
                     });
-                    message += '],';
                 }
                 if (found.ownerProfilePic && found.ownerProfilePic != null && found.ownerProfilePic != undefined)
-                    message += '"OwnerProfilePicture": "' + found.ownerProfilePic + '",';
-                message += '"Owner": "' + found.owner + '",';
-                message += '"OwnerID": "' + found.ownerId + '",';
-                message += '"ProductName": "' + found.name + '",';
-                message += '"ProductDescription": "' + found.description + '",';
-                message += '"Available": ' + found.available + '';
+                    message = {...message, OwnerProfilePicture: found.ownerProfilePic}
                 if (req.user != null && found.ownerId == req.user.sub) {
-                    message += ',"isOwner": ' + true + '';
+                    message = {...message, isOwner: true}
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                         if (foundR) {
-                            message += ',"donationRequestAccepted": ' + true + ',';
-                            message += '"donationReceivedConfirmed": ' + (found.available == false ? true : false) + '';
+                            message = {...message, donationRequestAccepted: true}
+                            if(found.available == false)
+                                message = {...message, donationReceivedConfirmed: true}
+                            else
+                                message = {...message, donationReceivedConfirmed: false}
                         } else {
-                            message += ',"donationRequestAccepted": ' + false + ',';
-                            message += '"donationReceivedConfirmed": ' + false + '';
+                            message = {...message, donationRequestAccepted: false}
+                            message = {...message, donationReceivedConfirmed: false}
                         }
-                        message += '}';
-                        res.send(JSON.parse(message));
+                        res.send(message);
                     });
 
                 } else if (req.user != null && req.user != undefined) {
                     Request.findOne({ productId: productId, petitionerId: req.user.sub, approved: true }, (err, foundR) => {
                         if (foundR) {
-                            message += ',"selectedAsBeneficiary": ' + true + '';
+                            message = {...message, selectedAsBeneficiary: true}
                         } else {
-                            message += ',"selectedAsBeneficiary": ' + false + '';
+                            message = {...message, selectedAsBeneficiary: false}
                         }
                         if (found.interested && found.interested != null && found.interested != undefined && found.interested.length > 0)
-                            message += ',"alreadyRequested": ' + (found.interested.includes(req.user.sub) == true ? true : false);
+                            if(found.interested.includes(req.user.sub) == true)
+                                message = {...message, alreadyRequested: true}
+                            else
+                                message = {...message, alreadyRequested: false}
                         else
-                            message += ',"alreadyRequested": ' + false;
+                            message = {...message, alreadyRequested: false}
                         User.findById(req.user.sub, (err, foundU) => {
                             if (foundU && foundU != null && foundU != undefined) {
                                 if (foundU.adquisitions && foundU.adquisitions != null && foundU.adquisitions != undefined && foundU.adquisitions.length > 0)
-                                    message += ',"donationReceivedConfirmed": ' + (foundU.adquisitions.includes(found._id) == true ? true : false);
+                                    if(foundU.adquisitions.includes(found._id) == true)
+                                        message = {...message, donationReceivedConfirmed: true}
+                                    else
+                                    message = {...message, donationReceivedConfirmed: false}
                                 else
-                                    message += ',"donationReceivedConfirmed": ' + false;
+                                    message = {...message, donationReceivedConfirmed: false}
                             } else if (err)
                                 console.log(err);
                             Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                                 if (foundR) {
-                                    message += ',"donationRequestAccepted": ' + true;
+                                    message = {...message, donationRequestAccepted: true}
                                 } else {
-                                    message += ',"donationRequestAccepted": ' + false;
+                                    message = {...message, donationRequestAccepted: false}
                                 }
-                                message += '}';
-                                res.send(JSON.parse(message));
+                                res.send(message);
                             });
                         })
                     });
                 } else {
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                         if (foundR) {
-                            message += ',"donationRequestAccepted": ' + true;
+                            message = {...message, donationRequestAccepted: true}
                         } else {
-                            message += ',"donationRequestAccepted": ' + false;
+                            message = {...message, donationRequestAccepted: false}
                         }
-                        message += '}';
-                        res.send(JSON.parse(message));
+                        res.send(message);
                     });
                 }
             } else {
