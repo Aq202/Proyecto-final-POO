@@ -271,6 +271,30 @@ function approveRequest(req, res) {
                                     if (err) {
                                         res.status(500).send({ error: "Error interno del servidor", err });
                                     } else if (found) {
+
+                                        User.findById(updated.petitionerId,(err,foundU)=>{
+                                            if(err){
+                                                console.log("Error del servidor ",err);
+                                            }else if(foundU){
+                                                //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
+                                                /* 
+                                                product: found.name,
+                                                productId: found._id,
+                                                productImages: found.images,
+                                                petitionerId: foundU._id,
+                                                petitionerEmail: foundU.email,
+                                                petitioner: foundU.name + " " + foundU.lastname,
+                                                owner: req.user.name + " " + req.user.lastname,
+                                                ownerEmail: req.user.email
+                                                */
+                                            }else{
+                                                console.log("Sin informacion para notificaciones e emails");
+                                            }
+                                        })
+
+                                        
+
+
                                         rejectOtherRequests(updated, res);
                                     } else {
                                         res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la solicitud" });
@@ -363,6 +387,32 @@ function confirmReceived(req, res) {
                         if (err) {
                             res.status(500).send({ error: "Error interno del servidor", err });
                         } else if (updatedU) {
+                            Product.findById(productId,(err,foundP)=>{
+                                if(err){
+                                    console.log("Error del servidor ",err);
+                                }else if(foundP){
+                                    User.findById(foundP.ownerId,(err,foundOwner)=>{
+                                        if(err){
+                                            console.log("Error del servidor ",err);
+                                        }else if(foundOwner){
+                                            //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
+                                    /* 
+                                    product: foundP.name,
+                                    productId: foundP._id,
+                                    productImages: foundP.images,
+                                    ownerId: foundOwner._id,
+                                    petitioner: req.user.name + " " + req.user.lastname,
+                                    owner: foundOwner.name + " " + foundOwner.lastname,
+                                    ownerEmail: foundOwner.email
+                                    */
+                                        }else
+                                            console.log("Sin informacion para emails y notificaciones");
+                                    });
+                                }else{
+                                    console.log("Sin informacion para emails y correos");
+                                }
+                            })
+
                             res.send({ message: "Se ha informado al dueño que ha aceptado la donación. Producto agregado a su registro." });
                         } else {
                             res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la donación" });
@@ -405,6 +455,25 @@ function rejectDonation(req, res) {
                                 if (err) {
                                     res.status(500).send({ error: "Error interno del servidor", err });
                                 } else if (updated) {
+
+                                    User.findById(updated.ownerId,(err,foundOwner)=>{
+                                        if(err){
+                                            console.log("Error del servidor ",err);
+                                        }else if(foundOwner){
+                                            //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
+                                        /* 
+                                        product: updated.name,
+                                        productId: updated._id,
+                                        productImages: updated.images,
+                                        ownerId: foundOwner._id,
+                                        petitioner: req.user.name + " " + req.user.lastname,
+                                        owner: foundOwner.name + " " + foundOwner.lastname,
+                                        ownerEmail: foundOwner.email
+                                        */
+                                        }else
+                                            console.log("Sin informacion para emails y notificaciones");
+                                    });
+
                                     res.send({ message: "Se ha rechazado la donacion" });
                                 } else {
                                     res.status(500).send({ message: "Ha ocurrido un error inesperado al eliminar la solicitud" });
