@@ -35,7 +35,7 @@ export class LoginPage {
 
             <div class = "error">Usuario y/o contraseña incorrectos</div>
 
-            <a href ="#">¿Aún no tienes una cuenta? Regístrate ahora</a>
+            <a href ="#/registration">¿Aún no tienes una cuenta? Regístrate ahora</a>
         </div>
             `;
 

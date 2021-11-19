@@ -1,6 +1,7 @@
 import { User } from "../scripts/User.js";
 import { ImagePicker } from "./ImagePicker.js";
 import { AlertPopUp } from "./alertPopUp.js";
+import { Session } from "../scripts/Session.js";
 
 export class RegistrationPage {
     constructor() {
@@ -20,6 +21,8 @@ export class RegistrationPage {
         this.profilePic = null;
         this.imageFiles = [];
         this.locked = false;
+
+        if(Session.userInSession) location.hash = "#/";
 
     }
     initComponent() {
@@ -363,7 +366,7 @@ export class RegistrationPage {
                     }catch(ex){
 
                     }finally{
-                        location.hash = "#/";
+                        location.href = "/#/";
                     }
 
 
