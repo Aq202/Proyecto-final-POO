@@ -1,3 +1,4 @@
+import { Notification } from "../scripts/Notification.js";
 
 export class NotificationItem {
 
@@ -107,42 +108,43 @@ export class NotificationItem {
             alert("DIRIGIENDO A LA CONFIGURACION DE ")
         }
 
-        const setAsViewedEvent = e => {
+        const setAsViewedEvent = async e => {
             e.stopPropagation();
 
+            console.log(e)
+
             NotificationItem.hideNotificationContextMenu();
+            try {
+                await Notification.setAsViewed(this.id);
 
-            //  marcar/desmarcar como visto
-            if (!this.viewed) {
-
-                this.viewed = true;
-                e.currentTarget.innerText = "Marcar como no leído";
-                let notif = e.currentTarget.closest(".cont-noti");
-                if (notif) notif.classList.add("viewed");
-
-            } else {
-
-                this.viewed = false;
-                e.currentTarget.innerText = "Marcar como leído";
-                let notif = e.currentTarget.closest(".cont-noti");
-                if (notif) notif.classList.remove("viewed");
+                //  marcar/desmarcar como visto
+                this.viewed = !this.viewed;
+                this.changeViewedStyle();
+                
+            } catch (ex) {
 
             }
         }
 
-        const deleteEvent = e => {
+        const deleteEvent = async e => {
             e.stopPropagation();
 
             NotificationItem.hideNotificationContextMenu();
 
-            let notif = e.currentTarget.closest(".cont-noti");
-            if (notif) {
+            try {
+                await Notification.delete(this.id);
 
-                gsap.to(notif, .5, {
-                    scale: 0.8, opacity: 0, onComplete: () => {
-                        notif.remove();
-                    }
-                })
+                let notif = e.target.closest(".cont-noti");
+                if (notif) {
+
+                    gsap.to(notif, .5, {
+                        scale: 0.8, opacity: 0, onComplete: () => {
+                            notif.remove();
+                        }
+                    })
+                }
+            } catch (ex) {
+
             }
         }
 
@@ -150,7 +152,7 @@ export class NotificationItem {
 
         $optionIcon.addEventListener("click", showContextMenuEvent);
         $optionConfig.addEventListener("click", redirectToConfigurationEvent);
-        $optionSetAsViewed.addEventListener("click", setAsViewedEvent);
+        $optionSetAsViewed.addEventListener("click", e => setAsViewedEvent(e));
         $optionDelete.addEventListener("click", deleteEvent);
 
 
@@ -166,5 +168,26 @@ export class NotificationItem {
         let stopScroll = document.querySelector(".stop-scrolling");
         if (stopScroll) stopScroll.classList.remove("stop-scrolling");
         $(".context-menu").hide();
+    }
+
+
+    changeViewedStyle() {
+
+        const menuOption = this.component.querySelector(".option-setAsViewed");
+        
+        if(!menuOption) return;
+
+        if (this.viewed) {
+
+            menuOption.innerText = "Marcar como no leído";
+            this.component.classList.add("viewed");
+
+        } else {
+
+            menuOption.innerText = "Marcar como leído";
+            this.component.classList.remove("viewed");
+
+        }
+
     }
 }

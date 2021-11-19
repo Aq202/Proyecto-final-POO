@@ -73,7 +73,7 @@ function setAsViewed(req, res) {
     
 }
 
-function deleteAllNotifications(err,res){
+function deleteAllNotifications(req, res){
     let params = req.body;
     let userId = req.user.sub;
     try{
@@ -90,7 +90,7 @@ function deleteAllNotifications(err,res){
         res.status(500).send({error:"Ha ocurrido un error inesperado"});
     }
 }
-function setAllNotificationsAsViewed(err,res){
+function setAllNotificationsAsViewed(req, res){
     let params = req.body;
     let userId = req.user.sub;
     try{
@@ -109,6 +109,7 @@ function setAllNotificationsAsViewed(err,res){
 }
 
 function deleteNotification(req,res){
+    console.log(req)
     let params = req.body;
     let notificationId = null;
     let userId = req.user.sub;
@@ -153,7 +154,7 @@ function getNotifications(req, res) {
         if (err) {
             res.status(500).send({ error: 'Error interno del servidor', err });
         } else if (found && found.length > 0) {
-            req.send({ notifications: found });
+            res.send({ notifications: found });
         } else {
             res.status(404).send({ message: 'No hay datos para mostrar' });
         }

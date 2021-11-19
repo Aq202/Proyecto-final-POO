@@ -1,4 +1,5 @@
 
+import { Notification } from "../scripts/Notification.js";
 import { NotificationItem } from "./NotificationItem.js";
 
 
@@ -19,9 +20,6 @@ export class NotificationTray {
             threshold: 0.9
         })
 
-
-
-        const userData = JSON.parse(localStorage.getItem("userData"));
 
         this.initComponent();
     }
@@ -45,6 +43,8 @@ export class NotificationTray {
         //escuchar notificaciones
         document.addEventListener("newNotification", e => this.addEmergentNotification(e.detail))
 
+        this.component.querySelector("#noti-leidas").addEventListener("click", e => this.setAllNotificationsAsViewed());
+        this.component.querySelector("#noti-borrar").addEventListener("click", e => this.deleteAllNotifications());
 
         this.addLoadingSpinner();
 
@@ -59,12 +59,15 @@ export class NotificationTray {
             this.pendingNotifications.push(notificationData);
 
         } else if (this.initialized === true) { //agregar notificacion
-            const notificationItem = new NotificationItem(notificationData).component;
+
+            this.removeEmptyMessage();
+
+            const notificationItem = new NotificationItem(notificationData);
 
             const $panel = this.component.querySelector("#notification-list");
 
             if (!$panel || !notificationData.id) return;
-            $panel.insertAdjacentElement("afterbegin", notificationItem);
+            $panel.insertAdjacentElement("afterbegin", notificationItem.component);
             NotificationTray.loadedNotifications.set(notificationData.id, notificationItem)
 
         }
@@ -100,57 +103,54 @@ export class NotificationTray {
         }
     }
 
-    loadNotifications(max) {
-        return new Promise((resolve, reject) => {
+    async loadNotifications() {
 
-            this.loadingLock = true;
+        this.removeEmptyMessage();
 
-            let url = "/fakeNotifications";
-            let data = {
-                lastNotification: this.lastNotification,
-                max: max
-            }
-            fetch(url, {
-                method: "post",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(r => r.json())
-                .then(result => {
-                    console.log(result)
-                    //añadir elementos de notificacion
+        try {
+            const notifications = await Notification.getNotifications({ quantity: 10, skip: NotificationTray.loadedNotifications.size });
 
-                    if (result.notifications == undefined || result.notifications.length === 0) reject();
+            if (Array.isArray(notifications) && notifications.length > 0) {
 
-                    const $panel = this.component.querySelector("#notification-list");
-                    if (!$panel) reject();
+                const $panel = this.component.querySelector("#notification-list");
+                if (!$panel) return this.addEmptyMessage();
 
-                    const fragment = document.createDocumentFragment();
+                const fragment = document.createDocumentFragment();
 
-                    for (let notification of result.notifications) {
+                for (let notif of notifications) {
 
-                        if (!notification.id) continue;
+                    if (!notif._id) continue;
 
-                        const notificationItem = new NotificationItem(notification);
+                    const notifItem = new NotificationItem({
+                        id: notif._id,
+                        title: notif.title,
+                        text: notif.text,
+                        image: notif.image,
+                        url: notif.url,
+                        date: notif.date,
+                        viewed: notif.viewed
+                    });
 
-                        fragment.appendChild(notificationItem.component);
-                        NotificationTray.loadedNotifications.set(notification.id, notificationItem);
-                    }
+                    fragment.appendChild(notifItem.component);
+                    NotificationTray.loadedNotifications.set(notif._id, notifItem);
 
                     $panel.appendChild(fragment);
 
-                    //agregando observer al último elemento
-                    if ($panel.lastChild.matches(".cont-noti")) {
+                }
 
-                        this.observer.observe($panel.lastChild);
+                //agregando observer al último elemento
+                if ($panel.lastChild.matches(".cont-noti")) {
 
-                    }
+                    this.observer.observe($panel.lastChild);
 
-                    resolve();
+                }
 
-                }).catch(error => reject(error));
-        });
+            } else {
+                this.addEmptyMessage();
+            }
+        } catch (ex) {
+            this.addEmptyMessage();
+        }
     }
 
     loadOldNotifications(entry) {
@@ -177,6 +177,35 @@ export class NotificationTray {
 
     }
 
+    async setAllNotificationsAsViewed() {
+
+        try {
+            await Notification.setAllAsViewed();
+
+            for (let notif of NotificationTray.loadedNotifications.values()) {
+                notif.viewed = true;
+                notif.changeViewedStyle();
+            }
+        } catch (ex) {
+
+        }
+    }
+
+    async deleteAllNotifications() {
+
+        try {
+            await Notification.deleteAll();
+
+            for (let notif of NotificationTray.loadedNotifications.values()) {
+                notif.component?.remove();
+            }
+            NotificationTray.loadedNotifications.clear();
+            this.addEmptyMessage();
+        } catch (ex) {
+
+        }
+    }
+
     addLoadingSpinner() {
 
         this.removeLoadingSpinner();
@@ -197,18 +226,27 @@ export class NotificationTray {
     }
 
     addEmptyMessage() {
-        console.log("agregando mensaje vacio")
-        //eliminando mensajes anteriores
-        let panel = document.querySelector(".empty-panel-message");
-        if (panel) panel.remove();
 
-        //agregando mensaje
-        const $elem = document.createElement("DIV");
-        $elem.classList.add("empty-panel-message");
-        $elem.innerText = "Sin notificaciones nuevas";
+        if (NotificationTray.size === 0) {
+            //eliminando mensajes anteriores
+            let panel = document.querySelector(".empty-panel-message");
+            if (panel) panel.remove();
 
-        const $panel = this.component.querySelector("#notification-list");
-        if ($panel) $panel.insertAdjacentElement("afterbegin", $elem);
+            //agregando mensaje
+            const $elem = document.createElement("DIV");
+            $elem.classList.add("empty-panel-message");
+            $elem.innerText = "Sin notificaciones nuevas";
+
+            const $panel = this.component.querySelector("#notification-list");
+            if ($panel) $panel.insertAdjacentElement("afterbegin", $elem);
+        }
+    }
+
+    removeEmptyMessage() {
+
+        const $message = this.component.querySelector(".empty-panel-message");
+        if (!$message) return;
+        $message.remove();
     }
 
 }
