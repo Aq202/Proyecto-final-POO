@@ -90,6 +90,7 @@ export class Product {
 
                     resolve({
                         productId: result.ProductFoundId,
+                        ownerId: result.OwnerID,
                         cathegory: result.Cathegory,
                         department: result.Department,
                         municipality: result.Municipality,
@@ -103,7 +104,8 @@ export class Product {
                         alreadyRequested: result.alreadyRequested,
                         selectedAsBeneficiary:result.selectedAsBeneficiary,
                         donationRequestAccepted:result.donationRequestAccepted,
-                        available:result.Available
+                        available:result.Available,
+                        profileImage:result.ownerProfilePic
         
                     })
                     
@@ -194,7 +196,7 @@ export class Product {
                 return r.json();
             })
             .then(result => {
-
+                console.log(result)
                 if(reqObject.ok === true){
                     resolve(result.products)
                 }else{

@@ -113,9 +113,11 @@ export class NavBar {
 
         $notificationsOption.addEventListener("click", e => {
             $(notificationTray.component).stop();
-            $(notificationTray.component).slideToggle(500);
+            $(notificationTray.component).slideToggle(500, () => {
 
-            notificationTray.initializeContent();
+                notificationTray.initializeContent();
+            });
+
         })
     }
 

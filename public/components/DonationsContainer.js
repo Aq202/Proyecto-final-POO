@@ -48,7 +48,7 @@ export class DonationsContainer {
 
             try {
 
-                const { name, owner, publishDate, images, ownerImage, _id } = donationObject;
+                const { name, owner, publishDate, images, ownerImage, _id, ownerProfilePic } = donationObject;
 
                 if (name === undefined || owner === undefined || publishDate === undefined || images[0] === undefined) continue;
 
@@ -59,7 +59,8 @@ export class DonationsContainer {
                         donationImage: images[0],
                         ownerImage,
                         date: publishDate,
-                        donationPath: `/#/product?productId=${_id}`
+                        donationPath: `/#/product?productId=${_id}`,
+                        ownerImage:ownerProfilePic
                     }).component);
 
                     this.itemsCount++;
