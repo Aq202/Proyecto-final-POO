@@ -113,6 +113,7 @@ function newRequest(req, res) {
                             request.requestedDate = date;
                             request.message = params.message;
                             request.approved = null;
+                            request.confirmed = null;
 
                             request.save((err, saved) => {
                                 if (err) {
@@ -462,61 +463,70 @@ function confirmReceived(req, res) {
                 console.log(err);
             } else if (found) {
                 if (userId == found.petitionerId) {
-                    User.findByIdAndUpdate(userId, { $push: { adquisitions: found.productId } }, { new: true }, (err, updatedU) => {
-                        if (err) {
+
+                    Request.findByIdAndUpdate(found._id,{confirmed:true},{new:true},(err,updatedR)=>{
+                        if(err){
                             res.status(500).send({ error: "Error interno del servidor", err });
-                        } else if (updatedU) {
-                            Product.findById(productId, (err, foundP) => {
+                        }else if(updatedR){
+                            User.findByIdAndUpdate(userId, { $push: { adquisitions: found.productId } }, { new: true }, (err, updatedU) => {
                                 if (err) {
-                                    console.log("Error del servidor ", err);
-                                } else if (foundP) {
-                                    User.findById(foundP.ownerId, (err, foundOwner) => {
+                                    res.status(500).send({ error: "Error interno del servidor", err });
+                                } else if (updatedU) {
+                                    Product.findById(productId, (err, foundP) => {
                                         if (err) {
                                             console.log("Error del servidor ", err);
-                                        } else if (foundOwner) {
-                                            //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
-                                            /* 
-                                            product: foundP.name,
-                                            productId: foundP._id,
-                                            productImages: foundP.images,
-                                            ownerId: foundOwner._id,
-                                            petitioner: req.user.name + " " + req.user.lastname,
-                                            owner: foundOwner.name + " " + foundOwner.lastname,
-                                            ownerEmail: foundOwner.email
-                                            */
-
-
-                                            try {
-
-                                                new DonationConfirmedAsReceivedEmail({
-                                                    ownerName: foundOwner.name + " " + foundOwner.lastname,
-                                                    ownerEmail: foundOwner.email,
-                                                    beneficiaryName: req.user.name + " " + req.user.lastname,
-                                                    productName: foundP.name
-                                                }).sendEmail();
-
-                                                Notifications.sendDonationConfirmedAsReceivedNotification({
-                                                    productName: foundP.name,
+                                        } else if (foundP) {
+                                            User.findById(foundP.ownerId, (err, foundOwner) => {
+                                                if (err) {
+                                                    console.log("Error del servidor ", err);
+                                                } else if (foundOwner) {
+                                                    //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
+                                                    /* 
+                                                    product: foundP.name,
                                                     productId: foundP._id,
                                                     productImages: foundP.images,
                                                     ownerId: foundOwner._id,
-                                                    applicantName: req.user.name + " " + req.user.lastname
-                                                })
-
-                                            } catch (ex) {
-                                                console.log("error enviando notif ", ex)
-                                            }
-
-                                        } else
-                                            console.log("Sin informacion para emails y notificaciones");
-                                    });
+                                                    petitioner: req.user.name + " " + req.user.lastname,
+                                                    owner: foundOwner.name + " " + foundOwner.lastname,
+                                                    ownerEmail: foundOwner.email
+                                                    */
+        
+        
+                                                    try {
+        
+                                                        new DonationConfirmedAsReceivedEmail({
+                                                            ownerName: foundOwner.name + " " + foundOwner.lastname,
+                                                            ownerEmail: foundOwner.email,
+                                                            beneficiaryName: req.user.name + " " + req.user.lastname,
+                                                            productName: foundP.name
+                                                        }).sendEmail();
+        
+                                                        Notifications.sendDonationConfirmedAsReceivedNotification({
+                                                            productName: foundP.name,
+                                                            productId: foundP._id,
+                                                            productImages: foundP.images,
+                                                            ownerId: foundOwner._id,
+                                                            applicantName: req.user.name + " " + req.user.lastname
+                                                        })
+        
+                                                    } catch (ex) {
+                                                        console.log("error enviando notif ", ex)
+                                                    }
+        
+                                                } else
+                                                    console.log("Sin informacion para emails y notificaciones");
+                                            });
+                                        } else {
+                                            console.log("Sin informacion para emails y correos");
+                                        }
+                                    })
+        
+                                    res.send({ message: "Se ha informado al dueño que ha aceptado la donación. Producto agregado a su registro." });
                                 } else {
-                                    console.log("Sin informacion para emails y correos");
+                                    res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la donación" });
                                 }
                             })
-
-                            res.send({ message: "Se ha informado al dueño que ha aceptado la donación. Producto agregado a su registro." });
-                        } else {
+                        }else{
                             res.status(500).send({ message: "Se ha producido un error inesperado al confirmar la donación" });
                         }
                     })

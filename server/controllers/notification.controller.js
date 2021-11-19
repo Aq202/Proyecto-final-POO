@@ -46,12 +46,13 @@ function setAsViewed(req, res) {
         notificationId = null;
     }
     if(notificationId != null){
-        Notification.findById(notificationId,(err,found)=>{
+        Notification.findById(params.notificationId,(err,found)=>{
             if(err){
                 res.status(500).send({error:"Error interno del servidor",err});
             }else if(found){
                 if(found.userId == userId){
-                    Notification.findByIdAndUpdate(notificationId,{viewed:true}, {new:true},(err,updated)=>{
+                    let isViewed = (found.viewed == true ? false : true);
+                    Notification.findByIdAndUpdate(params.notificationId,{viewed:true}, {new:true},(err,updated)=>{
                         if(err){
                             res.status(500).send({error:"Error interno del servidor",err});
                         }else if(updated){
@@ -119,12 +120,12 @@ function deleteNotification(req,res){
         notificationId = null;
     }
     if(notificationId != null){
-        Notification.findById(notificationId,(err,found)=>{
+        Notification.findById(params.notificationId,(err,found)=>{
             if(err){
                 res.status(500).send({error:"Error interno del servidor",err});
             }else if(found){
                 if(found.userId == userId){
-                    Notification.findByIdAndDelete(notificationId,(err,deleted)=>{
+                    Notification.findByIdAndDelete(params.notificationId,(err,deleted)=>{
                         if(err){
                             res.status(500).send({error:"Error interno del servidor",err});
                         }else if(deleted){
