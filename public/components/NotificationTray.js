@@ -59,7 +59,7 @@ export class NotificationTray {
             this.pendingNotifications.push(notificationData);
 
         } else if (this.initialized === true) { //agregar notificacion
-
+            if(!NotificationTray.loadedNotifications.has(notificationData.id)){
             this.removeEmptyMessage();
 
             const notificationItem = new NotificationItem(notificationData);
@@ -69,7 +69,9 @@ export class NotificationTray {
             if (!$panel || !notificationData.id) return;
             $panel.insertAdjacentElement("afterbegin", notificationItem.component);
             NotificationTray.loadedNotifications.set(notificationData.id, notificationItem)
-
+            }else{
+                console.log("Notificación bloqueada por estar repetida");
+            }
         }
     }
 
@@ -118,8 +120,10 @@ export class NotificationTray {
                 const fragment = document.createDocumentFragment();
 
                 for (let notif of notifications) {
-
+                    const hola = NotificationTray.loadedNotifications;
                     if (!notif._id) continue;
+                    debugger
+                    if(NotificationTray.loadedNotifications.has(notif._id) === true) continue;
 
                     const notifItem = new NotificationItem({
                         id: notif._id,
