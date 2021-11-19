@@ -188,7 +188,6 @@ function getProduct(req, res) {
                     Available: found.available
                 }
 
-                if (found.ownerProfilePic) message = {...message, OwnerProfilePicure: found.ownerProfilePic};
                 if (found.images && found.images != null && found.images != undefined && found.images.length > 0) {
                     message = {...message, Images: []};
                     found.images.forEach(image => {
@@ -196,7 +195,7 @@ function getProduct(req, res) {
                     });
                 }
                 if (found.ownerProfilePic && found.ownerProfilePic != null && found.ownerProfilePic != undefined)
-                    message = {...message, OwnerProfilePicture: found.ownerProfilePic}
+                    message = {...message, ownerProfilePic: found.ownerProfilePic}
                 if (req.user != null && found.ownerId == req.user.sub) {
                     message = {...message, isOwner: true}
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
@@ -328,7 +327,7 @@ function addProduct(req, res) {
 
 function updateOwner(product, user, res) {
 
-    Product.findByIdAndUpdate(product._id, { owner: user.name + ' ' + user.lastname }, { new: true }, (err, updated) => {
+    Product.findByIdAndUpdate(product._id, { owner: user.name + ' ' + user.lastname, ownerProfilePic: user.profilePic }, { new: true }, (err, updated) => {
         if (err) {
             cancelDonation(product, res, "Error interno del servidor", 500);
         } else if (updated) {
