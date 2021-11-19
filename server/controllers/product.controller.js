@@ -106,7 +106,7 @@ function getCurrentRequests(req, res) {
                 while (index < data.length) {
                     let product = data[index];
                     try {
-                        Product.findById(product._id, (err, found) => {
+                        /*Product.findById(product._id, (err, found) => {
                             if(err) throw "";
                             if (found && found != null && found != undefined && found != "") {
                                 if(donations!=null && index<donations){
@@ -125,7 +125,7 @@ function getCurrentRequests(req, res) {
                                     products.adquisitions = [];
                                 }
                             }
-                        });
+                        });*/
                         await new Promise((resolve, reject) => {
                             Product.findById(product._id, (err, found) => {
                                 if (err) throw "";
@@ -209,7 +209,7 @@ function getProduct(req, res) {
                         }
                         message += '}';
                         console.log(message);
-                        res.send(JSON.parse(message));
+                        res.send(JSON.parse(message.replace("\n","")));
                     });
 
                 } else if (req.user != null && req.user != undefined) {
