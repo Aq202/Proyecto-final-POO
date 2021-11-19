@@ -89,7 +89,7 @@ export class User {
                     console.log(result)
                     if (reqObj.ok === true) {
                         resolve({
-                            userName: result.nme,
+                            userName: result.name,
                             userAlias: result.username,
                             profilePicture: result.profilePic,
                             donationsMade: result.donations,
