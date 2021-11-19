@@ -202,14 +202,15 @@ function getProduct(req, res) {
                     Request.findOne({ productId: productId, approved: true }, (err, foundR) => {
                         if (foundR) {
                             message = {...message, donationRequestAccepted: true}
-                            if(found.available == false)
+                            if(foundR.confirmed==true)
                                 message = {...message, donationReceivedConfirmed: true}
                             else
-                                message = {...message, donationReceivedConfirmed: false}
+                            message = {...message, donationReceivedConfirmed: false}
                         } else {
                             message = {...message, donationRequestAccepted: false}
                             message = {...message, donationReceivedConfirmed: false}
                         }
+                        console.log(message);
                         res.send(message);
                     });
 
@@ -244,6 +245,7 @@ function getProduct(req, res) {
                                 } else {
                                     message = {...message, donationRequestAccepted: false}
                                 }
+                                console.log(message);
                                 res.send(message);
                             });
                         })
@@ -255,6 +257,7 @@ function getProduct(req, res) {
                         } else {
                             message = {...message, donationRequestAccepted: false}
                         }
+                        console.log(message);
                         res.send(message);
                     });
                 }

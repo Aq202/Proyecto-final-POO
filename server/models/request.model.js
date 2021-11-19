@@ -8,7 +8,8 @@ const requestSchema = Schema({
     requestedDate:Date,
     ownerId: String,
     message:String,
-    approved: Boolean
+    approved: Boolean,
+    confirmed: Boolean
 });
 
 module.exports = mongoose.model('request', requestSchema);
