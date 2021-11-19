@@ -16,7 +16,7 @@ export class LoginPage {
 
         this.component.innerHTML = `
         <div class="loginContainer">
-            <img class="logo" src="images/icons/logo.jpg" alt="Logo Proyecto">
+            <img class="logo" src="images/icons/logo.svg" alt="Logo Proyecto">
 
             <h1>Inicio de sesión</h1>
 
