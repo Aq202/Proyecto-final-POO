@@ -58,6 +58,8 @@ module.exports = class Email{
 
     sendEmail() {
 
+        console.log("EMAIL RECEPTOR: ", this.addresseeEmail)
+
        const mailOptions = {
             from: 'MyTurn Team',
             to: this.addresseeEmail,

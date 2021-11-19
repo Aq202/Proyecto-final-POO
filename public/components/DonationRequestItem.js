@@ -53,12 +53,12 @@ export class DonationRequestItem {
         try {
             const result = await popUp.open();
 
+            const event = new CustomEvent("requestChanged");
+            document.dispatchEvent(event);
+
             if (result?.requestAccepted === true) {
 
                 this.selected = true;
-
-                const event = new CustomEvent("requestAccepted");
-                document.dispatchEvent(event);
 
             }else{
                 this.component.remove()

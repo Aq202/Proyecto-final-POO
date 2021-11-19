@@ -7,33 +7,36 @@ const mongoose = require('mongoose');
 const NewRequestEmail = require('../services/NewRequestEmail');
 const Notifications = require('../services/Notifications');
 const RequestRejectedEmail = require('../services/RequestRejectedEmail');
+const RequestApprovedEmail = require('../services/RequestApprovedEmail');
+const DonationConfirmedAsReceivedEmail = require('../services/DonationConfirmedAsReceivedEmail');
+const DonationRejectedByBeneficiaryEmail = require('../services/DonationRejectedByBeneficiaryEmail');
 
 function getRequest(req, res) {
     const params = req.body;
     let requestId
-    try{
+    try {
         requestId = mongoose.Types.ObjectId(params.requestId);
-    }catch{
+    } catch {
         requestId = null;
     }
-    if (requestId!= null) {
+    if (requestId != null) {
         Request.findById(requestId, (err, found) => {
             if (err) {
 
                 res.status(500).send({ error: 'Error interno del servidor' });
             } else if (found) {
                 if (req.user.sub == found.ownerId) {
-                
+
                     User.findById(found.petitionerId, (err, userFound) => {
                         if (err) {
                             console.log(err);
                             res.status(500).send({ error: 'Error interno del servidor' });
                         } else if (userFound) {
-         
+
                             let request = {
                                 idRequest: found._id,
                                 petitionerId: userFound._id,
-                                name: userFound.name + " "+userFound.lastname,
+                                name: userFound.name + " " + userFound.lastname,
                                 profilePicture: userFound.profilePic,
                                 username: userFound.username,
                                 requestedDate: found.requestedDate,
@@ -69,9 +72,9 @@ function newRequest(req, res) {
     const userId = req.user.sub;
 
     let productId
-    try{
+    try {
         productId = mongoose.Types.ObjectId(params.productId);
-    }catch{
+    } catch {
         productId = null;
     }
     if (productId != null && params.message) {
@@ -121,10 +124,10 @@ function newRequest(req, res) {
                                             console.log(err);
                                             cancelRequest(saved, res, "Error interno del servidor", 500);
                                         } else if (updated) {
-                                            User.findById(updated.ownerId,(err,foundOwner)=>{
-                                                if(err){
+                                            User.findById(updated.ownerId, (err, foundOwner) => {
+                                                if (err) {
                                                     console.log("error del servidor");
-                                                }else if(foundOwner){
+                                                } else if (foundOwner) {
 
                                                     //INFORMACION PARA CORREOS Y NOTIFICACIONES
                                                     /*
@@ -137,7 +140,7 @@ function newRequest(req, res) {
                                                     ownerId: foundOwner._id,
                                                     */
 
-                                                    try{
+                                                    try {
 
                                                         const email = new NewRequestEmail({
                                                             ownerName: foundOwner.name + " " + foundOwner.lastname,
@@ -158,12 +161,12 @@ function newRequest(req, res) {
 
                                                         console.log("Notificacion enviada");
 
-                                                    }catch(ex){
+                                                    } catch (ex) {
                                                         console.log("Error al enviar notif nueva solicitud")
                                                     }
 
 
-                                                }else{
+                                                } else {
                                                     console.log("No hay informacion para el correo");
                                                 }
                                             })
@@ -206,9 +209,9 @@ function rejectRequest(req, res) {
     const params = req.body;
     const userId = req.user.sub;
     let requestID
-    try{
+    try {
         requestID = mongoose.Types.ObjectId(params.requestId);
-    }catch{
+    } catch {
         requestID = null;
     }
     if (requestID != null) {
@@ -229,10 +232,10 @@ function rejectRequest(req, res) {
                                     if (err) {
                                         res.status(500).send({ error: "Error interno del servidor", err });
                                     } else if (updated) {
-                                        User.findById(deleted.petitionerId,(err,petitioner)=>{
-                                            if(err){
-                                                console.log("Error del servidor\n",err)
-                                            }else if(petitioner){
+                                        User.findById(deleted.petitionerId, (err, petitioner) => {
+                                            if (err) {
+                                                console.log("Error del servidor\n", err)
+                                            } else if (petitioner) {
 
                                                 //INFORMACION PARA CORREOS Y NOTIFICACIONES
 
@@ -246,7 +249,7 @@ function rejectRequest(req, res) {
                                                     */
 
 
-                                                try{
+                                                try {
 
                                                     const email = new RequestRejectedEmail({
                                                         userName: petitioner.name,
@@ -264,14 +267,14 @@ function rejectRequest(req, res) {
 
 
 
-                                                }catch(ex){
+                                                } catch (ex) {
 
                                                 }
 
 
 
 
-                                            }else{
+                                            } else {
                                                 console.log("Sin informacion para el correo");
                                             }
                                         })
@@ -302,9 +305,9 @@ function approveRequest(req, res) {
     const params = req.body;
     const userId = req.user.sub;
     let requestID
-    try{
+    try {
         requestID = mongoose.Types.ObjectId(params.requestId);
-    }catch{
+    } catch {
         requestID = null;
     }
     if (requestID != null) {
@@ -326,10 +329,10 @@ function approveRequest(req, res) {
                                         res.status(500).send({ error: "Error interno del servidor", err });
                                     } else if (found) {
 
-                                        User.findById(updated.petitionerId,(err,foundU)=>{
-                                            if(err){
-                                                console.log("Error del servidor ",err);
-                                            }else if(foundU){
+                                        User.findById(updated.petitionerId, (err, foundU) => {
+                                            if (err) {
+                                                console.log("Error del servidor ", err);
+                                            } else if (foundU) {
                                                 //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
                                                 /* 
                                                 product: found.name,
@@ -341,12 +344,34 @@ function approveRequest(req, res) {
                                                 owner: req.user.name + " " + req.user.lastname,
                                                 ownerEmail: req.user.email
                                                 */
-                                            }else{
+
+                                                try {
+                                                    new RequestApprovedEmail({
+                                                        userName: foundU.name + " " + foundU.lastname,
+                                                        userEmail: foundU.email,
+                                                        productName: found.name,
+                                                        ownerEmail: req.user.email,
+                                                        ownerName: req.user.name + " " + req.user.lastname
+                                                    }).sendEmail();
+
+                                                    Notifications.sendRequestApprovedNotification({
+                                                        productName: found.name,
+                                                        productId: found._id,
+                                                        productImages: found.images,
+                                                        applicantId: foundU._id
+                                                    })
+                                                } catch (ex) {
+                                                    console.log("Error enviando notif")
+                                                }
+
+
+
+                                            } else {
                                                 console.log("Sin informacion para notificaciones e emails");
                                             }
                                         })
 
-                                        
+
 
 
                                         rejectOtherRequests(updated, res);
@@ -375,18 +400,18 @@ function deleteRequest(req, res) {
     let params = req.body;
     let productId = null;
     let userId = req.user.sub;
-    try{
+    try {
         productId = mongoose.Types.ObjectId(params.productId);
-    }catch{
+    } catch {
         productId = null;
     }
     if (productId != null) {
-        Request.findOne({$and:[{ petitionerId: userId}, {productId: params.productId }]}, (err, found) => {
+        Request.findOne({ $and: [{ petitionerId: userId }, { productId: params.productId }] }, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
             } else if (found) {
-                if (found.petitionerId== userId) {
+                if (found.petitionerId == userId) {
                     if (found.approved == true) {
                         res.status(403).send({ message: "La solicitud ya ha sido aceptada, no puede cancelarla." });
                     } else {
@@ -424,14 +449,14 @@ function confirmReceived(req, res) {
     let params = req.body;
     let productId = null;
     let userId = req.user.sub;
-    try{
+    try {
         productId = mongoose.Types.ObjectId(params.productId);
-    }catch{
+    } catch {
         productId = null;
     }
     if (productId != null) {
         console.log(userId);
-        Request.findOne({$and:[{productId:params.productId}, {petitionerId: userId}]}, (err, found) => {
+        Request.findOne({ $and: [{ productId: params.productId }, { petitionerId: userId }] }, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
@@ -441,28 +466,51 @@ function confirmReceived(req, res) {
                         if (err) {
                             res.status(500).send({ error: "Error interno del servidor", err });
                         } else if (updatedU) {
-                            Product.findById(productId,(err,foundP)=>{
-                                if(err){
-                                    console.log("Error del servidor ",err);
-                                }else if(foundP){
-                                    User.findById(foundP.ownerId,(err,foundOwner)=>{
-                                        if(err){
-                                            console.log("Error del servidor ",err);
-                                        }else if(foundOwner){
+                            Product.findById(productId, (err, foundP) => {
+                                if (err) {
+                                    console.log("Error del servidor ", err);
+                                } else if (foundP) {
+                                    User.findById(foundP.ownerId, (err, foundOwner) => {
+                                        if (err) {
+                                            console.log("Error del servidor ", err);
+                                        } else if (foundOwner) {
                                             //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
-                                    /* 
-                                    product: foundP.name,
-                                    productId: foundP._id,
-                                    productImages: foundP.images,
-                                    ownerId: foundOwner._id,
-                                    petitioner: req.user.name + " " + req.user.lastname,
-                                    owner: foundOwner.name + " " + foundOwner.lastname,
-                                    ownerEmail: foundOwner.email
-                                    */
-                                        }else
+                                            /* 
+                                            product: foundP.name,
+                                            productId: foundP._id,
+                                            productImages: foundP.images,
+                                            ownerId: foundOwner._id,
+                                            petitioner: req.user.name + " " + req.user.lastname,
+                                            owner: foundOwner.name + " " + foundOwner.lastname,
+                                            ownerEmail: foundOwner.email
+                                            */
+
+
+                                            try {
+
+                                                new DonationConfirmedAsReceivedEmail({
+                                                    ownerName: foundOwner.name + " " + foundOwner.lastname,
+                                                    ownerEmail: foundOwner.email,
+                                                    beneficiaryName: req.user.name + " " + req.user.lastname,
+                                                    productName: foundP.name
+                                                }).sendEmail();
+
+                                                Notifications.sendDonationConfirmedAsReceivedNotification({
+                                                    productName: foundP.name,
+                                                    productId: foundP._id,
+                                                    productImages: foundP.images,
+                                                    ownerId: foundOwner._id,
+                                                    applicantName: req.user.name + " " + req.user.lastname
+                                                })
+
+                                            } catch (ex) {
+                                                console.log("error enviando notif ", ex)
+                                            }
+
+                                        } else
                                             console.log("Sin informacion para emails y notificaciones");
                                     });
-                                }else{
+                                } else {
                                     console.log("Sin informacion para emails y correos");
                                 }
                             })
@@ -487,13 +535,13 @@ function rejectDonation(req, res) {
     let params = req.body;
     let userId = req.user.sub;
     let productId = null;
-    try{
+    try {
         productId = mongoose.Types.ObjectId(params.productId);
-    }catch{
+    } catch {
         productId = null;
     }
     if (productId != null) {
-        Request.findOne({$and: [{productId: params.productId}, {petitionerId: userId}]}, (err, found) => {
+        Request.findOne({ $and: [{ productId: params.productId }, { petitionerId: userId }] }, (err, found) => {
             if (err) {
                 res.status(500).send({ error: "Error interno del servidor" });
                 console.log(err);
@@ -510,21 +558,46 @@ function rejectDonation(req, res) {
                                     res.status(500).send({ error: "Error interno del servidor", err });
                                 } else if (updated) {
 
-                                    User.findById(updated.ownerId,(err,foundOwner)=>{
-                                        if(err){
-                                            console.log("Error del servidor ",err);
-                                        }else if(foundOwner){
+                                    User.findById(updated.ownerId, (err, foundOwner) => {
+                                        if (err) {
+                                            console.log("Error del servidor ", err);
+                                        } else if (foundOwner) {
                                             //DATOS PARA ENVIO DE EMAILS Y NOTIFICACIONES
-                                        /* 
-                                        product: updated.name,
-                                        productId: updated._id,
-                                        productImages: updated.images,
-                                        ownerId: foundOwner._id,
-                                        petitioner: req.user.name + " " + req.user.lastname,
-                                        owner: foundOwner.name + " " + foundOwner.lastname,
-                                        ownerEmail: foundOwner.email
-                                        */
-                                        }else
+                                            /* 
+                                            product: updated.name,
+                                            productId: updated._id,
+                                            productImages: updated.images,
+                                            ownerId: foundOwner._id,
+                                            petitioner: req.user.name + " " + req.user.lastname,
+                                            owner: foundOwner.name + " " + foundOwner.lastname,
+                                            ownerEmail: foundOwner.email
+                                            */
+
+                                            try {
+
+                                                new DonationRejectedByBeneficiaryEmail({
+                                                    ownerName: foundOwner.name + " " + foundOwner.lastname,
+                                                    ownerEmail: foundOwner.email,
+                                                    beneficiaryName: req.user.name + " " + req.user.lastname,
+                                                    productName: updated.name
+                                                })
+
+
+                                                Notifications.sendDonationRejectedByBeneficiaryNotification({
+                                                    productName: updated.name,
+                                                    productId: updated._id,
+                                                    productImages: updated.images,
+                                                    ownerId: foundOwner._id,
+                                                    applicantName: req.user.name + " " + req.user.lastname
+                                                })
+
+                                            } catch (ex) {
+                                                console.log("error enviando notif ", ex)
+                                            }
+
+
+
+                                        } else
                                             console.log("Sin informacion para emails y notificaciones");
                                     });
 
@@ -549,7 +622,7 @@ function rejectDonation(req, res) {
 }
 
 function rejectOtherRequests(request, res) {
-    Request.updateMany({ productId: request.productId, _id: {$ne : request._id} }, { approved: false }, { new: true }, (err, updated) => {
+    Request.updateMany({ productId: request.productId, _id: { $ne: request._id } }, { approved: false }, { new: true }, (err, updated) => {
         if (err) {
             res.status(500).send({ error: "Error interno del servidor", err });
         } else if (updated) {

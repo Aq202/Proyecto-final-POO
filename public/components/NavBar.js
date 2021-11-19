@@ -132,6 +132,13 @@ export class NavBar {
             }
 
         })
+
+        document.addEventListener("hideNotificationTray", e => {
+
+                $(notificationTray.component).stop();
+                $(notificationTray.component).hide();
+
+        })
     }
 
     searchVisibilityEvent() {

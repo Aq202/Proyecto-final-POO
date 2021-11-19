@@ -10,7 +10,7 @@ import { Filter } from "../scripts/Filter.js";
 export class ProductPage {
 
     constructor({ productId, cathegory, department, municipality, title, description, profileImage, name, productImages, isOwner, alreadyRequested, selectedAsBeneficiary, donationRequestAccepted, donationReceivedConfirmed, userRequestId, available }) {
-
+ 
         this.productId = productId || null;
         this.category = cathegory;
         this.department = department;
@@ -113,7 +113,7 @@ export class ProductPage {
         $productPage.querySelector("#cathegory").addEventListener("click", e => this.searchSimilarCategories());
         $productPage.querySelector("#place").addEventListener("click", e => this.searchSimilarMunicipalities());
 
-        document.addEventListener("requestAccepted", e => this.updateProductState());
+        document.addEventListener("requestChanged", e => this.updateProductState());
 
 
     }
@@ -126,7 +126,7 @@ export class ProductPage {
 
             if (requests.length > 0) {
 
-                const donationRequests = new DonationRequestsContainer({requests});
+                const donationRequests = new DonationRequestsContainer({ requests });
                 this.component.querySelector("#productInfo").appendChild(donationRequests.component);
 
             }
@@ -154,7 +154,7 @@ export class ProductPage {
                     this.addMessage({ message: "En espera de la confirmación de recibido del usuario." })
 
                 } else if (this.donationReceivedConfirmed) { //confirmacion recibida
-
+                    
                     this.addMessage({ message: "¡Donación completada!", green: true })
 
                 }
@@ -163,8 +163,8 @@ export class ProductPage {
             //no es el autor
             else {
 
-                
-               
+
+
 
                 if (this.available !== false && this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true) { //estado inicial
 
@@ -189,7 +189,7 @@ export class ProductPage {
 
                     this.addMessage({ message: "Esta donación ya no se encuentra disponible.", red: true })
                 }
-           
+
 
             }
         } catch (ex) {
@@ -225,7 +225,7 @@ export class ProductPage {
         if (this.isOwner !== true) return;
         if (!(this.donationRequestAccepted !== true && this.donationReceived !== true)) return;
 
-        if ("¿Estás seguro que deseas eliminar permanentemente este producto?") {
+        if (confirm("¿Estás seguro que deseas eliminar permanentemente este producto?")) {
 
             this.actionBlocked = true;
             this.hideButtons();
@@ -243,7 +243,12 @@ export class ProductPage {
                 });
 
                 this.hideSpinner();
-                await alertPopUp.open();
+
+                try {
+                    await alertPopUp.open();
+                } catch (ex) {
+
+                }
 
                 location.hash = "/";
 
@@ -262,11 +267,15 @@ export class ProductPage {
         if (this.actionBlocked === true) return;
         if (!this.verifySession()) return;
         if (this.isOwner === true) return;
-        if (!(this.alreadyRequested !== true && this.selectedAsBeneficiary !== true && this.donationRequestAccepted !== true)) return;
+        if (this.alreadyRequested === true || this.selectedAsBeneficiary === true || this.donationRequestAccepted === true) return;
 
         try {
             const popUp = new RequestDonationPopUp(this.productId);
             await popUp.open();
+
+            //Solicitud aceptada
+            this.alreadyRequested = true;
+            this.selectActionElements();
 
             const alertPopUp = new AlertPopUp({
                 imgUrl: "../images/others/charity-market.svg",
@@ -274,11 +283,9 @@ export class ProductPage {
                 text: "Ahora no queda más que cruzar los dedos y ser paciente por la respuesta del autor. Te notificaremos en cuento tengamos noticias."
             });
 
-            await alertPopUp.open();
-
-            //Solicitud aceptada
-            this.alreadyRequested = true;
-            this.selectActionElements();
+            try {
+                await alertPopUp.open();
+            } catch (ex) { }
 
         } catch (ex) {
 
@@ -313,10 +320,14 @@ export class ProductPage {
                     this.alreadyRequested = false;
                     this.hideSpinner();
                     this.selectActionElements();
-
-                    await alertPopUp.open();
-
                     this.actionBlocked = false;
+
+                    try {
+                        await alertPopUp.open();
+                    } catch (ex) {
+
+                    }
+
 
 
                 } catch (ex) {
@@ -360,7 +371,9 @@ export class ProductPage {
                     this.hideSpinner();
                     this.selectActionElements();
 
-                    await alertPopUp.open();
+                    try {
+                        await alertPopUp.open();
+                    } catch (ex) { }
 
                 } catch (ex) {
                     ex ||= "Ocurrió un error.";
@@ -390,7 +403,7 @@ export class ProductPage {
                     this.actionBlocked = true;
                     this.showSpinner();
                     this.hideButtons();
-               
+
                     await DonationRequest.rejectDonation(this.productId);
 
                     const alertPopUp = new AlertPopUp({
@@ -410,7 +423,11 @@ export class ProductPage {
                     this.hideSpinner();
                     this.selectActionElements();
 
-                    await alertPopUp.open();
+                    try {
+                        await alertPopUp.open();
+                    } catch (ex) {
+
+                    }
 
                 } catch (ex) {
                     ex ||= "Ocurrió un error.";
@@ -422,7 +439,7 @@ export class ProductPage {
                     this.actionBlocked = false;
                 }
 
-                let array1 = [1,2,3,4]
+                let array1 = [1, 2, 3, 4]
 
             }
         }
@@ -465,7 +482,7 @@ export class ProductPage {
 
     updateProductState() {
         this.donationRequestAccepted = true;
-        this.selectButtonStyle();
+        this.selectActionElements();
     }
 
 

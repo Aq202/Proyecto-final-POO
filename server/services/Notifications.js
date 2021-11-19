@@ -81,7 +81,7 @@ module.exports = class Notifications {
     }
 
 
-    static async sendRequestApprovedEmail({  productName, productId, productImages, applicantId }) {
+    static async sendRequestApprovedNotification({  productName, productId, productImages, applicantId }) {
 
         const notificationData = {
             userId: applicantId,

@@ -339,7 +339,11 @@ export class ProductRegistrationPage {
                     text: "Gracias por tu aporte " + Session.firstName + ", juntos lograremos cambiar la vida de muchas personas."
                 });
 
-                await alertPopUp.open();
+                try {
+                    await alertPopUp.open();
+                } catch (ex) {
+
+                }
 
                 //reedirigir
                 if (productData?._id !== undefined)

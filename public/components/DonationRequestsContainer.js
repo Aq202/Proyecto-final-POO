@@ -36,7 +36,7 @@ export class DonationRequestsContainer {
 
         //eventos
         $requestsContainer.querySelector(".searchRequest input").addEventListener("keyup", e => this.renderRequestItems())
-        document.addEventListener("requestAccepted", e => this.renderRequestItems());
+        document.addEventListener("requestChanged", e => this.renderRequestItems());
 
     }
 

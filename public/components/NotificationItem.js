@@ -41,7 +41,10 @@ export class NotificationItem {
         //agregando evento para redirigir a url
         if (this.url != undefined && this.url != null)
             this.component.addEventListener("click", e => {
-                alert("Redirigiendo a: " + this.url);
+                location.hash = this.url;
+
+                const event = new CustomEvent("hideNotificationTray");
+                document.dispatchEvent(event);
             });
 
         this.addContextMenu()
