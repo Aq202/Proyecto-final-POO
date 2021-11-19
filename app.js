@@ -11,6 +11,7 @@ const key = require("./server/services/key");
 const userRoutes = require('./server/routes/user.route');
 const productRoutes = require('./server/routes/product.route');
 const requestRoutes = require('./server/routes/request.route');
+const notificationController = require('./server/routes/notification.route');
 const RequestApprovedEmail = require('./server/services/RequestApprovedEmail');
 const RequestRejectedEmail = require('./server/services/RequestRejectedEmail');
 const NewRequestEmail = require('./server/services/NewRequestEmail');
@@ -53,6 +54,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);
 app.use('/request', requestRoutes);
+app.use('/notification', notificationController);
 
 new socketServer(httpServer)
 
